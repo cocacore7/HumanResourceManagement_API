@@ -1,0 +1,56 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36511.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRM_API.API", "HRM_API.API\HRM_API.API.csproj", "{6A602788-DDAF-47B8-90C0-1FFB33EC4A20}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRM_API.Application", "HRM_API.Application\HRM_API.Application.csproj", "{DDB921E6-9E4B-34A9-252E-1CC84B5FCCE5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRM_API.Configuration", "HRM_API.Configuration\HRM_API.Configuration.csproj", "{E34A37AF-91DD-7F5A-3CFF-9AB4F1ABFCD5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRM_API.Core", "HRM_API.Core\HRM_API.Core.csproj", "{0280D98A-C5B5-312E-B335-22D8172AE459}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRM_API.Infraestructure", "HRM_API.Infraestructure\HRM_API.Infraestructure.csproj", "{5ACD8F11-E427-2EE1-1C8D-382D689480DF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución", "Elementos de la solución", "{D107F4C8-89CC-BEA8-D3D7-CA6B7733353D}"
+	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
+		.gitignore = .gitignore
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6A602788-DDAF-47B8-90C0-1FFB33EC4A20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A602788-DDAF-47B8-90C0-1FFB33EC4A20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A602788-DDAF-47B8-90C0-1FFB33EC4A20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A602788-DDAF-47B8-90C0-1FFB33EC4A20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDB921E6-9E4B-34A9-252E-1CC84B5FCCE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDB921E6-9E4B-34A9-252E-1CC84B5FCCE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDB921E6-9E4B-34A9-252E-1CC84B5FCCE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDB921E6-9E4B-34A9-252E-1CC84B5FCCE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E34A37AF-91DD-7F5A-3CFF-9AB4F1ABFCD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E34A37AF-91DD-7F5A-3CFF-9AB4F1ABFCD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E34A37AF-91DD-7F5A-3CFF-9AB4F1ABFCD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E34A37AF-91DD-7F5A-3CFF-9AB4F1ABFCD5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0280D98A-C5B5-312E-B335-22D8172AE459}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0280D98A-C5B5-312E-B335-22D8172AE459}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0280D98A-C5B5-312E-B335-22D8172AE459}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0280D98A-C5B5-312E-B335-22D8172AE459}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5ACD8F11-E427-2EE1-1C8D-382D689480DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5ACD8F11-E427-2EE1-1C8D-382D689480DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5ACD8F11-E427-2EE1-1C8D-382D689480DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5ACD8F11-E427-2EE1-1C8D-382D689480DF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {04E3B41F-A7AF-45D4-81B0-713FC83E61BC}
+	EndGlobalSection
+EndGlobal
