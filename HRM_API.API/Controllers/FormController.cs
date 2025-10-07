@@ -1,25 +1,37 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using HRM_API.Application.Services;
+using HRM_API.Core.Dtos.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace HRM_API.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
     public class FormController : ControllerBase
-    {   
-        [HttpGet("GetHiWorld")]
-        public string GetHiWorld()
+    {
+        private readonly FormService _formService;
+
+        public FormController(FormService formService)
         {
-            return "Get Hi World";
+            _formService = formService;
         }
-        [HttpGet("GetHiWorld2")]
-        public string GetHiWorld2()
+
+        [HttpGet("GetUserModules")]
+        public async Task<IActionResult> GetUserModules()
         {
-            return "Get Hi World";
-        }
-        [HttpGet("GetHiWorld3")]
-        public string GetHiWorld3()
-        {
-            return "Get Hi World";
+            if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
+                return Unauthorized("Token inválido");
+
+            UserDto user = new UserDto 
+            {
+                IdUser = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty,
+                Name = User.FindFirst(ClaimTypes.Name)?.Value ?? string.Empty,
+                RoleId = User.FindFirst(ClaimTypes.Role)?.Value ?? string.Empty
+            };
+
+            var response = await _formService.GetUserModulesAsync(user.IdUser);
+
+            return Ok(response);
         }
     }
 }

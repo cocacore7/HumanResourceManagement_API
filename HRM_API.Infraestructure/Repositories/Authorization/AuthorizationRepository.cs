@@ -3,6 +3,7 @@ using HRM_API.Core.Dtos.Authorization;
 using HRM_API.Core.Interfaces.Authorization;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using System.Data;
 
 namespace HRM_API.Infraestructure.Repositories.Authorization
 {
@@ -26,6 +27,17 @@ namespace HRM_API.Infraestructure.Repositories.Authorization
                         AND u.PasswordHash = @Password 
                         AND r.KeyName = @Role";
             var user = await connection.QueryFirstOrDefaultAsync<UserDto>(sql, new {name, Password, role });
+
+            //var parameters = new DynamicParameters();
+            //parameters.Add("@IdUser", idUser, DbType.String);
+            //parameters.Add("@Name", name, DbType.String);
+            //parameters.Add("@Role", role, DbType.String);
+
+            //var user = await connection.QueryFirstOrDefaultAsync<UserModel>(
+            //    "[dbo].[sp_ValidateUserCredentials]",
+            //    parameters,
+            //    commandType: CommandType.StoredProcedure
+            //);
 
             return user;
         }
