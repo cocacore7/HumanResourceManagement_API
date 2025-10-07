@@ -1,5 +1,6 @@
 ﻿using HRM_API.API;
 using HRM_API.Application;
+using HRM_API.Application.Helpers;
 using HRM_API.Application.Services;
 using HRM_API.Configuration;
 using HRM_API.Core.Interfaces.Authorization;
@@ -50,8 +51,9 @@ builder.Services.AddScoped<IDbConnection>(sp =>
 });
 #endregion
 
-#region JWT Service y Middleware
+#region JWT Service, Middleware y Helpers
 builder.Services.AddSingleton<JwtService>();
+builder.Services.AddSingleton<ConversionHelper>();
 #endregion
 
 #region Repositorios y Servicios
@@ -67,7 +69,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new() { Title = "Forza Delivery", Version = "v1" });
+    options.SwaggerDoc("v1", new() { Title = "HRM Adminsitration", Version = "v1" });
 
     options.DocInclusionPredicate((docName, apiDesc) => true);
     options.TagActionsBy(api =>

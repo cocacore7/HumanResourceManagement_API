@@ -3,7 +3,6 @@ using HRM_API.Core.Dtos.Authorization;
 using HRM_API.Core.Interfaces.Authorization;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using System.Data;
 
 namespace HRM_API.Infraestructure.Repositories.Authorization
 {

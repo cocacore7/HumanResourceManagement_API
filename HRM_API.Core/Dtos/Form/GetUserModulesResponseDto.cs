@@ -2,6 +2,6 @@
 {
     public class GetUserModulesResponseDto
     {
-        public string Response { get; set; } = string.Empty;
+        public List<ModuleDto> Response { get; set; } = new List<ModuleDto>();
     }
 }
