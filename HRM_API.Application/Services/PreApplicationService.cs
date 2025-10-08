@@ -12,9 +12,9 @@ namespace HRM_API.Application.Services
             _repository = repository;
         }
 
-        public async Task<GetPreApplicationsResponseDto?> GetPreApplicationsAsync()
+        public async Task<GetPreApplicationsResponseDto?> GetPreApplicationsAsync(string estado)
         {
-            var form = await _repository.GetPreApplicationsAsync();
+            var form = await _repository.GetPreApplicationsAsync(estado);
             GetPreApplicationsResponseDto response = new GetPreApplicationsResponseDto { Response = form ?? new List<GetPreApplicationsDto>() };
 
             return (response);

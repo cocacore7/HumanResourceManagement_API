@@ -18,15 +18,30 @@ using System.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 #region CORS
+//CORS Dev
+const string DevCors = "DevCors";
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowOrigins", policy =>
-    {
-        policy.AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader();
-    });
+    options.AddPolicy(DevCors, policy =>
+        policy
+            .WithOrigins("http://localhost:5173") // agrega más orígenes si hace falta
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+    // OJO: solo si usas cookies/sesión:
+    //.AllowCredentials()
+    );
 });
+
+//CORS Estandar
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("AllowOrigins", policy =>
+//    {
+//        policy.AllowAnyOrigin()
+//              .AllowAnyMethod()
+//              .AllowAnyHeader();
+//    });
+//});
 #endregion
 
 #region AppSettings embebido
@@ -123,8 +138,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.UseHttpsRedirection();
-app.UseCors("AllowOrigins");
+//app.UseCors("AllowOrigins"); //CORS Estandar
+app.UseCors(DevCors); //CORS Dev
 app.UseJwtMiddleware();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();

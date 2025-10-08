@@ -4,6 +4,6 @@ namespace HRM_API.Core.Interfaces.PreApplication
 {
     public interface IPreApplicationRepository
     {
-        Task<List<GetPreApplicationsDto>?> GetPreApplicationsAsync();
+        Task<List<GetPreApplicationsDto>?> GetPreApplicationsAsync(string estado);
     }
 }

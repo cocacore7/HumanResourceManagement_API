@@ -1,7 +1,5 @@
 ﻿using HRM_API.Application.Services;
-using HRM_API.Core.Dtos.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace HRM_API.API.Controllers
 {
@@ -16,13 +14,13 @@ namespace HRM_API.API.Controllers
             _preApplicationService = preApplicationService;
         }
 
-        [HttpGet("GetPreApplications")]
-        public async Task<IActionResult> GetPreApplications()
+        [HttpGet("GetPreApplications/{estado}")]
+        public async Task<IActionResult> GetPreApplications(string estado)
         {
             if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
                 return Unauthorized("Token inválido");
 
-            var response = await _preApplicationService.GetPreApplicationsAsync();
+            var response = await _preApplicationService.GetPreApplicationsAsync(estado);
 
             return Ok(response);
         }
