@@ -15,7 +15,7 @@ namespace HRM_API.Infraestructure.Repositories.JobVacancy
             _configuration = configuration;
         }
 
-        public async Task<List<GetJobVacanciesDto>?> GetJobVacanciesAsync()
+        public async Task<List<GetJobVacanciesDto>?> GetJobVacanciesAsync(string estado)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
@@ -29,8 +29,9 @@ namespace HRM_API.Infraestructure.Repositories.JobVacancy
                         INNER JOIN HRM_DB.reclutamiento.VacancyType vt ON vt.IdVacancyType = jv.VacancyTypeId
                         INNER JOIN HRM_DB.reclutamiento.VacancyReason vr ON vr.IdReason = jv.ReasonId
                         LEFT JOIN HRM_DB.reclutamiento.Files f ON f.IdFile = jv.RequisitionFileId
+                        WHERE jv.Status = @estado
                         ORDER BY jv.CreatedAt DESC";
-            var result = await connection.QueryAsync<GetJobVacanciesDto>(sql, new { });
+            var result = await connection.QueryAsync<GetJobVacanciesDto>(sql, new { estado});
 
             return result.ToList();
         }

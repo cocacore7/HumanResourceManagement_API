@@ -1,6 +1,5 @@
 ﻿using HRM_API.Core.Dtos.JobVacancy;
 using HRM_API.Core.Interfaces.JobVacancy;
-using HRM_API.Application.Helpers;
 
 namespace HRM_API.Application.Services
 {
@@ -13,9 +12,9 @@ namespace HRM_API.Application.Services
             _repository = repository;
         }
 
-        public async Task<GetJobVacanciesResponseDto?> GetJobVacanciesAsync()
+        public async Task<GetJobVacanciesResponseDto?> GetJobVacanciesAsync(string estado)
         {
-            var vacancy = await _repository.GetJobVacanciesAsync();
+            var vacancy = await _repository.GetJobVacanciesAsync(estado);
             GetJobVacanciesResponseDto response = new GetJobVacanciesResponseDto { Response = vacancy ?? new List<GetJobVacanciesDto>() };
 
             return (response);
