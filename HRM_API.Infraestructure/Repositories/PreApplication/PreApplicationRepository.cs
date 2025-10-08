@@ -1,22 +1,21 @@
 ﻿using Dapper;
-using HRM_API.Core.Dtos.Form;
-using HRM_API.Core.Interfaces.Form;
+using HRM_API.Core.Dtos.PreApplication;
+using HRM_API.Core.Interfaces.PreApplication;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using System.Collections.Generic;
 
-namespace HRM_API.Infraestructure.Repositories.Form
+namespace HRM_API.Infraestructure.Repositories.PreApplication
 {
-    public class FormRepository : IFormRepository
+    public class PreApplicationRepository : IPreApplicationRepository
     {
         private readonly IConfiguration _configuration;
 
-        public FormRepository(IConfiguration configuration)
+        public PreApplicationRepository(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
-        public async Task<List<GetUserModulesDto>?> GetUserModulesAsync(int IdUser)
+        public async Task<List<GetPreApplicationsDto>?> GetPreApplicationsAsync()
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
@@ -24,7 +23,7 @@ namespace HRM_API.Infraestructure.Repositories.Form
                         FROM HRM_DB.reclutamiento.Module m
                         INNER JOIN HRM_DB.reclutamiento.UserModule um ON um.ModuleId = m.IdModule
                         WHERE um.UserId = @IdUser";
-            var result = await connection.QueryAsync<GetUserModulesDto>(sql, new { IdUser });
+            var result = await connection.QueryAsync<GetPreApplicationsDto>(sql, new { });
 
             return result.ToList();
         }

@@ -5,8 +5,12 @@ using HRM_API.Application.Services;
 using HRM_API.Configuration;
 using HRM_API.Core.Interfaces.Authorization;
 using HRM_API.Core.Interfaces.Form;
+using HRM_API.Core.Interfaces.JobVacancy;
+using HRM_API.Core.Interfaces.PreApplication;
 using HRM_API.Infraestructure.Repositories.Authorization;
 using HRM_API.Infraestructure.Repositories.Form;
+using HRM_API.Infraestructure.Repositories.JobVacancy;
+using HRM_API.Infraestructure.Repositories.PreApplication;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
 using System.Data;
@@ -61,6 +65,10 @@ builder.Services.AddScoped<IAuthorizationRepository, AuthorizationRepository>();
 builder.Services.AddScoped<AuthorizationService>();
 builder.Services.AddScoped<IFormRepository, FormRepository>();
 builder.Services.AddScoped<FormService>();
+builder.Services.AddScoped<IJobVacancyRepository, JobVacancyRepository>();
+builder.Services.AddScoped<JobVacancyService>();
+builder.Services.AddScoped<IPreApplicationRepository, PreApplicationRepository>();
+builder.Services.AddScoped<PreApplicationService>();
 #endregion
 
 #region Controladores y Swagger

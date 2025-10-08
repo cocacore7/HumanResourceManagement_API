@@ -22,7 +22,7 @@ namespace HRM_API.API.Controllers
             if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
                 return Unauthorized("Token inválido");
 
-            UserDto user = new UserDto 
+            LoginDto user = new LoginDto 
             {
                 IdUser = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty,
                 Name = User.FindFirst(ClaimTypes.Name)?.Value ?? string.Empty,

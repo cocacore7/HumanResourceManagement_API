@@ -15,7 +15,7 @@ namespace HRM_API.Infraestructure.Repositories.Authorization
             _configuration = configuration;
         }
 
-        public async Task<UserDto?> GetUserByCredentialsAsync(string name, byte[] Password, string role)
+        public async Task<LoginDto?> GetUserByCredentialsAsync(string name, byte[] Password, string role)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
@@ -25,7 +25,7 @@ namespace HRM_API.Infraestructure.Repositories.Authorization
                         WHERE u.Name = @Name 
                         AND u.PasswordHash = @Password 
                         AND r.KeyName = @Role";
-            var user = await connection.QueryFirstOrDefaultAsync<UserDto>(sql, new {name, Password, role });
+            var user = await connection.QueryFirstOrDefaultAsync<LoginDto>(sql, new {name, Password, role });
 
             //var parameters = new DynamicParameters();
             //parameters.Add("@IdUser", idUser, DbType.String);

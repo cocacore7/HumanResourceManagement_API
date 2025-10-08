@@ -19,7 +19,7 @@ namespace HRM_API.Application.Services
         {
             int userIdSP = _conversionHelper.ToInt(userId);
             var form = await _repository.GetUserModulesAsync(userIdSP);
-            GetUserModulesResponseDto response = new GetUserModulesResponseDto { Response = form ?? new List<ModuleDto>() };
+            GetUserModulesResponseDto response = new GetUserModulesResponseDto { Response = form ?? new List<GetUserModulesDto>() };
 
             return (response);
         }

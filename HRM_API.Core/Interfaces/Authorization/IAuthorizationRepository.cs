@@ -4,6 +4,6 @@ namespace HRM_API.Core.Interfaces.Authorization
 {
     public interface IAuthorizationRepository
     {
-        Task<UserDto?> GetUserByCredentialsAsync(string name, byte[] Password, string role);
+        Task<LoginDto?> GetUserByCredentialsAsync(string name, byte[] Password, string role);
     }
 }
