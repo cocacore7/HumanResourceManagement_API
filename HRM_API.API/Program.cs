@@ -4,10 +4,12 @@ using HRM_API.Application.Helpers;
 using HRM_API.Application.Services;
 using HRM_API.Configuration;
 using HRM_API.Core.Interfaces.Authorization;
+using HRM_API.Core.Interfaces.File;
 using HRM_API.Core.Interfaces.Form;
 using HRM_API.Core.Interfaces.JobVacancy;
 using HRM_API.Core.Interfaces.PreApplication;
 using HRM_API.Infraestructure.Repositories.Authorization;
+using HRM_API.Infraestructure.Repositories.File;
 using HRM_API.Infraestructure.Repositories.Form;
 using HRM_API.Infraestructure.Repositories.JobVacancy;
 using HRM_API.Infraestructure.Repositories.PreApplication;
@@ -73,11 +75,14 @@ builder.Services.AddScoped<IDbConnection>(sp =>
 #region JWT Service, Middleware y Helpers
 builder.Services.AddSingleton<JwtService>();
 builder.Services.AddSingleton<ConversionHelper>();
+builder.Services.AddSingleton<FileHelper>();
 #endregion
 
 #region Repositorios y Servicios
 builder.Services.AddScoped<IAuthorizationRepository, AuthorizationRepository>();
 builder.Services.AddScoped<AuthorizationService>();
+builder.Services.AddScoped<IFileRepository, FileRepository>();
+builder.Services.AddScoped<FileService>();
 builder.Services.AddScoped<IFormRepository, FormRepository>();
 builder.Services.AddScoped<FormService>();
 builder.Services.AddScoped<IJobVacancyRepository, JobVacancyRepository>();
