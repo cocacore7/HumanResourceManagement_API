@@ -4,6 +4,6 @@ namespace HRM_API.Core.Interfaces.JobVacancy
 {
     public interface IJobVacancyRepository
     {
-        Task<List<GetJobVacanciesDto>?> GetJobVacanciesAsync(string estado);
+        Task<List<GetJobVacanciesDto>?> GetJobVacanciesAsync(string estado, string id);
     }
 }

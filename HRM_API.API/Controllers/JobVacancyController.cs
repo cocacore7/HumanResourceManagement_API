@@ -16,13 +16,13 @@ namespace HRM_API.API.Controllers
             _jobVacancyService = jobVacancyService;
         }
 
-        [HttpGet("GetJobVacancies/{estado}")]
-        public async Task<IActionResult> GetJobVacancies(string estado)
+        [HttpGet("GetJobVacancies")]
+        public async Task<IActionResult> GetJobVacancies(string estado = "", string id = "")
         {
             if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
                 return Unauthorized("Token inválido");
 
-            var response = await _jobVacancyService.GetJobVacanciesAsync(estado);
+            var response = await _jobVacancyService.GetJobVacanciesAsync(estado, id);
 
             return Ok(response);
         }

@@ -15,10 +15,26 @@ namespace HRM_API.Infraestructure.Repositories.JobVacancy
             _configuration = configuration;
         }
 
-        public async Task<List<GetJobVacanciesDto>?> GetJobVacanciesAsync(string estado)
+        public async Task<List<GetJobVacanciesDto>?> GetJobVacanciesAsync(string estado, string id)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
-
+            object parameters;
+            string condition = "";
+            if (!string.IsNullOrEmpty(estado))
+            {
+                condition = " WHERE jv.Status = @estado ";
+                parameters = new { estado };
+            }
+            else if (!string.IsNullOrEmpty(id))
+            {
+                condition = " WHERE jv.IdVacancy = @id ";
+                parameters = new { id };
+            }
+            else
+            {
+                condition = " WHERE 1 = 0 ";
+                parameters = new { };
+            }
             var sql = @"SELECT jv.IdVacancy AS [id], jv.JobPositionName AS [puesto], jv.RequesterName AS [jefeSolicitante], 
                         jv.RequesterPosition AS [puestoSolicitante], jv.AreaText AS [areaSolicitante], jv.RegionText AS [region], 
                         jv.HubText AS [hubTienda], jv.Objective AS [objetivo], vt.VacancyTypeName AS [tipoPlaza], 
@@ -28,10 +44,10 @@ namespace HRM_API.Infraestructure.Repositories.JobVacancy
                         FROM HRM_DB.reclutamiento.JobVacancy jv
                         INNER JOIN HRM_DB.reclutamiento.VacancyType vt ON vt.IdVacancyType = jv.VacancyTypeId
                         INNER JOIN HRM_DB.reclutamiento.VacancyReason vr ON vr.IdReason = jv.ReasonId
-                        LEFT JOIN HRM_DB.reclutamiento.Files f ON f.IdFile = jv.RequisitionFileId
-                        WHERE jv.Status = @estado
-                        ORDER BY jv.CreatedAt DESC";
-            var result = await connection.QueryAsync<GetJobVacanciesDto>(sql, new { estado});
+                        LEFT JOIN HRM_DB.reclutamiento.Files f ON f.IdFile = jv.RequisitionFileId"
+                        + condition +
+                        @"ORDER BY jv.CreatedAt DESC";
+            var result = await connection.QueryAsync<GetJobVacanciesDto>(sql, parameters);
 
             return result.ToList();
         }

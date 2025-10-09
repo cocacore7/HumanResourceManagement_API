@@ -12,9 +12,9 @@ namespace HRM_API.Application.Services
             _repository = repository;
         }
 
-        public async Task<GetJobVacanciesResponseDto?> GetJobVacanciesAsync(string estado)
+        public async Task<GetJobVacanciesResponseDto?> GetJobVacanciesAsync(string estado, string id)
         {
-            var vacancy = await _repository.GetJobVacanciesAsync(estado);
+            var vacancy = await _repository.GetJobVacanciesAsync(estado, id);
             GetJobVacanciesResponseDto response = new GetJobVacanciesResponseDto { Response = vacancy ?? new List<GetJobVacanciesDto>() };
 
             return (response);
