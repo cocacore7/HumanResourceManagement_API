@@ -2,22 +2,22 @@
 {
     public class GetPreApplicationsDBResponseDto
     {
-        public int id { get; set; } = 0;
-        public string nombre { get; set; } = string.Empty;
-        public string dpi { get; set; } = string.Empty;
-        public int edad { get; set; } = 0;
-        public string genero { get; set; } = string.Empty;
-        public string telefono { get; set; } = string.Empty;
-        public string correo { get; set; } = string.Empty;
-        public string departamento { get; set; } = string.Empty;
-        public string direccion { get; set; } = string.Empty;
-        public string puesto { get; set; } = string.Empty;
-        public string estado { get; set; } = string.Empty;
-        public string assignedTo { get; set; } = string.Empty;
-        public string ultimoGrado { get; set; } = string.Empty;
-        public string fuente { get; set; } = string.Empty;
-        public string hub { get; set; } = string.Empty;
-        public bool esReferido { get; set; } = false;
-        public string referidoPor { get; set; } = string.Empty;
+        public int Id { get; set; } = 0;
+        public string Nombre { get; set; } = string.Empty;
+        public string Dpi { get; set; } = string.Empty;
+        public int Edad { get; set; } = 0;
+        public string Genero { get; set; } = string.Empty;
+        public string Telefono { get; set; } = string.Empty;
+        public string Correo { get; set; } = string.Empty;
+        public string Departamento { get; set; } = string.Empty;
+        public string Direccion { get; set; } = string.Empty;
+        public string Puesto { get; set; } = string.Empty;
+        public string Estado { get; set; } = string.Empty;
+        public string AssignedTo { get; set; } = string.Empty;
+        public string UltimoGrado { get; set; } = string.Empty;
+        public string Fuente { get; set; } = string.Empty;
+        public string Hub { get; set; } = string.Empty;
+        public bool EsReferido { get; set; } = false;
+        public string ReferidoPor { get; set; } = string.Empty;
     }
 }

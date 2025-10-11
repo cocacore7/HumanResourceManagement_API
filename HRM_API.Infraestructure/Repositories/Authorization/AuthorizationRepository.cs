@@ -6,14 +6,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace HRM_API.Infraestructure.Repositories.Authorization
 {
-    public class AuthorizationRepository : IAuthorizationRepository
+    public class AuthorizationRepository(IConfiguration configuration) : IAuthorizationRepository
     {
-        private readonly IConfiguration _configuration;
-
-        public AuthorizationRepository(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
+        private readonly IConfiguration _configuration = configuration;
 
         public async Task<LoginDBResponseDto?> GetUserByCredentialsAsync(string name, byte[] Password, string role)
         {
@@ -26,17 +21,6 @@ namespace HRM_API.Infraestructure.Repositories.Authorization
                         AND u.PasswordHash = @Password 
                         AND r.KeyName = @Role";
             var user = await connection.QueryFirstOrDefaultAsync<LoginDBResponseDto>(sql, new {name, Password, role });
-
-            //var parameters = new DynamicParameters();
-            //parameters.Add("@IdUser", idUser, DbType.String);
-            //parameters.Add("@Name", name, DbType.String);
-            //parameters.Add("@Role", role, DbType.String);
-
-            //var user = await connection.QueryFirstOrDefaultAsync<UserModel>(
-            //    "[dbo].[sp_ValidateUserCredentials]",
-            //    parameters,
-            //    commandType: CommandType.StoredProcedure
-            //);
 
             return user;
         }

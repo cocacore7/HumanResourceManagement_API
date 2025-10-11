@@ -3,40 +3,31 @@ using HRM_API.Configuration;
 using HRM_API.Core.Dtos.Authorization;
 using HRM_API.Core.Dtos.File;
 using HRM_API.Core.Dtos.General;
-using HRM_API.Core.Enum.File;
 using HRM_API.Core.Interfaces.File;
 
 namespace HRM_API.Application.Services
 {
-    public class FileService
+    public class FileService(IFileRepository repository, FileHelper fileHelper, ISettings settings)
     {
-        private readonly IFileRepository _repository;
-        private readonly FileHelper _fileHelper;
-        private readonly EnumHelper _enumHelper;
-        private readonly ISettings _settings;
-
-        public FileService(IFileRepository repository, FileHelper fileHelper, EnumHelper enumHelper, ISettings settings)
-        {
-            _repository = repository;
-            _fileHelper = fileHelper;
-            _enumHelper = enumHelper;
-            _settings = settings;
-        }
+        private readonly IFileRepository _repository = repository;
+        private readonly FileHelper _fileHelper = fileHelper;
+        private readonly ISettings _settings = settings;
 
         public async Task<GetFileBase64ResponseDto?> GetFileBase64Async(string filePath)
         {
             if (string.IsNullOrWhiteSpace(filePath))
                 throw new ArgumentException("La ruta del archivo no puede estar vacía.", nameof(filePath));
 
-            var decodedPath = Uri.UnescapeDataString(filePath);
+            var normalizedPath = filePath.Replace("\\", "/");
+            var decodedPath = Uri.UnescapeDataString(normalizedPath);
             var segments = decodedPath.Trim('/').Split('/');
 
             if (segments.Length < 3)
                 throw new ArgumentException($"La ruta '{filePath}' no tiene el formato esperado '/Tipo/Id/Codigo'.");
 
-            string folderName = segments[0];  // Preapplication o Vacation
-            string idString = segments[1];    // id de "Preapplication" o "Vacation"
-            string code = segments[2];    // id de "Preapplication" o "Vacation"
+            string folderName = segments[0];  // Ejemplo: "Vacancy"
+            string idString = segments[1];    // Ejemplo: "5"
+            string code = segments[2];        // Ejemplo: "REQUISICION.pdf"
             var questionCode = code.Trim('.').Split('.');
 
             if (!int.TryParse(idString, out int id))
@@ -47,10 +38,7 @@ namespace HRM_API.Application.Services
             if (filePathDB == null || string.IsNullOrEmpty(filePathDB.FilePath))
                 return new GetFileBase64ResponseDto
                 {
-                    Response = new GetFileBase64DBResponseDto
-                    {
-                        FilePath = ""
-                    }
+                    Response = new GetFileBase64DBResponseDto { FilePath = "" }
                 };
 
             string basePath = _settings.BasePath;
@@ -62,27 +50,30 @@ namespace HRM_API.Application.Services
 
             string fileBase64 = _fileHelper.FileToBase64(fullPath);
 
-            var response = new GetFileBase64ResponseDto { Response = new GetFileBase64DBResponseDto { FilePath = fileBase64 } };
+            var response = new GetFileBase64ResponseDto
+            {
+                Response = new GetFileBase64DBResponseDto { FilePath = fileBase64 }
+            };
 
             return response;
         }
 
         public async Task<SetFileResponseDto?> SetFileAsync(GeneralFormRequestDto request, LoginDBResponseDto user)
         {
-            List<SetFileDBRequestDto> requestbd = new List<SetFileDBRequestDto>();
-            SetFileResponseDto response = new SetFileResponseDto();
+            SetFileResponseDto response = new();
 
             foreach (var item in request.Answers ?? Enumerable.Empty<GeneralFormRequestAnswerDto>())
             {
-                var filepath = _fileHelper.SaveFile(item.Base64 ?? string.Empty, request?.Origin?.description ?? string.Empty, 
-                    request?.Origin?.registerId ?? 0, item.Code, item.FileName ?? string.Empty);
+                var filepath = _fileHelper.SaveFile(item, request?.Origin ?? new GeneralFormRequestOriginDto());
 
-                SetFileDBRequestDto newfile = new SetFileDBRequestDto();
-                newfile.fileName = item.FileName ?? string.Empty;
-                newfile.contentType = item.ContentType ?? string.Empty;
-                newfile.filePath = filepath ?? string.Empty;
-                newfile.sizeBytes = item.SizeBytes ?? 0;
-                newfile.uploadedBy = int.TryParse(user.IdUser, out int createdBy) ? createdBy : 0;
+                SetFileDBRequestDto newfile = new()
+                {
+                    FileName = item.FileName ?? string.Empty,
+                    ContentType = item.ContentType ?? string.Empty,
+                    FilePath = filepath ?? string.Empty,
+                    SizeBytes = item.SizeBytes ?? 0,
+                    UploadedBy = int.TryParse(user.IdUser, out int createdBy) ? createdBy : 0
+                };
 
                 var responsedb = await _repository.SetFileAsync(newfile);
                 response.Response.Add(responsedb == 1 ? "Archivo Guardado Exitosamente" : "Error Archivo, No Se Pudo Guardar");

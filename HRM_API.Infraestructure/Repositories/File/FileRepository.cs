@@ -6,14 +6,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace HRM_API.Infraestructure.Repositories.File
 {
-    public class FileRepository : IFileRepository
+    public class FileRepository(IConfiguration configuration) : IFileRepository
     {
-        private readonly IConfiguration _configuration;
-
-        public FileRepository(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
+        private readonly IConfiguration _configuration = configuration;
 
         public async Task<GetFileBase64DBResponseDto?> GetFileBase64Async(string folderName, int id, string code)
         {
@@ -33,7 +28,7 @@ namespace HRM_API.Infraestructure.Repositories.File
 
                 return result;
             }
-            else if (folderName == "Vacation")
+            else if (folderName == "Vacancy")
             {
                 var sql = @"SELECT f.FilePath
                             FROM HRM_DB.reclutamiento.JobVacancy jv
@@ -56,8 +51,9 @@ namespace HRM_API.Infraestructure.Repositories.File
             var sql = @"INSERT INTO HRM_DB.reclutamiento.Files 
                         (FileName, ContentType, FilePath, SizeBytes, UploadedBy, UploadedAt) 
                         VALUES 
-                        (@FileName, @ContentType, @FilePath, @SizeBytes, @UploadedBy, GETDATE());";
-            var result = await connection.QueryFirstAsync<int>(sql, new { File });
+                        (@FileName, @ContentType, @FilePath, @SizeBytes, @UploadedBy, @UploadedAt);
+                        SELECT CAST(SCOPE_IDENTITY() AS INT);";
+            var result = await connection.QueryFirstOrDefaultAsync<int?>(sql, new { File.FileName, File.ContentType, File.FilePath, File.SizeBytes, File.UploadedBy, File.UploadedAt });
 
             return result;
         }

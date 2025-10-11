@@ -4,18 +4,12 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace HRM_API.Application
+namespace HRM_API.Application.Helpers
 {
-    public class JwtService
+    public class JwtService(IConfiguration configuration)
     {
-        private readonly string _secret;
-        private readonly int _expireMinutes;
-
-        public JwtService(IConfiguration configuration)
-        {
-            _secret = configuration["Jwt:Key"] ?? throw new ArgumentNullException("Jwt:Key");
-            _expireMinutes = int.Parse(configuration["Jwt:ExpireMinutes"] ?? "60");
-        }
+        private readonly string _secret = configuration["Jwt:Key"] ?? throw new ArgumentNullException("Jwt:Key");
+        private readonly int _expireMinutes = int.Parse(configuration["Jwt:ExpireMinutes"] ?? "60");
 
         public string GenerateToken(string idUser, string name, string role)
         {

@@ -6,14 +6,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace HRM_API.Infraestructure.Repositories.JobVacancy
 {
-    public class JobVacancyRepository : IJobVacancyRepository
+    public class JobVacancyRepository(IConfiguration configuration) : IJobVacancyRepository
     {
-        private readonly IConfiguration _configuration;
-
-        public JobVacancyRepository(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
+        private readonly IConfiguration _configuration = configuration;
 
         public async Task<List<GetJobVacanciesDBRequestDto>?> GetJobVacanciesAsync(string estado, string id)
         {
@@ -33,9 +28,9 @@ namespace HRM_API.Infraestructure.Repositories.JobVacancy
                         LEFT JOIN HRM_DB.reclutamiento.Files f ON f.IdFile = jv.RequisitionFileId
                         WHERE jv.Status = @estado
                         ORDER BY jv.CreatedAt DESC";
-                var result = await connection.QueryAsync<GetJobVacanciesDBRequestDto>(sql, new { id });
+                var result = await connection.QueryAsync<GetJobVacanciesDBRequestDto>(sql, new { estado });
 
-                return result.ToList();
+                return [.. result];
             }
             else if (!string.IsNullOrEmpty(id))
             {
@@ -53,11 +48,11 @@ namespace HRM_API.Infraestructure.Repositories.JobVacancy
                         ORDER BY jv.CreatedAt DESC";
                 var result = await connection.QueryAsync<GetJobVacanciesDBRequestDto>(sql, new { id });
 
-                return result.ToList();
+                return [.. result];
             }
             else
             {
-                return new List<GetJobVacanciesDBRequestDto>();
+                return [];
             }
         }
 

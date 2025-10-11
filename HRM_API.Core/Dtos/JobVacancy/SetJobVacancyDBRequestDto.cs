@@ -14,7 +14,7 @@
         public int ReasonId { get; set; } = 0;
         public decimal Salary { get; set; } = 0;
         public decimal TotalPositions { get; set; } = 0;
-        public decimal AvailablePosition { get; set; } = 0;
+        public decimal AvailablePositions { get; set; } = 0;
         public int RequisitionFileId { get; set; } = 0;
         public string Status { get; set; } = string.Empty;
         public int CreatedBy { get; set; } = 0;

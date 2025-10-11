@@ -2,6 +2,6 @@
 {
     public class SetFileResponseDto
     {
-        public List<string> Response { get; set; } = new List<string>();
+        public List<string> Response { get; set; } = [];
     }
 }

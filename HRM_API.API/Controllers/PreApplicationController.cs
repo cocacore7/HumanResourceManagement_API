@@ -6,14 +6,9 @@ namespace HRM_API.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class PreApplicationController : ControllerBase
+    public class PreApplicationController(PreApplicationService preApplicationService) : ControllerBase
     {
-        private readonly PreApplicationService _preApplicationService;
-
-        public PreApplicationController(PreApplicationService preApplicationService)
-        {
-            _preApplicationService = preApplicationService;
-        }
+        private readonly PreApplicationService _preApplicationService = preApplicationService;
 
         [HttpGet("GetPreApplications/{estado}")]
         public async Task<IActionResult> GetPreApplications(string estado)

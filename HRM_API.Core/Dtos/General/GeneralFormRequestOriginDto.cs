@@ -2,7 +2,7 @@
 {
     public class GeneralFormRequestOriginDto
     {
-        public string description { get; set; } = string.Empty;
-        public int registerId { get; set; } = 0;
+        public string Description { get; set; } = string.Empty;
+        public int RegisterId { get; set; } = 0;
     }
 }

@@ -1,42 +1,32 @@
-﻿using Azure.Core;
-using HRM_API.Application.Helpers;
+﻿using HRM_API.Application.Helpers;
 using HRM_API.Core.Dtos.Authorization;
 using HRM_API.Core.Dtos.File;
 using HRM_API.Core.Dtos.General;
 using HRM_API.Core.Dtos.JobVacancy;
-using HRM_API.Core.Enum.File;
 using HRM_API.Core.Enum.JobVacancy;
 using HRM_API.Core.Interfaces.File;
 using HRM_API.Core.Interfaces.JobVacancy;
 
 namespace HRM_API.Application.Services
 {
-    public class JobVacancyService
+    public class JobVacancyService(IJobVacancyRepository repository, IFileRepository fileRepository, EnumHelper enumHelper, FileHelper fileHelper)
     {
-        private readonly IJobVacancyRepository _repository;
-        private readonly IFileRepository _fileRepository;
-        private readonly EnumHelper _enumHelper;
-        private readonly FileHelper _fileHelper;
-
-        public JobVacancyService(IJobVacancyRepository repository, IFileRepository fileRepository, EnumHelper enumHelper, FileHelper fileHelper)
-        {
-            _repository = repository;
-            _fileRepository = fileRepository;
-            _enumHelper = enumHelper;
-            _fileHelper = fileHelper;
-        }
+        private readonly IJobVacancyRepository _repository = repository;
+        private readonly IFileRepository _fileRepository = fileRepository;
+        private readonly EnumHelper _enumHelper = enumHelper;
+        private readonly FileHelper _fileHelper = fileHelper;
 
         public async Task<GetJobVacanciesResponseDto?> GetJobVacanciesAsync(string estado, string id)
         {
             var vacancy = await _repository.GetJobVacanciesAsync(estado, id);
-            GetJobVacanciesResponseDto response = new GetJobVacanciesResponseDto { Response = vacancy ?? new List<GetJobVacanciesDBRequestDto>() };
+            GetJobVacanciesResponseDto response = new() { Response = vacancy ?? [] };
 
             return (response);
         }
 
         public async Task<bool?> SetJobVacancyAsync(GeneralFormRequestDto payload, LoginDBResponseDto user)
         {
-            var newvacant = new SetJobVacancyDBRequestDto();
+            SetJobVacancyDBRequestDto newvacant = new();
 
             foreach (var item in payload.Answers ?? Enumerable.Empty<GeneralFormRequestAnswerDto>())
             {
@@ -67,7 +57,7 @@ namespace HRM_API.Application.Services
                         break;
 
                     case var code when code == _enumHelper.GetEnumDescription(SetJobVacancyCodeEnum.Objective):
-                        newvacant.Objective = item.OptionValue ?? string.Empty;
+                        newvacant.Objective = item.ValueText ?? string.Empty;
                         break;
 
                     case var code when code == _enumHelper.GetEnumDescription(SetJobVacancyCodeEnum.Comment):
@@ -88,19 +78,20 @@ namespace HRM_API.Application.Services
 
                     case var code when code == _enumHelper.GetEnumDescription(SetJobVacancyCodeEnum.TotalPositions):
                         newvacant.TotalPositions = item.ValueNumber ?? 0;
-                        newvacant.AvailablePosition = item.ValueNumber ?? 0;
+                        newvacant.AvailablePositions = item.ValueNumber ?? 0;
                         break;
 
                     case var code when code == _enumHelper.GetEnumDescription(SetJobVacancyCodeEnum.RequisitionFileId):
-                        var filepath = _fileHelper.SaveFile(item.Base64 ?? string.Empty, payload?.Origin?.description ?? string.Empty,
-                            payload?.Origin?.registerId ?? 0, item.Code, item.FileName ?? string.Empty);
+                        var filepath = _fileHelper.SaveFile(item, payload?.Origin ?? new GeneralFormRequestOriginDto());
 
-                        SetFileDBRequestDto newfile = new SetFileDBRequestDto();
-                        newfile.fileName = item.FileName ?? string.Empty;
-                        newfile.contentType = item.ContentType ?? string.Empty;
-                        newfile.filePath = filepath ?? string.Empty;
-                        newfile.sizeBytes = item.SizeBytes ?? 0;
-                        newfile.uploadedBy = int.TryParse(user.IdUser, out int createdByfile) ? createdByfile : 0;
+                        SetFileDBRequestDto newfile = new()
+                        {
+                            FileName = item.FileName ?? string.Empty,
+                            ContentType = item.ContentType ?? string.Empty,
+                            FilePath = filepath ?? string.Empty,
+                            SizeBytes = item.SizeBytes ?? 0,
+                            UploadedBy = int.TryParse(user.IdUser, out int createdByfile) ? createdByfile : 0
+                        };
                         var responsedb = await _fileRepository.SetFileAsync(newfile);
 
                         newvacant.RequisitionFileId = responsedb ?? 0;

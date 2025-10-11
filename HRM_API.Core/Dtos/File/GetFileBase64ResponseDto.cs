@@ -1,6 +1,4 @@
-﻿using HRM_API.Core.Dtos.Form;
-
-namespace HRM_API.Core.Dtos.File
+﻿namespace HRM_API.Core.Dtos.File
 {
     public class GetFileBase64ResponseDto
     {

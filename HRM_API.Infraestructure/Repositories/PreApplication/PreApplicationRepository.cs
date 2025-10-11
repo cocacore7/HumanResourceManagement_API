@@ -6,14 +6,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace HRM_API.Infraestructure.Repositories.PreApplication
 {
-    public class PreApplicationRepository : IPreApplicationRepository
+    public class PreApplicationRepository(IConfiguration configuration) : IPreApplicationRepository
     {
-        private readonly IConfiguration _configuration;
-
-        public PreApplicationRepository(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
+        private readonly IConfiguration _configuration = configuration;
 
         public async Task<List<GetPreApplicationsDBResponseDto>?> GetPreApplicationsAsync(string estado)
         {
@@ -31,7 +26,7 @@ namespace HRM_API.Infraestructure.Repositories.PreApplication
                         ORDER BY pa.CreatedAt DESC";
             var result = await connection.QueryAsync<GetPreApplicationsDBResponseDto>(sql, new { estado });
 
-            return result.ToList();
+            return [.. result];
         }
     }
 }

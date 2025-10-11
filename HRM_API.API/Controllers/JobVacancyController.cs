@@ -8,14 +8,9 @@ namespace HRM_API.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class JobVacancyController : ControllerBase
+    public class JobVacancyController(JobVacancyService jobVacancyService) : ControllerBase
     {
-        private readonly JobVacancyService _jobVacancyService;
-
-        public JobVacancyController(JobVacancyService jobVacancyService)
-        {
-            _jobVacancyService = jobVacancyService;
-        }
+        private readonly JobVacancyService _jobVacancyService = jobVacancyService;
 
         [HttpGet("GetJobVacancies")]
         public async Task<IActionResult> GetJobVacancies(string estado = "", string id = "")
@@ -34,7 +29,7 @@ namespace HRM_API.API.Controllers
             if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
                 return Unauthorized(new ErrorDto { Error = "Token inválido" });
 
-            LoginDBResponseDto user = new LoginDBResponseDto
+            LoginDBResponseDto user = new()
             {
                 IdUser = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty,
                 Name = User.FindFirst(ClaimTypes.Name)?.Value ?? string.Empty,

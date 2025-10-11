@@ -2,6 +2,6 @@
 {
     public class GetJobVacanciesResponseDto
     {
-        public List<GetJobVacanciesDBRequestDto> Response { get; set; } = new List<GetJobVacanciesDBRequestDto>();
+        public List<GetJobVacanciesDBRequestDto> Response { get; set; } = [];
     }
 }

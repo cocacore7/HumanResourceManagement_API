@@ -1,25 +1,17 @@
 ﻿using HRM_API.Core.Dtos.Form;
 using HRM_API.Core.Interfaces.Form;
-using HRM_API.Application.Helpers;
 
 namespace HRM_API.Application.Services
 {
-    public class FormService
+    public class FormService(IFormRepository repository)
     {
-        private readonly IFormRepository _repository;
-        private readonly ConversionHelper _conversionHelper;
-
-        public FormService(IFormRepository repository, ConversionHelper conversionHelper)
-        {
-            _repository = repository;
-            _conversionHelper = conversionHelper;
-        }
+        private readonly IFormRepository _repository = repository;
 
         public async Task<GetUserModulesResponseDto?> GetUserModulesAsync(string userId)
         {
-            int userIdSP = _conversionHelper.ToInt(userId);
+            int userIdSP = int.TryParse(userId, out int createdBy) ? createdBy : 0;
             var form = await _repository.GetUserModulesAsync(userIdSP);
-            GetUserModulesResponseDto response = new GetUserModulesResponseDto { Response = form ?? new List<GetUserModulesDBResponseDto>() };
+            GetUserModulesResponseDto response = new() { Response = form ?? [] };
 
             return (response);
         }

@@ -2,6 +2,6 @@
 {
     public class GetUserModulesResponseDto
     {
-        public List<GetUserModulesDBResponseDto> Response { get; set; } = new List<GetUserModulesDBResponseDto>();
+        public List<GetUserModulesDBResponseDto> Response { get; set; } = [];
     }
 }

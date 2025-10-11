@@ -1,14 +1,14 @@
-﻿using HRM_API.Core.Enum.File;
+﻿using HRM_API.Configuration;
+using HRM_API.Core.Dtos.General;
+using HRM_API.Core.Enum.File;
 
 namespace HRM_API.Application.Helpers
 {
-    public class FileHelper
+    public class FileHelper(EnumHelper enumHelper, ISettings settings)
     {
-        private readonly EnumHelper _enumHelper;
-        public FileHelper(EnumHelper enumHelper)
-        {
-            _enumHelper = enumHelper;
-        }
+        private readonly EnumHelper _enumHelper = enumHelper;
+        private readonly ISettings _settings = settings;
+
         public string FileToBase64(string filePath)
         {
             if (string.IsNullOrWhiteSpace(filePath))
@@ -27,28 +27,29 @@ namespace HRM_API.Application.Helpers
             return base64String;
         }
 
-        public string SaveFile(string base64File, string description, int registerId, string code, string fileName)
+        public string SaveFile(GeneralFormRequestAnswerDto answer, GeneralFormRequestOriginDto origin)
         {
             string filePath =
                 Path.Combine(
-                description == _enumHelper.GetEnumDescription(SetFileOriginEnum.Vacancydescription) ?
+                origin.Description == _enumHelper.GetEnumDescription(SetFileOriginEnum.Vacancydescription) ?
                 _enumHelper.GetEnumDescription(SetFileOriginEnum.Vacancydescription) :
                 _enumHelper.GetEnumDescription(SetFileOriginEnum.PreApplicationdescription)
-                , registerId.ToString() ?? string.Empty
-                , code + Path.GetExtension(fileName)?.ToLower()
+                , origin.RegisterId.ToString() ?? string.Empty
+                , answer.Code + Path.GetExtension(answer.FileName)?.ToLower()
                  );
+            string fullFilePath = Path.Combine(_settings.BasePath, filePath);
 
             if (string.IsNullOrWhiteSpace(filePath))
                 throw new ArgumentException("El filepath no puede ser nulo o vacío", nameof(filePath));
 
-            if (string.IsNullOrWhiteSpace(base64File))
-                throw new ArgumentException("El contenido del archivo no puede ser nulo o vacío", nameof(base64File));
+            if (string.IsNullOrWhiteSpace(answer.Base64))
+                throw new ArgumentException("El contenido del archivo no puede ser nulo o vacío", nameof(answer.Base64));
 
             // Obtener nombre de archivo y extensión
-            var extension = Path.GetExtension(filePath)?.ToLower();
+            var extension = Path.GetExtension(fullFilePath)?.ToLower();
 
             // Crear carpeta si no existe
-            var directory = Path.GetDirectoryName(filePath);
+            var directory = Path.GetDirectoryName(fullFilePath);
             if (!Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory!);
@@ -58,7 +59,7 @@ namespace HRM_API.Application.Helpers
             byte[] fileBytes;
             try
             {
-                fileBytes = Convert.FromBase64String(base64File);
+                fileBytes = Convert.FromBase64String(answer.Base64);
             }
             catch (FormatException)
             {
@@ -69,7 +70,7 @@ namespace HRM_API.Application.Helpers
             switch (extension)
             {
                 case ".pdf":
-                    File.WriteAllBytes(filePath, fileBytes);
+                    File.WriteAllBytes(fullFilePath, fileBytes);
                     break;
 
                 case ".jpg":
@@ -77,7 +78,7 @@ namespace HRM_API.Application.Helpers
                 case ".png":
                 case ".bmp":
                 case ".gif":
-                    File.WriteAllBytes(filePath, fileBytes);
+                    File.WriteAllBytes(fullFilePath, fileBytes);
                     break;
 
                 default:

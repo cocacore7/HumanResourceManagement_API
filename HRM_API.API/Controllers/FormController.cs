@@ -8,14 +8,9 @@ namespace HRM_API.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class FormController : ControllerBase
+    public class FormController(FormService formService) : ControllerBase
     {
-        private readonly FormService _formService;
-
-        public FormController(FormService formService)
-        {
-            _formService = formService;
-        }
+        private readonly FormService _formService = formService;
 
         [HttpGet("GetUserModules")]
         public async Task<IActionResult> GetUserModules()
@@ -23,7 +18,7 @@ namespace HRM_API.API.Controllers
             if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
                 return Unauthorized(new ErrorDto { Error = "Token inválido" });
 
-            LoginDBResponseDto user = new LoginDBResponseDto 
+            LoginDBResponseDto user = new() 
             {
                 IdUser = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty,
                 Name = User.FindFirst(ClaimTypes.Name)?.Value ?? string.Empty,

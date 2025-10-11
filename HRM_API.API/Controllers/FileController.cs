@@ -8,14 +8,9 @@ namespace HRM_API.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class FileController : ControllerBase
+    public class FileController(FileService fileService) : ControllerBase
     {
-        private readonly FileService _fileService;
-
-        public FileController(FileService fileService)
-        {
-            _fileService = fileService;
-        }
+        private readonly FileService _fileService = fileService;
 
         [HttpGet("GetJobVacancies/{filePath}")]
         public async Task<IActionResult> GetFileBase64(string filePath)
@@ -34,7 +29,7 @@ namespace HRM_API.API.Controllers
             if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
                 return Unauthorized(new ErrorDto { Error = "Token inválido" });
 
-            LoginDBResponseDto user = new LoginDBResponseDto
+            LoginDBResponseDto user = new()
             {
                 IdUser = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty,
                 Name = User.FindFirst(ClaimTypes.Name)?.Value ?? string.Empty,

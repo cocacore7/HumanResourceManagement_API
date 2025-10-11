@@ -1,5 +1,4 @@
-﻿using HRM_API.API;
-using HRM_API.Application;
+﻿using HRM_API.API.Middleware;
 using HRM_API.Application.Helpers;
 using HRM_API.Application.Services;
 using HRM_API.Configuration;
@@ -74,7 +73,6 @@ builder.Services.AddScoped<IDbConnection>(sp =>
 
 #region JWT Service, Middleware y Helpers
 builder.Services.AddSingleton<JwtService>();
-builder.Services.AddSingleton<ConversionHelper>();
 builder.Services.AddSingleton<FileHelper>();
 builder.Services.AddSingleton<EnumHelper>();
 #endregion

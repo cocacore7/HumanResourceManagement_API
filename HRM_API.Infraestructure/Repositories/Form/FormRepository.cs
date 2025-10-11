@@ -3,18 +3,12 @@ using HRM_API.Core.Dtos.Form;
 using HRM_API.Core.Interfaces.Form;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using System.Collections.Generic;
 
 namespace HRM_API.Infraestructure.Repositories.Form
 {
-    public class FormRepository : IFormRepository
+    public class FormRepository(IConfiguration configuration) : IFormRepository
     {
-        private readonly IConfiguration _configuration;
-
-        public FormRepository(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
+        private readonly IConfiguration _configuration = configuration;
 
         public async Task<List<GetUserModulesDBResponseDto>?> GetUserModulesAsync(int IdUser)
         {
@@ -26,7 +20,7 @@ namespace HRM_API.Infraestructure.Repositories.Form
                         WHERE um.UserId = @IdUser";
             var result = await connection.QueryAsync<GetUserModulesDBResponseDto>(sql, new { IdUser });
 
-            return result.ToList();
+            return [.. result];
         }
     }
 }
