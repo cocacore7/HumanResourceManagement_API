@@ -61,16 +61,16 @@ namespace HRM_API.Infraestructure.Repositories.JobVacancy
             }
         }
 
-        public async Task<bool?> CreateJobVacancyAsync(CreateJobVacancyDBRequestDto dbRequest)
+        public async Task<bool?> SetJobVacancyAsync(SetJobVacancyDBRequestDto dbRequest)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
             var sql = @"INSERT INTO HRM_DB.reclutamiento.JobVacancy 
                         (JobPositionName, RequesterName, RequesterPosition, AreaText, RegionText, HubText, Objective, Comment, VacancyTypeId, 
-                         ReasonId, Salary, TotalPositions, AvailablePositions, RequisitionFileId, Status, CreatedBy, CreatedAt, UpdatedAt) 
+                        ReasonId, Salary, TotalPositions, AvailablePositions, RequisitionFileId, Status, CreatedBy, CreatedAt, UpdatedAt) 
                         VALUES 
                         (@JobPositionName, @RequesterName, @RequesterPosition, @AreaText, @RegionText, @HubText, @Objective, @Comment, @VacancyTypeId,
-                         @ReasonId, @Salary, @TotalPositions, @AvailablePositions, @RequisitionFileId, @Status, @CreatedBy, @CreatedAt, @UpdatedAt);";
+                        @ReasonId, @Salary, @TotalPositions, @AvailablePositions, @RequisitionFileId, @Status, @CreatedBy, @CreatedAt, @UpdatedAt);";
 
             var rowsAffected = await connection.ExecuteAsync(sql, dbRequest);
 

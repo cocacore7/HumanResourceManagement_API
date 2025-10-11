@@ -28,8 +28,8 @@ namespace HRM_API.API.Controllers
             return Ok(response);
         }
 
-        [HttpPost("CreateJobVacancy")]
-        public async Task<IActionResult> CreateJobVacancy([FromBody] GeneralFormRequestDto request)
+        [HttpPost("SetJobVacancy")]
+        public async Task<IActionResult> SetJobVacancy([FromBody] GeneralFormRequestDto request)
         {
             if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
                 return Unauthorized(new ErrorDto { Error = "Token inválido" });
@@ -41,7 +41,7 @@ namespace HRM_API.API.Controllers
                 RoleId = User.FindFirst(ClaimTypes.Role)?.Value ?? string.Empty
             };
 
-            var response = (bool)await _jobVacancyService.CreateJobVacancyAsync(request, user);
+            var response = (bool)await _jobVacancyService.SetJobVacancyAsync(request, user);
 
             return response ? Ok("Vacante Registrada Exitosamente") : BadRequest("No se ha registrado la vacante");
         }

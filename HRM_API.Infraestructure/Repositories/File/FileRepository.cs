@@ -48,5 +48,18 @@ namespace HRM_API.Infraestructure.Repositories.File
                 return new GetFileBase64DBResponseDto();
             }
         }
+
+        public async Task<int?> SetFileAsync(SetFileDBRequestDto File)
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
+
+            var sql = @"INSERT INTO HRM_DB.reclutamiento.Files 
+                        (FileName, ContentType, FilePath, SizeBytes, UploadedBy, UploadedAt) 
+                        VALUES 
+                        (@FileName, @ContentType, @FilePath, @SizeBytes, @UploadedBy, GETDATE());";
+            var result = await connection.QueryFirstAsync<int>(sql, new { File });
+
+            return result;
+        }
     }
 }

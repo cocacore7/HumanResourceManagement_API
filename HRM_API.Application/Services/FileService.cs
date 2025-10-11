@@ -1,6 +1,9 @@
 ﻿using HRM_API.Application.Helpers;
 using HRM_API.Configuration;
+using HRM_API.Core.Dtos.Authorization;
 using HRM_API.Core.Dtos.File;
+using HRM_API.Core.Dtos.General;
+using HRM_API.Core.Enum.File;
 using HRM_API.Core.Interfaces.File;
 
 namespace HRM_API.Application.Services
@@ -9,12 +12,14 @@ namespace HRM_API.Application.Services
     {
         private readonly IFileRepository _repository;
         private readonly FileHelper _fileHelper;
+        private readonly EnumHelper _enumHelper;
         private readonly ISettings _settings;
 
-        public FileService(IFileRepository repository, FileHelper fileHelper, ISettings settings)
+        public FileService(IFileRepository repository, FileHelper fileHelper, EnumHelper enumHelper, ISettings settings)
         {
             _repository = repository;
             _fileHelper = fileHelper;
+            _enumHelper = enumHelper;
             _settings = settings;
         }
 
@@ -58,6 +63,30 @@ namespace HRM_API.Application.Services
             string fileBase64 = _fileHelper.FileToBase64(fullPath);
 
             var response = new GetFileBase64ResponseDto { Response = new GetFileBase64DBResponseDto { FilePath = fileBase64 } };
+
+            return response;
+        }
+
+        public async Task<SetFileResponseDto?> SetFileAsync(GeneralFormRequestDto request, LoginDBResponseDto user)
+        {
+            List<SetFileDBRequestDto> requestbd = new List<SetFileDBRequestDto>();
+            SetFileResponseDto response = new SetFileResponseDto();
+
+            foreach (var item in request.Answers ?? Enumerable.Empty<GeneralFormRequestAnswerDto>())
+            {
+                var filepath = _fileHelper.SaveFile(item.Base64 ?? string.Empty, request?.Origin?.description ?? string.Empty, 
+                    request?.Origin?.registerId ?? 0, item.Code, item.FileName ?? string.Empty);
+
+                SetFileDBRequestDto newfile = new SetFileDBRequestDto();
+                newfile.fileName = item.FileName ?? string.Empty;
+                newfile.contentType = item.ContentType ?? string.Empty;
+                newfile.filePath = filepath ?? string.Empty;
+                newfile.sizeBytes = item.SizeBytes ?? 0;
+                newfile.uploadedBy = int.TryParse(user.IdUser, out int createdBy) ? createdBy : 0;
+
+                var responsedb = await _repository.SetFileAsync(newfile);
+                response.Response.Add(responsedb == 1 ? "Archivo Guardado Exitosamente" : "Error Archivo, No Se Pudo Guardar");
+            }
 
             return response;
         }

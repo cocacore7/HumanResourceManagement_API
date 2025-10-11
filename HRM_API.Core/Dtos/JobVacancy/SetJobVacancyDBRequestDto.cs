@@ -1,6 +1,6 @@
 ﻿namespace HRM_API.Core.Dtos.JobVacancy
 {
-    public class CreateJobVacancyDBRequestDto
+    public class SetJobVacancyDBRequestDto
     {
         public string JobPositionName { get; set; } = string.Empty;
         public string RequesterName { get; set; } = string.Empty;
@@ -13,12 +13,12 @@
         public int VacancyTypeId { get; set; } = 0;
         public int ReasonId { get; set; } = 0;
         public decimal Salary { get; set; } = 0;
-        public int TotalPositions { get; set; } = 0;
-        public int AvailablePosition { get; set; } = 0;
-        public int RquisitionFileId { get; set; } = 0;
+        public decimal TotalPositions { get; set; } = 0;
+        public decimal AvailablePosition { get; set; } = 0;
+        public int RequisitionFileId { get; set; } = 0;
         public string Status { get; set; } = string.Empty;
         public int CreatedBy { get; set; } = 0;
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime UpdatedAt { get; set; } = DateTime.Now;
     }
 }
