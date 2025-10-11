@@ -16,7 +16,7 @@ namespace HRM_API.Infraestructure.Repositories.Form
             _configuration = configuration;
         }
 
-        public async Task<List<GetUserModulesDto>?> GetUserModulesAsync(int IdUser)
+        public async Task<List<GetUserModulesDBResponseDto>?> GetUserModulesAsync(int IdUser)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
@@ -24,7 +24,7 @@ namespace HRM_API.Infraestructure.Repositories.Form
                         FROM HRM_DB.reclutamiento.Module m
                         INNER JOIN HRM_DB.reclutamiento.UserModule um ON um.ModuleId = m.IdModule
                         WHERE um.UserId = @IdUser";
-            var result = await connection.QueryAsync<GetUserModulesDto>(sql, new { IdUser });
+            var result = await connection.QueryAsync<GetUserModulesDBResponseDto>(sql, new { IdUser });
 
             return result.ToList();
         }

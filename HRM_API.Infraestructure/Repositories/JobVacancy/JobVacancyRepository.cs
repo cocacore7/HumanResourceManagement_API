@@ -15,7 +15,7 @@ namespace HRM_API.Infraestructure.Repositories.JobVacancy
             _configuration = configuration;
         }
 
-        public async Task<List<GetJobVacanciesDto>?> GetJobVacanciesAsync(string estado, string id)
+        public async Task<List<GetJobVacanciesDBRequestDto>?> GetJobVacanciesAsync(string estado, string id)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
@@ -33,7 +33,7 @@ namespace HRM_API.Infraestructure.Repositories.JobVacancy
                         LEFT JOIN HRM_DB.reclutamiento.Files f ON f.IdFile = jv.RequisitionFileId
                         WHERE jv.Status = @estado
                         ORDER BY jv.CreatedAt DESC";
-                var result = await connection.QueryAsync<GetJobVacanciesDto>(sql, new { id });
+                var result = await connection.QueryAsync<GetJobVacanciesDBRequestDto>(sql, new { id });
 
                 return result.ToList();
             }
@@ -51,14 +51,30 @@ namespace HRM_API.Infraestructure.Repositories.JobVacancy
                         LEFT JOIN HRM_DB.reclutamiento.Files f ON f.IdFile = jv.RequisitionFileId
                         WHERE jv.IdVacancy = @id
                         ORDER BY jv.CreatedAt DESC";
-                var result = await connection.QueryAsync<GetJobVacanciesDto>(sql, new { id });
+                var result = await connection.QueryAsync<GetJobVacanciesDBRequestDto>(sql, new { id });
 
                 return result.ToList();
             }
             else
             {
-                return new List<GetJobVacanciesDto>();
+                return new List<GetJobVacanciesDBRequestDto>();
             }
+        }
+
+        public async Task<bool?> CreateJobVacancyAsync(CreateJobVacancyDBRequestDto dbRequest)
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
+
+            var sql = @"INSERT INTO HRM_DB.reclutamiento.JobVacancy 
+                        (JobPositionName, RequesterName, RequesterPosition, AreaText, RegionText, HubText, Objective, Comment, VacancyTypeId, 
+                         ReasonId, Salary, TotalPositions, AvailablePositions, RequisitionFileId, Status, CreatedBy, CreatedAt, UpdatedAt) 
+                        VALUES 
+                        (@JobPositionName, @RequesterName, @RequesterPosition, @AreaText, @RegionText, @HubText, @Objective, @Comment, @VacancyTypeId,
+                         @ReasonId, @Salary, @TotalPositions, @AvailablePositions, @RequisitionFileId, @Status, @CreatedBy, @CreatedAt, @UpdatedAt);";
+
+            var rowsAffected = await connection.ExecuteAsync(sql, dbRequest);
+
+            return rowsAffected > 0;
         }
     }
 }

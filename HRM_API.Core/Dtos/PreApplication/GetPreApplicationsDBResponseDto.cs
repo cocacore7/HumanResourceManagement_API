@@ -1,6 +1,6 @@
 ﻿namespace HRM_API.Core.Dtos.PreApplication
 {
-    public class GetPreApplicationsDto
+    public class GetPreApplicationsDBResponseDto
     {
         public int id { get; set; } = 0;
         public string nombre { get; set; } = string.Empty;

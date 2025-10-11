@@ -2,6 +2,6 @@
 {
     public class GetPreApplicationsResponseDto
     {
-        public List<GetPreApplicationsDto> Response { get; set; } = new List<GetPreApplicationsDto>();
+        public List<GetPreApplicationsDBResponseDto> Response { get; set; } = new List<GetPreApplicationsDBResponseDto>();
     }
 }

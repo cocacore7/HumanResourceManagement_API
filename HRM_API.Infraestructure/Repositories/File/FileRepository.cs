@@ -15,7 +15,7 @@ namespace HRM_API.Infraestructure.Repositories.File
             _configuration = configuration;
         }
 
-        public async Task<GetFileBase64Dto?> GetFileBase64Async(string folderName, int id, string code)
+        public async Task<GetFileBase64DBResponseDto?> GetFileBase64Async(string folderName, int id, string code)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
@@ -29,7 +29,7 @@ namespace HRM_API.Infraestructure.Repositories.File
                             INNER JOIN HRM_DB.reclutamiento.FormQuestion fq ON fq.IdQuestion = paa.QuestionId
                             WHERE pa.IdPreApplication = @id
                             AND fq.Code = @code";
-                var result = await connection.QueryFirstAsync<GetFileBase64Dto>(sql, new { id, code });
+                var result = await connection.QueryFirstAsync<GetFileBase64DBResponseDto>(sql, new { id, code });
 
                 return result;
             }
@@ -39,13 +39,13 @@ namespace HRM_API.Infraestructure.Repositories.File
                             FROM HRM_DB.reclutamiento.JobVacancy jv
                             INNER JOIN HRM_DB.reclutamiento.Files f ON f.IdFile = jv.RequisitionFileId
                             WHERE jv.IdVacancy = @id";
-                var result = await connection.QueryFirstAsync<GetFileBase64Dto>(sql, new { id });
+                var result = await connection.QueryFirstAsync<GetFileBase64DBResponseDto>(sql, new { id });
 
                 return result;
             }
             else 
             {
-                return new GetFileBase64Dto();
+                return new GetFileBase64DBResponseDto();
             }
         }
     }

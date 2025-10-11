@@ -4,6 +4,6 @@ namespace HRM_API.Core.Interfaces.Form
 {
     public interface IFormRepository
     {
-        Task<List<GetUserModulesDto>?> GetUserModulesAsync(int userId);
+        Task<List<GetUserModulesDBResponseDto>?> GetUserModulesAsync(int userId);
     }
 }

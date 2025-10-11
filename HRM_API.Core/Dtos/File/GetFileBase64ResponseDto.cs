@@ -4,6 +4,6 @@ namespace HRM_API.Core.Dtos.File
 {
     public class GetFileBase64ResponseDto
     {
-        public GetFileBase64Dto Response { get; set; } = new GetFileBase64Dto();
+        public GetFileBase64DBResponseDto Response { get; set; } = new GetFileBase64DBResponseDto();
     }
 }

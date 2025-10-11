@@ -42,7 +42,7 @@ namespace HRM_API.Application.Services
             if (filePathDB == null || string.IsNullOrEmpty(filePathDB.FilePath))
                 return new GetFileBase64ResponseDto
                 {
-                    Response = new GetFileBase64Dto
+                    Response = new GetFileBase64DBResponseDto
                     {
                         FilePath = ""
                     }
@@ -57,7 +57,7 @@ namespace HRM_API.Application.Services
 
             string fileBase64 = _fileHelper.FileToBase64(fullPath);
 
-            var response = new GetFileBase64ResponseDto { Response = new GetFileBase64Dto { FilePath = fileBase64 } };
+            var response = new GetFileBase64ResponseDto { Response = new GetFileBase64DBResponseDto { FilePath = fileBase64 } };
 
             return response;
         }

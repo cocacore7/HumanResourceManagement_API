@@ -4,6 +4,6 @@ namespace HRM_API.Core.Interfaces.File
 {
     public interface IFileRepository
     {
-        Task<GetFileBase64Dto?> GetFileBase64Async(string folderName, int id, string code);
+        Task<GetFileBase64DBResponseDto?> GetFileBase64Async(string folderName, int id, string code);
     }
 }

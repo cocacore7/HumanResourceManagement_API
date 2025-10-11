@@ -1,6 +1,6 @@
 ﻿namespace HRM_API.Core.Dtos.Form
 {
-    public class GetUserModulesDto
+    public class GetUserModulesDBResponseDto
     {
         public int IdModule { get; set; } = 0;
         public string Path {  get; set; } = string.Empty;

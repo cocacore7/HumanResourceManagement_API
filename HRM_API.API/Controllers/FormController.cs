@@ -1,5 +1,6 @@
 ﻿using HRM_API.Application.Services;
 using HRM_API.Core.Dtos.Authorization;
+using HRM_API.Core.Dtos.General;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -20,9 +21,9 @@ namespace HRM_API.API.Controllers
         public async Task<IActionResult> GetUserModules()
         {
             if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
-                return Unauthorized("Token inválido");
+                return Unauthorized(new ErrorDto { Error = "Token inválido" });
 
-            LoginDto user = new LoginDto 
+            LoginDBResponseDto user = new LoginDBResponseDto 
             {
                 IdUser = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty,
                 Name = User.FindFirst(ClaimTypes.Name)?.Value ?? string.Empty,

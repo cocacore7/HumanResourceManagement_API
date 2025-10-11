@@ -1,6 +1,6 @@
 ﻿namespace HRM_API.Core.Dtos.JobVacancy
 {
-    public class GetJobVacanciesDto
+    public class GetJobVacanciesDBRequestDto
     {
         public int id { get; set; } = 0;
         public string puesto { get; set; } = string.Empty;

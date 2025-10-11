@@ -15,7 +15,7 @@ namespace HRM_API.Infraestructure.Repositories.PreApplication
             _configuration = configuration;
         }
 
-        public async Task<List<GetPreApplicationsDto>?> GetPreApplicationsAsync(string estado)
+        public async Task<List<GetPreApplicationsDBResponseDto>?> GetPreApplicationsAsync(string estado)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
@@ -29,7 +29,7 @@ namespace HRM_API.Infraestructure.Repositories.PreApplication
                         LEFT JOIN HRM_DB.reclutamiento.Town t ON t.IdTown = pa.TownId
                         WHERE pa.Status = @estado
                         ORDER BY pa.CreatedAt DESC";
-            var result = await connection.QueryAsync<GetPreApplicationsDto>(sql, new { estado });
+            var result = await connection.QueryAsync<GetPreApplicationsDBResponseDto>(sql, new { estado });
 
             return result.ToList();
         }
