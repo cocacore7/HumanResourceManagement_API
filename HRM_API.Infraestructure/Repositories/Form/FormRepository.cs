@@ -10,19 +10,19 @@ namespace HRM_API.Infraestructure.Repositories.Form
     {
         private readonly IConfiguration _configuration = configuration;
 
-        public async Task<List<GetFormAnswersDBFormResponseDto>?> GetFormAsync(int FormId)
+        public async Task<GetFormAnswersDBFormResponseDto?> GetFormAsync(int FormId)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
             var sql = @"SELECT IdForm, KeyName, Name, VersionNumber
                         FROM HRM_DB.reclutamiento.Form
                         WHERE f.IdForm = @FormId";
-            var result = await connection.QueryAsync<GetFormAnswersDBFormResponseDto>(sql, new { FormId });
+            var result = await connection.QueryFirstAsync<GetFormAnswersDBFormResponseDto>(sql, new { FormId });
 
-            return [.. result];
+            return result;
         }
 
-        public async Task<List<GetFormAnswersDBHeaderResponseDto>?> GetFormHeaderAsync(int PreApplicationId, int FormId)
+        public async Task<GetFormAnswersDBHeaderResponseDto?> GetFormHeaderAsync(int PreApplicationId, int FormId)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
@@ -30,9 +30,9 @@ namespace HRM_API.Infraestructure.Repositories.Form
                         FROM HRM_DB.reclutamiento.PreApplicationFormResponse pafr
                         WHERE pafr.PreApplicationId = @PreApplicationId
                         AND pafr.FormId = @FormId";
-            var result = await connection.QueryAsync<GetFormAnswersDBHeaderResponseDto>(sql, new { PreApplicationId, FormId });
+            var result = await connection.QueryFirstAsync<GetFormAnswersDBHeaderResponseDto>(sql, new { PreApplicationId, FormId });
 
-            return [.. result];
+            return result;
         }
 
         public async Task<List<GetFormAnswersDBAnswersResponseDto>?> GetFormAnswersAsync(int PreApplicationId, int FormId)

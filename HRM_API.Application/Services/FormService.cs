@@ -20,8 +20,8 @@ namespace HRM_API.Application.Services
 
             GetFormAnswersDBResponseDto result = new GetFormAnswersDBResponseDto 
             { 
-                Form = form ?? [],
-                Header = header ?? [],
+                Form = form ?? new(),
+                Header = header ?? new(),
                 Answers = answers ?? []
             };
             GetFormAnswersResponseDto response = new() { Response = result };

@@ -2,8 +2,8 @@
 {
     public class GetFormAnswersDBResponseDto
     {
-        public List<GetFormAnswersDBFormResponseDto> Form { get; set; } = new();
-        public List<GetFormAnswersDBHeaderResponseDto> Header { get; set; } = new();
+        public GetFormAnswersDBFormResponseDto Form { get; set; } = new();
+        public GetFormAnswersDBHeaderResponseDto Header { get; set; } = new();
         public List<GetFormAnswersDBAnswersResponseDto> Answers { get; set; } = new();
     }
 }
