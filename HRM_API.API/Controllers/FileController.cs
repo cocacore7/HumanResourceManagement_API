@@ -13,7 +13,7 @@ namespace HRM_API.API.Controllers
         private readonly FileService _fileService = fileService;
 
         [HttpGet("GetJobVacancies/{filePath}")]
-        public async Task<IActionResult> GetFileBase64(string filePath)
+        public async Task<IActionResult> GetFileBase64([FromQuery] string filePath)
         {
             if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
                 return Unauthorized(new ErrorDto { Error = "Token inválido" });
@@ -24,7 +24,7 @@ namespace HRM_API.API.Controllers
         }
 
         [HttpPost("SetFile")]
-        public async Task<IActionResult> SetFile(GeneralFormRequestDto request)
+        public async Task<IActionResult> SetFile([FromBody] GeneralFormRequestDto request)
         {
             if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
                 return Unauthorized(new ErrorDto { Error = "Token inválido" });

@@ -1,4 +1,4 @@
-﻿namespace HRM_API.Core.Dtos.Form
+﻿namespace HRM_API.Core.Dtos.User
 {
     public class GetUserModulesResponseDto
     {

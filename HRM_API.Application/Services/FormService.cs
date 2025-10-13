@@ -7,11 +7,24 @@ namespace HRM_API.Application.Services
     {
         private readonly IFormRepository _repository = repository;
 
-        public async Task<GetUserModulesResponseDto?> GetUserModulesAsync(string userId)
+        public async Task<GetFormAnswersResponseDto?> GetFormAnswersAsync(int PreApplicationId, int FormId)
         {
-            int userIdSP = int.TryParse(userId, out int createdBy) ? createdBy : 0;
-            var form = await _repository.GetUserModulesAsync(userIdSP);
-            GetUserModulesResponseDto response = new() { Response = form ?? [] };
+            //Traer Form
+            var form = await _repository.GetFormAsync(FormId);
+            //Traer cabecera response
+            var header = await _repository.GetFormHeaderAsync(PreApplicationId, FormId);
+            //Traer Answers Response
+            var answers = await _repository.GetFormAnswersAsync(PreApplicationId, FormId);
+
+            //Asignar resultados a respuesta
+
+            GetFormAnswersDBResponseDto result = new GetFormAnswersDBResponseDto 
+            { 
+                Form = form ?? [],
+                Header = header ?? [],
+                Answers = answers ?? []
+            };
+            GetFormAnswersResponseDto response = new() { Response = result };
 
             return (response);
         }

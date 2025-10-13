@@ -1,8 +1,6 @@
 ﻿using HRM_API.Application.Services;
-using HRM_API.Core.Dtos.Authorization;
 using HRM_API.Core.Dtos.General;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace HRM_API.API.Controllers
 {
@@ -12,20 +10,13 @@ namespace HRM_API.API.Controllers
     {
         private readonly FormService _formService = formService;
 
-        [HttpGet("GetUserModules")]
-        public async Task<IActionResult> GetUserModules()
+        [HttpGet("GetFormAnswers")]
+        public async Task<IActionResult> GetFormAnswers([FromQuery] int PreApplicationId, [FromQuery] int FormId)
         {
             if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
                 return Unauthorized(new ErrorDto { Error = "Token inválido" });
 
-            LoginDBResponseDto user = new() 
-            {
-                IdUser = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty,
-                Name = User.FindFirst(ClaimTypes.Name)?.Value ?? string.Empty,
-                RoleId = User.FindFirst(ClaimTypes.Role)?.Value ?? string.Empty
-            };
-
-            var response = await _formService.GetUserModulesAsync(user.IdUser);
+            var response = await _formService.GetFormAnswersAsync(PreApplicationId, FormId);
 
             return Ok(response);
         }
