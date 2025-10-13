@@ -11,12 +11,12 @@ namespace HRM_API.API.Controllers
         private readonly PreApplicationService _preApplicationService = preApplicationService;
 
         [HttpGet("GetPreApplications/{estado}")]
-        public async Task<IActionResult> GetPreApplications(string estado)
+        public async Task<IActionResult> GetPreApplications(string estado = "", string id = "")
         {
             if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
                 return Unauthorized(new ErrorDto { Error = "Token inválido" });
 
-            var response = await _preApplicationService.GetPreApplicationsAsync(estado);
+            var response = await _preApplicationService.GetPreApplicationsAsync(estado, id);
 
             return Ok(response);
         }
