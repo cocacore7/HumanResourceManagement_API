@@ -10,7 +10,7 @@ namespace HRM_API.API.Controllers
     {
         private readonly PreApplicationService _preApplicationService = preApplicationService;
 
-        [HttpGet("GetPreApplications/{estado}")]
+        [HttpGet("GetPreApplications")]
         public async Task<IActionResult> GetPreApplications(string estado = "", string id = "")
         {
             if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
