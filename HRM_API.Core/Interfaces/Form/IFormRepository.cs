@@ -6,6 +6,6 @@ namespace HRM_API.Core.Interfaces.Form
     {
         Task<GetFormAnswersDBFormResponseDto?> GetFormAsync(int FormId);
         Task<GetFormAnswersDBHeaderResponseDto?> GetFormHeaderAsync(int PreApplicationId, int FormId);
-        Task<List<GetFormAnswersDBAnswersResponseDto>?> GetFormAnswersAsync(int PreApplicationId, int FormId);
+        Task<List<GetFormAnswersDBAnswersResponseDto>?> GetFormAnswersAsync(int? IdResponse);
     }
 }

@@ -35,7 +35,7 @@ namespace HRM_API.Infraestructure.Repositories.Form
             return result;
         }
 
-        public async Task<List<GetFormAnswersDBAnswersResponseDto>?> GetFormAnswersAsync(int PreApplicationId, int FormId)
+        public async Task<List<GetFormAnswersDBAnswersResponseDto>?> GetFormAnswersAsync(int IdResponse)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
@@ -43,7 +43,7 @@ namespace HRM_API.Infraestructure.Repositories.Form
                         FROM HRM_DB.reclutamiento.Module m
                         INNER JOIN HRM_DB.reclutamiento.UserModule um ON um.ModuleId = m.IdModule
                         WHERE um.UserId = @IdUser";
-            var result = await connection.QueryAsync<GetFormAnswersDBAnswersResponseDto>(sql, new { PreApplicationId, FormId });
+            var result = await connection.QueryAsync<GetFormAnswersDBAnswersResponseDto>(sql, new { IdResponse });
 
             return [.. result];
         }

@@ -14,11 +14,11 @@ namespace HRM_API.Application.Services
             //Traer cabecera response
             var header = await _repository.GetFormHeaderAsync(PreApplicationId, FormId);
             //Traer Answers Response
-            var answers = await _repository.GetFormAnswersAsync(PreApplicationId, FormId);
+            var answers = await _repository.GetFormAnswersAsync(header?.IdResponse);
 
             //Asignar resultados a respuesta
 
-            GetFormAnswersDBResponseDto result = new GetFormAnswersDBResponseDto 
+            GetFormAnswersDBResponseDto result = new()
             { 
                 Form = form ?? new(),
                 Header = header ?? new(),
