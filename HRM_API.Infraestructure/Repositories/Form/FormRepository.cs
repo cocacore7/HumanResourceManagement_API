@@ -35,7 +35,7 @@ namespace HRM_API.Infraestructure.Repositories.Form
             return result;
         }
 
-        public async Task<List<GetFormAnswersDBAnswersResponseDto>?> GetFormAnswersAsync(int IdResponse)
+        public async Task<List<GetFormAnswersDBAnswersResponseDto>?> GetFormAnswersAsync(int? IdResponse)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
