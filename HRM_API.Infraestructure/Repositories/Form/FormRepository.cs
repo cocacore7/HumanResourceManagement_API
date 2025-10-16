@@ -16,7 +16,7 @@ namespace HRM_API.Infraestructure.Repositories.Form
 
             var sql = @"SELECT IdForm, KeyName, Name, VersionNumber
                         FROM HRM_DB.reclutamiento.Form
-                        WHERE f.IdForm = @FormId";
+                        WHERE IdForm = @FormId";
             var result = await connection.QueryFirstAsync<GetFormAnswersDBFormResponseDto>(sql, new { FormId });
 
             return result;
@@ -39,10 +39,15 @@ namespace HRM_API.Infraestructure.Repositories.Form
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
-            var sql = @"SELECT m.IdModule, m.Path, m.Icon, m.Label
-                        FROM HRM_DB.reclutamiento.Module m
-                        INNER JOIN HRM_DB.reclutamiento.UserModule um ON um.ModuleId = m.IdModule
-                        WHERE um.UserId = @IdUser";
+            var sql = @"SELECT paa.IdAnswer, paa.QuestionId, fq.Code, paa.AnswerType, paa.ValueBool, paa.ValueText, 
+                        paa.ValueNumber, paa.ValueDate, f.IdFile, f.FileName, f.ContentType, f.FilePath, f.SizeBytes,
+                        fqo.IdOption, fqo.Value, fqo.Label
+                        FROM HRM_DB.reclutamiento.PreApplicationAnswer paa
+                        INNER JOIN HRM_DB.reclutamiento.FormQuestion fq ON fq.IdQuestion = paa.QuestionId
+                        LEFT JOIN HRM_DB.reclutamiento.PreApplicationAnswerOption paao ON paao.AnswerId = paa.IdAnswer
+                        LEFT JOIN HRM_DB.reclutamiento.FormQuestionOption fqo ON fqo.IdOption = paao.OptionId
+                        LEFT JOIN HRM_DB.reclutamiento.Files f ON f.IdFile = paa.FileId
+                        WHERE ResponseId = @IdResponse";
             var result = await connection.QueryAsync<GetFormAnswersDBAnswersResponseDto>(sql, new { IdResponse });
 
             return [.. result];
