@@ -14,6 +14,14 @@ namespace HRM_API.Application.Services
 
             return (response);
         }
+
+        public async Task<SetPreApplicationsReponseDto?> SetPreApplicationsAsync(SetPreApplicationsRequestDto request)
+        {
+            var form = (bool)await _repository.SetPreApplicationsAsync(new());
+            SetPreApplicationsReponseDto response = new() { Response = form ? "Pre Aplicacion Registrada Exitosamente" : "Error Al Registrar Pre Aplicacion" };
+
+            return (response);
+        }
     }
 }
 
