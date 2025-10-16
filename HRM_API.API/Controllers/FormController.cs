@@ -1,25 +1,24 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using HRM_API.Application.Services;
+using HRM_API.Core.Dtos.General;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HRM_API.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class FormController : ControllerBase
-    {   
-        [HttpGet("GetHiWorld")]
-        public string GetHiWorld()
+    public class FormController(FormService formService) : ControllerBase
+    {
+        private readonly FormService _formService = formService;
+
+        [HttpGet("GetFormAnswers")]
+        public async Task<IActionResult> GetFormAnswers([FromQuery] int PreApplicationId, [FromQuery] int FormId)
         {
-            return "Get Hi World";
-        }
-        [HttpGet("GetHiWorld2")]
-        public string GetHiWorld2()
-        {
-            return "Get Hi World";
-        }
-        [HttpGet("GetHiWorld3")]
-        public string GetHiWorld3()
-        {
-            return "Get Hi World";
+            if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
+                return Unauthorized(new ErrorDto { Error = "Token inválido" });
+
+            var response = await _formService.GetFormAnswersAsync(PreApplicationId, FormId);
+
+            return Ok(response);
         }
     }
 }

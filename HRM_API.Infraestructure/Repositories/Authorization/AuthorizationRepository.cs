@@ -6,16 +6,11 @@ using Microsoft.Extensions.Configuration;
 
 namespace HRM_API.Infraestructure.Repositories.Authorization
 {
-    public class AuthorizationRepository : IAuthorizationRepository
+    public class AuthorizationRepository(IConfiguration configuration) : IAuthorizationRepository
     {
-        private readonly IConfiguration _configuration;
+        private readonly IConfiguration _configuration = configuration;
 
-        public AuthorizationRepository(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
-
-        public async Task<UserDto?> GetUserByCredentialsAsync(string name, byte[] Password, string role)
+        public async Task<LoginDBResponseDto?> GetUserByCredentialsAsync(string name, byte[] Password, string role)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
@@ -25,7 +20,7 @@ namespace HRM_API.Infraestructure.Repositories.Authorization
                         WHERE u.Name = @Name 
                         AND u.PasswordHash = @Password 
                         AND r.KeyName = @Role";
-            var user = await connection.QueryFirstOrDefaultAsync<UserDto>(sql, new {name, Password, role });
+            var user = await connection.QueryFirstOrDefaultAsync<LoginDBResponseDto>(sql, new {name, Password, role });
 
             return user;
         }

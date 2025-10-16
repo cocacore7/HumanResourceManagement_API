@@ -1,19 +1,14 @@
-﻿using HRM_API.Application;
+﻿using HRM_API.Application.Helpers;
 
-namespace HRM_API.API
+namespace HRM_API.API.Middleware
 {
-    public class JwtMiddleware
+    public class JwtMiddleware(RequestDelegate next)
     {
-        private readonly RequestDelegate _next;
-
-        public JwtMiddleware(RequestDelegate next)
-        {
-            _next = next;
-        }
+        private readonly RequestDelegate _next = next;
 
         public async Task Invoke(HttpContext context, JwtService jwtService)
         {
-            var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            var token = context.Request.Headers.Authorization.FirstOrDefault()?.Split(" ").Last();
 
             if (!string.IsNullOrEmpty(token))
             {

@@ -2,5 +2,6 @@
 {
     public interface ISettings
     {
+        string BasePath { get; set; }
     }
 }

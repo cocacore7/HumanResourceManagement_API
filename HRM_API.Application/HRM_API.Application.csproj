@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Helpers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\HRM_API.Configuration\HRM_API.Configuration.csproj" />
     <ProjectReference Include="..\HRM_API.Core\HRM_API.Core.csproj" />
   </ItemGroup>
