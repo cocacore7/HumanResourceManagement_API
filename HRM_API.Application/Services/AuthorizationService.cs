@@ -21,7 +21,7 @@ namespace HRM_API.Application
 
             if (user == null)
                 return null;
-
+             
             return _jwtService.GenerateToken(user.IdUser, user.Name, user.RoleId);
         }
     }
