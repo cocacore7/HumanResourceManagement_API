@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace HRM_API.Infraestructure.Repositories.Mail
 {
-    public class AssessmentRepository : IAssessmentRepository
+    public class AssessmentRepository : IMailRepository
     {
         private readonly IConfiguration _configuration;
 
@@ -37,7 +37,20 @@ namespace HRM_API.Infraestructure.Repositories.Mail
 
             var user = await connection.QueryFirstOrDefaultAsync<AssessmentTestDto>(sql, new {id});
 
-            return user;
+            if (user == null)
+                throw new Exception("No se encontraron datos para el correo.");
+
+            // Mapea los campos de SQL a los placeholders del HTML
+            return new Dictionary<string, string>
+            {
+                ["NOMBRE"] = user.FullName,
+                ["EDAD"] = user.Age.ToString(),
+                ["GENERO"] = user.Gender,
+                ["TELEFONO"] = user.Phone,
+                ["EMAIL"] = user.Email,
+                ["ACCION"] = user.Action,
+                ["NOTA"] = user.Note
+            };
         }
     }
 }
