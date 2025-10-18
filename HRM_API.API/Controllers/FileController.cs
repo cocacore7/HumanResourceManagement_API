@@ -12,8 +12,8 @@ namespace HRM_API.API.Controllers
     {
         private readonly FileService _fileService = fileService;
 
-        [HttpGet("GetJobVacancies/{filePath}")]
-        public async Task<IActionResult> GetFileBase64([FromQuery] string filePath)
+        [HttpGet("GetJobVacancies")]
+        public async Task<IActionResult> GetFileBase64([FromQuery] string filePath = "")
         {
             if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
                 return Unauthorized(new ErrorDto { Error = "Token inválido" });
