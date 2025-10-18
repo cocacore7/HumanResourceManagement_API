@@ -24,11 +24,11 @@ namespace HRM_API.Application.Services
             return (response);
         }
 
-        public async Task<bool?> SetJobVacancyAsync(GeneralFormRequestDto payload, LoginDBResponseDto user)
+        public async Task<bool?> SetJobVacancyAsync(GeneralFormRequestDto request, LoginDBResponseDto user)
         {
             SetJobVacancyDBRequestDto newvacant = new();
 
-            foreach (var item in payload.Answers ?? Enumerable.Empty<GeneralFormRequestAnswerDto>())
+            foreach (var item in request.Answers ?? Enumerable.Empty<GeneralFormRequestAnswerDto>())
             {
                 switch (item.Code)
                 {
@@ -82,7 +82,7 @@ namespace HRM_API.Application.Services
                         break;
 
                     case var code when code == _enumHelper.GetEnumDescription(SetJobVacancyCodeEnum.RequisitionFileId):
-                        var filepath = _fileHelper.SaveFile(item, payload?.Origin ?? new GeneralFormRequestOriginDto());
+                        var filepath = _fileHelper.SaveFile(item, request?.Origin ?? new GeneralFormRequestOriginDto());
 
                         SetFileDBRequestDto newfile = new()
                         {

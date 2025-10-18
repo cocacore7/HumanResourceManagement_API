@@ -1,7 +1,8 @@
 ﻿using HRM_API.Application.Services;
+using HRM_API.Core.Dtos.Authorization;
 using HRM_API.Core.Dtos.General;
-using HRM_API.Core.Dtos.PreApplication;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace HRM_API.API.Controllers
 {
@@ -23,12 +24,19 @@ namespace HRM_API.API.Controllers
         }
 
         [HttpPost("SetPreApplications")]
-        public async Task<IActionResult> SetPreApplications([FromBody] SetPreApplicationsRequestDto request)
+        public async Task<IActionResult> SetPreApplications([FromBody] GeneralFormRequestDto request)
         {
             if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
                 return Unauthorized(new ErrorDto { Error = "Token inválido" });
 
-            var response = await _preApplicationService.SetPreApplicationsAsync(request);
+            LoginDBResponseDto user = new()
+            {
+                IdUser = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty,
+                Name = User.FindFirst(ClaimTypes.Name)?.Value ?? string.Empty,
+                RoleId = User.FindFirst(ClaimTypes.Role)?.Value ?? string.Empty
+            };
+
+            var response = await _preApplicationService.SetPreApplicationsAsync(request, user);
 
             return Ok(response);
         }
