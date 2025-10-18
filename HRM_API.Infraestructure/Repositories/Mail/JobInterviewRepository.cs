@@ -6,16 +6,16 @@ using Microsoft.Extensions.Configuration;
 
 namespace HRM_API.Infraestructure.Repositories.Mail
 {
-    public class AssessmentRepository : IMailRepository
+    public class JobInterviewRepository : IMailRepository
     {
         private readonly IConfiguration _configuration;
 
-        public AssessmentRepository(IConfiguration configuration)
+        public JobInterviewRepository(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
-        public async Task<AssessmentTestDto?> GetAssessmentTestAsync(int id)
+        public async Task<JobInterviewDto?> GetJobInterviewAsync(int id)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
@@ -35,12 +35,12 @@ namespace HRM_API.Infraestructure.Repositories.Mail
                         ON pah.PreApplicationId    = pa.IdPreApplication
                         WHERE pa.IdPreApplication = @id";
 
-            var assessment = await connection.QueryFirstOrDefaultAsync<AssessmentTestDto>(sql, new {id});
+            var jobinterview = await connection.QueryFirstOrDefaultAsync<JobInterviewDto>(sql, new {id});
 
-            if (assessment == null)
+            if (jobinterview  == null)
                 throw new Exception("No se encontraron datos para el correo.");
 
-            return assessment;
+            return jobinterview;
         }
     }
 }

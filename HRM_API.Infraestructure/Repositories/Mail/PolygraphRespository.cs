@@ -6,16 +6,16 @@ using Microsoft.Extensions.Configuration;
 
 namespace HRM_API.Infraestructure.Repositories.Mail
 {
-    public class AssessmentRepository : IMailRepository
+    public class PolygraphRepository : IMailRepository
     {
         private readonly IConfiguration _configuration;
 
-        public AssessmentRepository(IConfiguration configuration)
+        public PolygraphRepository(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
-        public async Task<AssessmentTestDto?> GetAssessmentTestAsync(int id)
+        public async Task<PolygraphDto?> GetPolygraphAsync(int id)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
@@ -35,12 +35,12 @@ namespace HRM_API.Infraestructure.Repositories.Mail
                         ON pah.PreApplicationId    = pa.IdPreApplication
                         WHERE pa.IdPreApplication = @id";
 
-            var assessment = await connection.QueryFirstOrDefaultAsync<AssessmentTestDto>(sql, new {id});
+            var polygraph= await connection.QueryFirstOrDefaultAsync<PolygraphDto>(sql, new {id});
 
-            if (assessment == null)
+            if (polygraph  == null)
                 throw new Exception("No se encontraron datos para el correo.");
 
-            return assessment;
+            return polygraph;
         }
     }
 }

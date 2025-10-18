@@ -1,27 +1,19 @@
 using System.Net;
 using System.Net.Mail;
+using HRM_API.Configuration;
 using Microsoft.Extensions.Configuration;
 
 namespace HRM_API.Application.Services
 {
-    public class MailService
+    public class MailService(TemplateAdapterFactory factory, ISettings settings)
     {
-        private readonly TemplateAdapterFactory _factory;
-        private readonly string _smtpHost;
-        private readonly int _smtpPort;
-        private readonly string _smtpUser;
-        private readonly string _smtpPass;
-        private readonly string _fromAddress;
-
-        public MailService(TemplateAdapterFactory factory, IConfiguration config)
-        {
-            _factory = factory;
-            _smtpHost = config["Mail:SmtpHost"];
-            _smtpPort = int.Parse(config["Mail:SmtpPort"]);
-            _smtpUser = config["Mail:SmtpUser"];
-            _smtpPass = config["Mail:SmtpPass"];
-            _fromAddress = config["Mail:FromAddress"];
-        }
+        private readonly TemplateAdapterFactory _factory = factory;
+        private readonly ISettings _settings = settings;
+        private readonly string _smtpHost = _settings.SmtHost;
+        private readonly int _smtpPort = _settings.SmtPort;
+        private readonly string _smtpUser = _settings.EmailAddress;
+        private readonly string _smtpPass = _settings.EmailKey;
+        private readonly string _fromAddress = _settings.FromAddress;
 
         public async Task<bool> SendEmailFromTemplateAsync(string toEmail, string subject, string templateName, int id)
         {
