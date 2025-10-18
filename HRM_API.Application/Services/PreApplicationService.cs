@@ -4,15 +4,17 @@ using HRM_API.Core.Dtos.File;
 using HRM_API.Core.Dtos.General;
 using HRM_API.Core.Dtos.PreApplication;
 using HRM_API.Core.Enum.PreApplication;
+using HRM_API.Core.Interfaces.Catalog;
 using HRM_API.Core.Interfaces.File;
 using HRM_API.Core.Interfaces.PreApplication;
 
 namespace HRM_API.Application.Services
 {
-    public class PreApplicationService(IPreApplicationRepository repository, IFileRepository fileRepository, EnumHelper enumHelper, FileHelper fileHelper)
+    public class PreApplicationService(IPreApplicationRepository repository, IFileRepository fileRepository, ICatalogRepository catalogRepository, EnumHelper enumHelper, FileHelper fileHelper)
     {
         private readonly IPreApplicationRepository _repository = repository;
         private readonly IFileRepository _fileRepository = fileRepository;
+        private readonly ICatalogRepository _catalogRepository = catalogRepository;
         private readonly EnumHelper _enumHelper = enumHelper;
         private readonly FileHelper _fileHelper = fileHelper;
 
@@ -57,7 +59,8 @@ namespace HRM_API.Application.Services
                         break;
 
                     case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Town):
-                        //newApplication.TownId = item.OptionValue ?? string.Empty; //Agregar logica para traer townid
+                        var towns = await _catalogRepository.GetTownCatalogAsync();
+                        newApplication.TownId = towns.FirstOrDefault(p => p.Value.ToLower().Contains(item.OptionValue?.ToLower() ?? "", StringComparison.OrdinalIgnoreCase)) ?.Id ?? 0;
                         break;
 
                     case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Address):
@@ -69,7 +72,8 @@ namespace HRM_API.Application.Services
                         break;
 
                     case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Vacancy):
-                        //newApplication.VacancyId = item.OptionValue ?? 0; //Agregar logica para traer id de puestos sobre tabla catalogo
+                        var jobs = await _catalogRepository.GetJobCatalogAsync();
+                        newApplication.VacancyId = jobs.FirstOrDefault(p => p.Value.ToLower().Contains(item.OptionValue?.ToLower() ?? "", StringComparison.OrdinalIgnoreCase))?.Id ?? 0;
                         break;
 
                     case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Experience):
@@ -105,7 +109,12 @@ namespace HRM_API.Application.Services
                 }
             }
 
-            var form = (bool)await _repository.SetPreApplicationsAsync(new());
+            bool form = false;
+            if (newApplication.TownId != 0 && newApplication.VacancyId != 0)
+            {
+                newApplication.CreatedBy = int.TryParse(user.IdUser, out int createdByfileCV) ? createdByfileCV : 0;
+                form = (bool)await _repository.SetPreApplicationsAsync(newApplication);
+            }
             SetPreApplicationsReponseDto response = new() { Response = form ? "Pre Aplicacion Registrada Exitosamente" : "Error Al Registrar Pre Aplicacion" };
 
             return (response);
