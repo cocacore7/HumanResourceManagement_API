@@ -7,5 +7,7 @@ namespace HRM_API.Core.Interfaces.Catalog
         Task<List<CatalogDBRequestDto>> GetJobCatalogAsync();
         Task<List<CatalogDBRequestDto>> GetTownCatalogAsync();
         Task<List<CatalogDBRequestDto>> GetTermsAndConditionsCatalogAsync();
+        Task<List<CatalogDBRequestDto>> GetVacancyReasonCatalogAsync();
+        Task<List<CatalogDBRequestDto>> GetVacancyTypeCatalogAsync();
     }
 }

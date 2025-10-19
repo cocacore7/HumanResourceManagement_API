@@ -33,5 +33,23 @@ namespace HRM_API.Application.Services
 
             return response;
         }
+
+        public async Task<CatalogRequestDto?> GetVacancyReasonCatalogAsync()
+        {
+            var responsedb = await _repository.GetVacancyReasonCatalogAsync();
+
+            CatalogRequestDto response = new() { Response = responsedb ?? [] };
+
+            return response;
+        }
+
+        public async Task<CatalogRequestDto?> GetVacancyTypeCatalogAsync()
+        {
+            var responsedb = await _repository.GetVacancyTypeCatalogAsync();
+
+            CatalogRequestDto response = new() { Response = responsedb ?? [] };
+
+            return response;
+        }
     }
 }

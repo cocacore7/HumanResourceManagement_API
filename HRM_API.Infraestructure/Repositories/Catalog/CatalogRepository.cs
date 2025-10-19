@@ -42,5 +42,27 @@ namespace HRM_API.Infraestructure.Repositories.Catalog
 
             return [.. result];
         }
+
+        public async Task<List<CatalogDBRequestDto>> GetVacancyReasonCatalogAsync()
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
+
+            var sql = @"SELECT vr.IdReason AS Id, vr.VacancyReasonName AS Value, vr.VacancyReasonName AS Label
+                        FROM HRM_DB.reclutamiento.VacancyReason vr";
+            var result = await connection.QueryAsync<CatalogDBRequestDto?>(sql, new { });
+
+            return [.. result];
+        }
+
+        public async Task<List<CatalogDBRequestDto>> GetVacancyTypeCatalogAsync()
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
+
+            var sql = @"SELECT vt.IdVacancyType AS Id, vt.VacancyTypeName AS Value, vt.VacancyTypeName AS Label
+                        FROM HRM_DB.reclutamiento.VacancyType vt";
+            var result = await connection.QueryAsync<CatalogDBRequestDto?>(sql, new { });
+
+            return [.. result];
+        }
     }
 }

@@ -42,5 +42,28 @@ namespace HRM_API.API.Controllers
 
             return Ok(response);
         }
+
+
+        [HttpGet("GetVacancyReasonCatalog")]
+        public async Task<IActionResult> GetVacancyReasonCatalog()
+        {
+            if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
+                return Unauthorized(new ErrorDto { Error = "Token inválido" });
+
+            var response = await _catalogService.GetVacancyReasonCatalogAsync();
+
+            return Ok(response);
+        }
+
+        [HttpGet("GetVacancyTypeCatalog")]
+        public async Task<IActionResult> GetVacancyTypeCatalog()
+        {
+            if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
+                return Unauthorized(new ErrorDto { Error = "Token inválido" });
+
+            var response = await _catalogService.GetVacancyTypeCatalogAsync();
+
+            return Ok(response);
+        }
     }
 }

@@ -1,0 +1,12 @@
+﻿namespace HRM_API.Core.Dtos.Form
+{
+    public class SetEnumAnswerDBResponseDto
+    {
+        public int? ResponseId { get; set; }
+        public int? QuestionId { get; set; }
+        public string AnswerType { get; set; } = string.Empty;
+        public int? CatalogId { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime UpdatedAt { get; set; } = DateTime.Now;
+    }
+}

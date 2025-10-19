@@ -31,9 +31,7 @@ namespace HRM_API.Application.Helpers
         {
             string filePath =
                 Path.Combine(
-                origin.Description == _enumHelper.GetEnumDescription(SetFileOriginEnum.Vacancydescription) ?
-                _enumHelper.GetEnumDescription(SetFileOriginEnum.Vacancydescription) :
-                _enumHelper.GetEnumDescription(SetFileOriginEnum.PreApplicationdescription)
+                origin.Description
                 , origin.RegisterId.ToString() ?? string.Empty
                 , answer.Code + Path.GetExtension(answer.FileName)?.ToLower()
                  );
