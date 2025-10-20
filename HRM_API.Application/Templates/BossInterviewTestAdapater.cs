@@ -7,7 +7,7 @@ namespace HRM_API.Application.Templates
     {
         private readonly IMailRepository _repository;
 
-        public string TemplateName => "entrevista_jefe.html";
+        public string TemplateName => "BossInterview.html";
 
         public BossInterviewAdapter(IMailRepository repository)
         {

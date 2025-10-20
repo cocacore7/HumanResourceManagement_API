@@ -7,7 +7,7 @@ namespace HRM_API.Application.Templates
     {
         private readonly IMailRepository _repository;
 
-        public string TemplateName => "pruebas.html";
+        public string TemplateName => "Assessment.html";
 
         public AssessmentTestAdapter(IMailRepository repository)
         {

@@ -3,20 +3,20 @@ using HRM_API.Core.Interfaces.Mail;
 
 namespace HRM_API.Application.Templates
 {
-    public class PolygraphAdapter : ITemplateAdapter
+    public class RecordAdapter : ITemplateAdapter
     {
         private readonly IMailRepository _repository;
 
-        public string TemplateName => "poligrafo.html";
+        public string TemplateName => "expediente.html";
 
-        public PolygraphAdapter(IMailRepository repository)
+        public RecordAdapter(IMailRepository repository)
         {
             _repository = repository;
         }
 
         public async Task<string> BuildBodyAsync(int id)
         {
-            var dto = await _repository.GetPolygraphAsync(id);
+            var dto = await _repository.GetRecordAsync(id);
             if (dto == null)
                 throw new Exception($"No se encontró la prueba con id={id}");
 
@@ -24,15 +24,9 @@ namespace HRM_API.Application.Templates
             var htmlBody = await File.ReadAllTextAsync(templatePath, Encoding.UTF8);
 
             htmlBody = htmlBody
-                .Replace("[CODE]", dto.Code.ToString())
+                .Replace("[FULLNAME_RECRUITER]", dto.Code.ToString())
                 .Replace("[FULLNAME]", dto.FullName)
-                .Replace("[AGE]", dto.Age.ToString())
-                .Replace("[GENDER]", dto.Gender)
-                .Replace("[PHONE]", dto.Phone)
-                .Replace("[EMAIL]", dto.Email)
-                .Replace("[ACTION]", dto.Action)
-                .Replace("[DATEAT]", DateTime.Parse(dto.CreatedAt).ToString("dd/MM/yyyy"))
-                .Replace("[NOTE]", dto.Note ?? "");
+                .Replace("[ACTION]", dto.Action);
 
             return htmlBody;
         }

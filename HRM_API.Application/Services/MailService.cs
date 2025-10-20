@@ -15,6 +15,8 @@ namespace HRM_API.Application.Services
         private readonly string _smtpPass = _settings.EmailKey;
         private readonly string _fromAddress = _settings.FromAddress;
 
+        public MailService(TemplateAdapterFactory factory, IConfiguration config)
+
         public async Task<bool> SendEmailFromTemplateAsync(string toEmail, string subject, string templateName, int id)
         {
             // Obtiene el adaptador correcto
