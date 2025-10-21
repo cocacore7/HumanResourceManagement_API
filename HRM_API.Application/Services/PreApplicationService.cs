@@ -119,6 +119,97 @@ namespace HRM_API.Application.Services
 
             return (response);
         }
+
+        public async Task<bool?> UpdatePreApplicationsAsync(GeneralFormRequestDto request, LoginDBResponseDto user)
+        {
+            UpdatePreApplicationsDBRequestDto newApplication = new();
+
+            foreach (var item in request.Answers ?? Enumerable.Empty<GeneralFormRequestAnswerDto>())
+            {
+                switch (item.Code)
+                {
+                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.FullName):
+                        newApplication.FullName = item.ValueText ?? string.Empty;
+                        break;
+
+                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.DPI):
+                        newApplication.DPI = item.ValueText ?? string.Empty;
+                        break;
+
+                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Age):
+                        newApplication.Age = int.TryParse(item.ValueText, out int createdByfile) ? createdByfile : 0;
+                        break;
+
+                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Gender):
+                        newApplication.Gender = item.OptionValue == "F" ? "Masculino" : "Femenino";
+                        break;
+
+                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Phone):
+                        newApplication.Phone = item.ValueText ?? string.Empty;
+                        break;
+
+                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Email):
+                        newApplication.Email = item.ValueText ?? string.Empty;
+                        break;
+
+                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Town):
+                        var towns = await _catalogRepository.GetTownCatalogAsync();
+                        newApplication.TownId = towns.FirstOrDefault(p => p.Value.ToLower().Contains(item.OptionValue?.ToLower() ?? "", StringComparison.OrdinalIgnoreCase))?.Id ?? 0;
+                        break;
+
+                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Address):
+                        newApplication.Address = item.ValueText ?? string.Empty;
+                        break;
+
+                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.EducationLevel):
+                        newApplication.EducationLevel = item.OptionValue ?? "";
+                        break;
+
+                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Vacancy):
+                        var jobs = await _catalogRepository.GetJobCatalogAsync();
+                        newApplication.VacancyId = jobs.FirstOrDefault(p => p.Value.ToLower().Contains(item.OptionValue?.ToLower() ?? "", StringComparison.OrdinalIgnoreCase))?.Id ?? 0;
+                        break;
+
+                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Experience):
+                        newApplication.Experience = item.OptionValue == "no";
+                        break;
+
+                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.HowHeard):
+                        newApplication.HowHeard = item.OptionValue ?? string.Empty;
+                        break;
+
+                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.File):
+                        var filepath = _fileHelper.SaveFile(item, request?.Origin ?? new GeneralFormRequestOriginDto());
+
+                        UpdateFileDBRequestDto newfile = new()
+                        {
+                            IdFile = item.IdFile,
+                            FileName = item.FileName ?? string.Empty,
+                            ContentType = item.ContentType ?? string.Empty,
+                            FilePath = filepath ?? string.Empty,
+                            SizeBytes = item.SizeBytes ?? 0,
+                            UploadedBy = int.TryParse(user.IdUser, out int createdByfileCV) ? createdByfileCV : 0
+                        };
+                        var responsedb = await _fileRepository.UpdateFileAsync(newfile);
+                        break;
+
+                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.AcceptedTerms):
+                        newApplication.AcceptedTerms = item.ValueBool;
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+
+            bool form = false;
+            if (newApplication.TownId != 0 && newApplication.VacancyId != 0)
+            {
+                form = (bool)await _repository.UpdatePreApplicationsAsync(newApplication);
+            }
+
+            return (form);
+        }
     }
 }
 

@@ -6,5 +6,6 @@ namespace HRM_API.Core.Interfaces.JobVacancy
     {
         Task<List<GetJobVacanciesDBRequestDto>?> GetJobVacanciesAsync(string estado, string id);
         Task<bool?> SetJobVacancyAsync(SetJobVacancyDBRequestDto dbRequest);
+        Task<bool?> UpdateJobVacancyAsync(UpdateJobVacancyDBRequestDto dbRequest);
     }
 }

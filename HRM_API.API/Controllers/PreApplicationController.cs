@@ -40,5 +40,23 @@ namespace HRM_API.API.Controllers
 
             return Ok(response);
         }
+
+        [HttpPut("UpdatePreApplications")]
+        public async Task<IActionResult> UpdatePreApplications([FromBody] GeneralFormRequestDto request)
+        {
+            if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
+                return Unauthorized(new ErrorDto { Error = "Token inválido" });
+
+            LoginDBResponseDto user = new()
+            {
+                IdUser = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty,
+                Name = User.FindFirst(ClaimTypes.Name)?.Value ?? string.Empty,
+                RoleId = User.FindFirst(ClaimTypes.Role)?.Value ?? string.Empty
+            };
+
+            var response = await _preApplicationService.UpdatePreApplicationsAsync(request, user);
+
+            return Ok(response);
+        }
     }
 }

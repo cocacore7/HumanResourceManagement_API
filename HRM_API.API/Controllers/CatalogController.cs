@@ -65,5 +65,27 @@ namespace HRM_API.API.Controllers
 
             return Ok(response);
         }
+
+        [HttpGet("GetUsersCatalog")]
+        public async Task<IActionResult> GetUsersCatalog([FromQuery] string KeyName = "")
+        {
+            if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
+                return Unauthorized(new ErrorDto { Error = "Token inválido" });
+
+            var response = await _catalogService.GetUsersCatalogAsync(KeyName);
+
+            return Ok(response);
+        }
+
+        [HttpGet("GetRoleCatalog")]
+        public async Task<IActionResult> GetRoleCatalog()
+        {
+            if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
+                return Unauthorized(new ErrorDto { Error = "Token inválido" });
+
+            var response = await _catalogService.GetRoleCatalogAsync();
+
+            return Ok(response);
+        }
     }
 }

@@ -67,5 +67,45 @@ namespace HRM_API.Infraestructure.Repositories.PreApplication
 
             return true;
         }
+
+        public async Task<bool?> UpdatePreApplicationsAsync(UpdatePreApplicationsDBRequestDto request)
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
+
+            var sql = @"UPDATE HRM_DB.reclutamiento.PreApplication 
+                        SET FullName = @FullName, DPI = @DPI, Age = @Age, Gender = @Gender, Phone = @Phone, Email = @Email, 
+                        TownId = @TownId, Address = @Address, EducationLevel = @EducationLevel, VacancyId = @VacancyId, 
+                        Experience = @Experience, HowHeard = @HowHeard, AcceptedTerms = @AcceptedTerms, Origin = @Origin, 
+                        Status = @Status, IsReferred = @IsReferred, RefferedBy = @RefferedBy
+                        WHERE IdPreApplication = @IdPreApplication";
+
+            var rowsAffected = await connection.ExecuteAsync(sql, request);
+
+            return true;
+        }
+
+        public async Task<bool?> UpdateIsDocumentedAsync(int? PreApplicationId, bool? IsDocumented)
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
+
+            var sql = @"UPDATE HRM_DB.reclutamiento.PreApplication 
+                        SET IsDocumentedByCandidate = @IsDocumented
+                        WHERE IdPreApplication = @PreApplicationId;";
+            var result = await connection.ExecuteAsync(sql, new { PreApplicationId, IsDocumented });
+
+            return result > 0;
+        }
+
+        public async Task<bool?> UpdateStatusAssignToAsync(int? PreApplicationId, string? Status, int? AssignTo)
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
+
+            var sql = @"UPDATE HRM_DB.reclutamiento.PreApplication 
+                        SET Status = @Status, AssignTo = @AssignTo
+                        WHERE  IdPreApplication = @PreApplicationId;";
+            var result = await connection.ExecuteAsync(sql, new { Status, AssignTo, PreApplicationId });
+
+            return result > 0;
+        }
     }
 }

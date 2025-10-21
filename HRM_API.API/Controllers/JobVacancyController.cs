@@ -40,5 +40,23 @@ namespace HRM_API.API.Controllers
 
             return response ? Ok("Vacante Registrada Exitosamente") : BadRequest("No se ha registrado la vacante");
         }
+
+        [HttpPut("UpdateJobVacancy")]
+        public async Task<IActionResult> UpdateJobVacancy([FromBody] GeneralFormRequestDto request)
+        {
+            if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
+                return Unauthorized(new ErrorDto { Error = "Token inválido" });
+
+            LoginDBResponseDto user = new()
+            {
+                IdUser = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty,
+                Name = User.FindFirst(ClaimTypes.Name)?.Value ?? string.Empty,
+                RoleId = User.FindFirst(ClaimTypes.Role)?.Value ?? string.Empty
+            };
+
+            var response = (bool)await _jobVacancyService.UpdateJobVacancyAsync(request, user);
+
+            return response ? Ok("Vacante Registrada Exitosamente") : BadRequest("No se ha registrado la vacante");
+        }
     }
 }

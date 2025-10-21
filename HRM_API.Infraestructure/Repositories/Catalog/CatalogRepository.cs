@@ -64,5 +64,29 @@ namespace HRM_API.Infraestructure.Repositories.Catalog
 
             return [.. result];
         }
+
+        public async Task<List<CatalogUserDBResponse>> GetUsersCatalogAsync(string KeyName)
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
+
+            var sql = @"SELECT u.IdUser AS Id, u.Name, r.RoleName AS Role
+                        FROM reclutamiento.Users u
+                        INNER JOIN reclutamiento.Role r ON r.IdRole = u.RoleId
+                        WHERE r.KeyName = @KeyName";
+            var result = await connection.QueryAsync<CatalogUserDBResponse?>(sql, new { KeyName });
+
+            return [.. result];
+        }
+
+        public async Task<List<CatalogDBRequestDto>> GetRoleCatalogAsync()
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
+
+            var sql = @"SELECT r.IdRole AS Id, r.KeyName AS Value, r.RoleName AS Label
+                        FROM HRM_DB.reclutamiento.Role r";
+            var result = await connection.QueryAsync<CatalogDBRequestDto?>(sql, new { });
+
+            return [.. result];
+        }
     }
 }

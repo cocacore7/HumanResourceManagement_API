@@ -51,5 +51,23 @@ namespace HRM_API.Application.Services
 
             return response;
         }
+
+        public async Task<CatalogUserResponse?> GetUsersCatalogAsync(string KeyName)
+        {
+            var responsedb = await _repository.GetUsersCatalogAsync(KeyName);
+
+            CatalogUserResponse response = new() { Response = responsedb ?? [] };
+
+            return response;
+        }
+
+        public async Task<CatalogRequestDto?> GetRoleCatalogAsync()
+        {
+            var responsedb = await _repository.GetRoleCatalogAsync();
+
+            CatalogRequestDto response = new() { Response = responsedb ?? [] };
+
+            return response;
+        }
     }
 }
