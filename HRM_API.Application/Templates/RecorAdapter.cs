@@ -7,7 +7,7 @@ namespace HRM_API.Application.Templates
     {
         private readonly IMailRepository _repository;
 
-        public string TemplateName => "expediente.html";
+        public string TemplateName => "Record.html";
 
         public RecordAdapter(IMailRepository repository)
         {
@@ -26,7 +26,8 @@ namespace HRM_API.Application.Templates
             htmlBody = htmlBody
                 .Replace("[FULLNAME_RECRUITER]", dto.Code.ToString())
                 .Replace("[FULLNAME]", dto.FullName)
-                .Replace("[ACTION]", dto.Action);
+                .Replace("[DPI]", dto.DPI)
+                .Replace("[JOBPOSITIONNAME]", dto.JobPositionName);
 
             return htmlBody;
         }

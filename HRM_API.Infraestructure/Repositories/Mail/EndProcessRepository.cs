@@ -20,11 +20,11 @@ namespace HRM_API.Infraestructure.Repositories.Mail
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
             var sql = @"SELECT pa.IdPreApplication [Code]
-                              ,pa.FullName
-                              ,jb.Action
+                              ,pa.FullName         [FullName]
+                              ,jv.JobPositionName  [JobPositionName]
                         FROM HRM_DB.reclutamiento.PreApplication pa
-                        INNER JOIN HRM_DB.reclutamiento.JobVacancy jb
-                        ON jb.IdVacancy  = pa.VacancyId 
+                        INNER JOIN HRM_DB.reclutamiento.JobVacancy jv
+                        ON jb.IdVacancy  = pa.VacancyId
                         WHERE pa.IdPreApplication = @id";
 
             var endprocess = await connection.QueryFirstOrDefaultAsync<EndProcessDto>(sql, new {id});

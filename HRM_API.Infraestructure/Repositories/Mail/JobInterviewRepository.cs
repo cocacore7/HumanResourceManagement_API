@@ -20,20 +20,24 @@ namespace HRM_API.Infraestructure.Repositories.Mail
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
             var sql = @"SELECT pa.IdPreApplication [Code]
-                              ,pa.FullName
-                              ,pa.Age
-                              ,pa.Gender
-                              ,pa.Phone
-                              ,pa.Email
-                              ,jb.Action
-                              ,pa.CreatedAt
-                              ,pah.Note
+                              ,u.Name              [FullName_Recruiter] 
+                              ,pa.FullName         [FullName]
+                              ,pa.Age              [Age]
+                              ,pa.Gender           [Gender]
+                              ,pa.Phone            [Phone]
+                              ,pa.Email            [Email]
+                              ,jv.JobPositionName  [JobPositionName]
+                              ,pa.CreatedAt        [CreatedAt]
+                              ,cm.CommentText      [Comment]
                         FROM HRM_DB.reclutamiento.PreApplication pa
-                        INNER JOIN HRM_DB.reclutamiento.JobVacancy jb
-                        ON jb.IdVacancy  = pa.VacancyId 
-                        INNER JOIN HRM_DB.reclutamiento.PreApplicationHistory  pah
-                        ON pah.PreApplicationId    = pa.IdPreApplication
-                        WHERE pa.IdPreApplication = @id";
+                        INNER JOIN HRM_DB.reclutamiento.JobVacancy jv
+                        ON jb.IdVacancy  = pa.VacancyId
+                        INNER JOIN HRM_DB.Users u
+                        ON pa.AssignTo =  u.IdUser
+                        INNER JOIN HRM_DB.reclutamiento.Comment cm
+                        ON cm.PreApplicationId    = pa.IdPreApplication
+                        WHERE pa.IdPreApplication = @id
+                        AND CommentStatus = 'entrevista'";
 
             var jobinterview = await connection.QueryFirstOrDefaultAsync<JobInterviewDto>(sql, new {id});
 

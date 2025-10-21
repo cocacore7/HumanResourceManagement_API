@@ -20,16 +20,15 @@ namespace HRM_API.Infraestructure.Repositories.Mail
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
             var sql = @"SELECT pa.IdPreApplication [Code]
-                              ,pa.FullName
-                              ,pa.DPI
-                              ,jb.Action
-                              ,pa.CreatedAt
-                              ,pah.Note
+                              ,u.Name              [FullName_Recruiter] 
+                              ,pa.FullName         [FullName]
+                              ,pa.DPI              [DPI]
+                              ,jv.JobPositionName  [JobPositionName]    
                         FROM HRM_DB.reclutamiento.PreApplication pa
-                        INNER JOIN HRM_DB.reclutamiento.JobVacancy jb
+                        INNER JOIN HRM_DB.reclutamiento.JobVacancy jv
                         ON jb.IdVacancy  = pa.VacancyId 
-                        INNER JOIN HRM_DB.reclutamiento.PreApplicationHistory  pah
-                        ON pah.PreApplicationId    = pa.IdPreApplication
+                        INNER JOIN HRM_DB.Users u
+                        ON pa.AssignTo =  u.IdUser
                         WHERE pa.IdPreApplication = @id";
 
             var record= await connection.QueryFirstOrDefaultAsync<RecordDto>(sql, new {id});

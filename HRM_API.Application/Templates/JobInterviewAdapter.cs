@@ -24,15 +24,16 @@ namespace HRM_API.Application.Templates
             var htmlBody = await File.ReadAllTextAsync(templatePath, Encoding.UTF8);
 
             htmlBody = htmlBody
-                .Replace("[CODIGO]", dto.Code.ToString())
-                .Replace("[NOMBRE COMPLETO]", dto.FullName)
-                .Replace("[EDAD]", dto.Age.ToString())
-                .Replace("[GENERO]", dto.Gender)
-                .Replace("[TELEFONO]", dto.Phone)
+                .Replace("[FULLNAME_RECRUITER]", dto.FullName_Recruiter)
+                .Replace("[CODE]", dto.Code.ToString())
+                .Replace("[FULLNAME]", dto.FullName)
+                .Replace("[AGE]", dto.Age.ToString())
+                .Replace("[GENDER]", dto.Gender)
+                .Replace("[PHONE]", dto.Phone)
                 .Replace("[EMAIL]", dto.Email)
-                .Replace("[PUESTO]", dto.Action)
-                .Replace("[FECHA]", DateTime.Parse(dto.CreatedAt).ToString("dd/MM/yyyy"))
-                .Replace("[Comentario u observación ingresada]", dto.Note ?? "");
+                .Replace("[JOBPOSITIONNAME]", dto.JobPositionName)
+                .Replace("[DATEAT]", DateTime.Parse(dto.CreatedAt).ToString("dd/MM/yyyy"))
+                .Replace("[COMMENT]", dto.Comment ?? "");
 
             return htmlBody;
         }

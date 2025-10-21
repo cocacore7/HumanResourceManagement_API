@@ -30,9 +30,9 @@ namespace HRM_API.Application.Templates
                 .Replace("[GENDER]", dto.Gender)
                 .Replace("[PHONE]", dto.Phone)
                 .Replace("[EMAIL]", dto.Email)
-                .Replace("[ACTION]", dto.Action)
+                .Replace("[JOBPOSITIONNAME]", dto.JobPositionName)
                 .Replace("[DATEAT]", DateTime.Parse(dto.CreatedAt).ToString("dd/MM/yyyy"))
-                .Replace("[NOTE]", dto.Note ?? "");
+                .Replace("[COMMENT]", dto.Comment ?? "");
 
             return htmlBody;
         }

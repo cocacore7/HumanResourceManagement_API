@@ -24,8 +24,8 @@ namespace HRM_API.Application.Templates
             var htmlBody = await File.ReadAllTextAsync(templatePath, Encoding.UTF8);
 
             htmlBody = htmlBody
-                .Replace("[NOMBRE COMPLETO]", dto.FullName)
-                .Replace("[ACTION]", dto.Action)
+                .Replace("[FULLNAME]", dto.FullName)
+                .Replace("[JOBPOSITIONNAME]", dto.JobPositionName)
 
             return htmlBody;
         }
