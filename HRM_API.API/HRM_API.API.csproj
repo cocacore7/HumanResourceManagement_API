@@ -20,4 +20,8 @@
     <ProjectReference Include="..\HRM_API.Infraestructure\HRM_API.Infraestructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\swagger-ui\custom-dark.css" />
+  </ItemGroup>
+
 </Project>

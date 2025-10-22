@@ -16,18 +16,18 @@ namespace HRM_API.API.Controllers
         public async Task<IActionResult> GetJobVacancies([FromQuery] string estado = "", [FromQuery] string id = "")
         {
             if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
-                return Unauthorized(new ErrorDto { Error = "Token inválido" });
+                return Unauthorized(ApiResponses.Fail("UNAUTHORIZED", "Token inválido"));
 
             var response = await _jobVacancyService.GetJobVacanciesAsync(estado, id);
 
-            return Ok(response);
+            return Ok(ApiResponses.Ok(response, "OK", "VACANCY_FOUND"));
         }
 
         [HttpPost("SetJobVacancy")]
         public async Task<IActionResult> SetJobVacancy([FromBody] GeneralFormRequestDto request)
         {
             if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
-                return Unauthorized(new ErrorDto { Error = "Token inválido" });
+                return Unauthorized(ApiResponses.Fail("UNAUTHORIZED", "Token inválido"));
 
             LoginDBResponseDto user = new()
             {
@@ -38,14 +38,14 @@ namespace HRM_API.API.Controllers
 
             var response = (bool)await _jobVacancyService.SetJobVacancyAsync(request, user);
 
-            return response ? Ok("Vacante Registrada Exitosamente") : BadRequest("No se ha registrado la vacante");
+            return response ? Ok(ApiResponses.Ok("Vacante registrada exitosamente", "VACANCY_CREATED")) : BadRequest(ApiResponses.Fail("VACANCY_NOT_CREATED", "No se ha registrado la vacante"));
         }
 
         [HttpPut("UpdateJobVacancy")]
         public async Task<IActionResult> UpdateJobVacancy([FromBody] GeneralFormRequestDto request)
         {
             if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
-                return Unauthorized(new ErrorDto { Error = "Token inválido" });
+                return Unauthorized(ApiResponses.Fail("UNAUTHORIZED", "Token inválido"));
 
             LoginDBResponseDto user = new()
             {
@@ -56,7 +56,7 @@ namespace HRM_API.API.Controllers
 
             var response = (bool)await _jobVacancyService.UpdateJobVacancyAsync(request, user);
 
-            return response ? Ok("Vacante Registrada Exitosamente") : BadRequest("No se ha registrado la vacante");
+            return response ? Ok(ApiResponses.Ok("Vacante actualizada exitosamente", "VACANCY_CREATED")) : BadRequest(ApiResponses.Fail("VACANCY_NOT_CREATED", "No se ha actualizado la vacante"));
         }
     }
 }

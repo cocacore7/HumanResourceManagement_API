@@ -172,6 +172,7 @@ namespace HRM_API.Application.Services
                             var answerOptionId = (bool)await _repository.SetEnumAnswerOptionAsync(answerId, questionOptionId);
                             if (item.Code == _enumHelper.GetEnumDescription(SetFormAnswersValidationEnum.assignTo))
                             {
+                                //Agregar get para obtener email de usuario assignto y despues poder mandarlo en el correo
                                 var StatusAssignToValid = (bool)await _preApplicationRepository.UpdateStatusAssignToAsync(preApplication.FirstOrDefault()?.Id, request?.Origin.State, item.OptionId);
                                 if (StatusAssignToValid) { responseList.Add("Estado y siguiente revisor actualizado con exito"); }
                             }

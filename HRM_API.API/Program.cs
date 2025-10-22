@@ -99,7 +99,11 @@ builder.Services.AddScoped<UserService>();
 #endregion
 
 #region Controladores y Swagger
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(o =>
+{
+    o.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+    o.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+});
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(options =>
@@ -147,11 +151,15 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.InjectStylesheet("/swagger-ui/custom-dark.css");
+    });
 }
 app.UseHttpsRedirection();
 //app.UseCors("AllowOrigins"); //CORS Estandar
 app.UseCors(DevCors); //CORS Dev
+app.UseStaticFiles();
 app.UseJwtMiddleware();
 app.UseAuthentication();
 app.UseAuthorization();
