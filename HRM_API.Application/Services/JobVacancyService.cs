@@ -82,19 +82,31 @@ namespace HRM_API.Application.Services
                         break;
 
                     case var code when code == _enumHelper.GetEnumDescription(SetJobVacancyCodeEnum.RequisitionFileId):
-                        var filepath = _fileHelper.SaveFile(item, request?.Origin ?? new GeneralFormRequestOriginDto());
-
                         SetFileDBRequestDto newfile = new()
                         {
                             FileName = item.FileName ?? string.Empty,
                             ContentType = item.ContentType ?? string.Empty,
-                            FilePath = filepath ?? string.Empty,
+                            FilePath = "" ?? string.Empty,
                             SizeBytes = item.SizeBytes ?? 0,
-                            UploadedBy = int.TryParse(user.IdUser, out int createdByfile) ? createdByfile : 0
+                            UploadedBy = int.TryParse(user.IdUser, out int createdByFile) ? createdByFile : 0
                         };
-                        var responsedb = await _fileRepository.SetFileAsync(newfile);
+                        var responsedb = (int)await _fileRepository.SetFileAsync(newfile);
+                        if (request?.Origin != null)
+                        {
+                            request.Origin.RegisterId = responsedb;
+                        }
+                        var filepath = _fileHelper.SaveFile(item, request?.Origin ?? new GeneralFormRequestOriginDto());
+                        UpdateFileDBRequestDto updatefile = new()
+                        {
+                            IdFile = responsedb,
+                            FileName = item.FileName ?? string.Empty,
+                            ContentType = item.ContentType ?? string.Empty,
+                            FilePath = filepath ?? string.Empty,
+                            SizeBytes = item.SizeBytes ?? 0
+                        };
+                        var responsedbupdate = (bool)await _fileRepository.UpdateFileAsync(updatefile);
 
-                        newvacant.RequisitionFileId = responsedb ?? 0;
+                        newvacant.RequisitionFileId = responsedb;
                         break;
 
                     default:
@@ -175,8 +187,7 @@ namespace HRM_API.Application.Services
                             FileName = item.FileName ?? string.Empty,
                             ContentType = item.ContentType ?? string.Empty,
                             FilePath = filepath ?? string.Empty,
-                            SizeBytes = item.SizeBytes ?? 0,
-                            UploadedBy = int.TryParse(user.IdUser, out int createdByfile) ? createdByfile : 0
+                            SizeBytes = item.SizeBytes ?? 0
                         };
                         var responsedb = await _fileRepository.UpdateFileAsync(newfile);
                         break;

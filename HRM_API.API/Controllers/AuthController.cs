@@ -1,7 +1,8 @@
-﻿using HRM_API.Core.Dtos.Authorization;
+﻿using Azure;
+using HRM_API.Application.Services;
+using HRM_API.Core.Dtos.Authorization;
 using HRM_API.Core.Dtos.General;
 using Microsoft.AspNetCore.Mvc;
-using HRM_API.Application.Services;
 
 namespace HRM_API.API.Controllers
 {
@@ -17,9 +18,9 @@ namespace HRM_API.API.Controllers
             var token = await _authService.AuthenticateAsync(request.Name, request.Password, request.Role);
 
             if (token == null)
-                return Unauthorized(new ErrorDto { Error = "Credenciales inválidas" });
+                return Unauthorized(ApiResponses.Fail("UNAUTHORIZED", "Credenciales inválidas"));
 
-            return Ok(new LoginResponseDto { Token = token });
+            return Ok(ApiResponses.Ok(new LoginResponseDto { Token = token }, "OK", "LOGIN_SUCCES"));
         }
     }
 }

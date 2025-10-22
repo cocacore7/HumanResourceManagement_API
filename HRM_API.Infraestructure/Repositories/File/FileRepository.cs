@@ -63,10 +63,10 @@ namespace HRM_API.Infraestructure.Repositories.File
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
             var sql = @"UPDATE HRM_DB.reclutamiento.Files 
-                        SET FileName = @FileName, ContentType = @ContentType, FilePath, @FilePath,
-                        SizeBytes = @SizeBytes, UploadedBy = @UploadedBy, UploadedAt = @UploadedAt 
+                        SET FileName = @FileName, ContentType = @ContentType, FilePath = @FilePath,
+                        SizeBytes = @SizeBytes, UploadedAt = @UploadedAt 
                         WHERE IdFile = @IdFile";
-            var result = await connection.ExecuteAsync(sql, new { File.FileName, File.ContentType, File.FilePath, File.SizeBytes, File.UploadedBy, File.UploadedAt, File.IdFile });
+            var result = await connection.ExecuteAsync(sql, new { File.FileName, File.ContentType, File.FilePath, File.SizeBytes, File.UploadedAt, File.IdFile });
 
             return result > 0;
         }

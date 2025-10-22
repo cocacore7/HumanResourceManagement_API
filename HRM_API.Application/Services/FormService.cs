@@ -118,16 +118,29 @@ namespace HRM_API.Application.Services
 
                         case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.File):
                             //Guardar imagen y traer idFile
-                            var filepath = _fileHelper.SaveFile(item, request?.Origin ?? new GeneralFormRequestOriginDto());
                             SetFileDBRequestDto newfile = new()
                             {
                                 FileName = item.FileName ?? string.Empty,
                                 ContentType = item.ContentType ?? string.Empty,
-                                FilePath = filepath ?? string.Empty,
+                                FilePath = "" ?? string.Empty,
                                 SizeBytes = item.SizeBytes ?? 0,
                                 UploadedBy = int.TryParse(user.IdUser, out int createdByfile) ? createdByfile : 0
                             };
-                            var responseFileId = await _fileRepository.SetFileAsync(newfile);
+                            var responseFileId = (int)await _fileRepository.SetFileAsync(newfile);
+                            if (request?.Origin != null)
+                            {
+                                request.Origin.RegisterId = responseFileId;
+                            }
+                            var filepath = _fileHelper.SaveFile(item, request?.Origin ?? new GeneralFormRequestOriginDto());
+                            UpdateFileDBRequestDto updatefile = new()
+                            {
+                                IdFile = responseFileId,
+                                FileName = item.FileName ?? string.Empty,
+                                ContentType = item.ContentType ?? string.Empty,
+                                FilePath = filepath ?? string.Empty,
+                                SizeBytes = item.SizeBytes ?? 0
+                            };
+                            await _fileRepository.UpdateFileAsync(updatefile);
 
                             var fileAnswer = new SetFileAnswerDBResponseDto()
                             {
@@ -269,8 +282,7 @@ namespace HRM_API.Application.Services
                                 FileName = item.FileName ?? string.Empty,
                                 ContentType = item.ContentType ?? string.Empty,
                                 FilePath = filepath ?? string.Empty,
-                                SizeBytes = item.SizeBytes ?? 0,
-                                UploadedBy = int.TryParse(user.IdUser, out int createdByfile) ? createdByfile : 0
+                                SizeBytes = item.SizeBytes ?? 0
                             };
                             await _fileRepository.UpdateFileAsync(newfile);
 

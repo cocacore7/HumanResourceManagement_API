@@ -16,7 +16,7 @@ namespace HRM_API.API.Controllers
         public async Task<IActionResult> GetUserModules()
         {
             if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
-                return Unauthorized(new ErrorDto { Error = "Token inválido" });
+                return Unauthorized(ApiResponses.Fail("UNAUTHORIZED", "Token inválido"));
 
             LoginDBResponseDto user = new() 
             {
@@ -27,7 +27,7 @@ namespace HRM_API.API.Controllers
 
             var response = await _userService.GetUserModulesAsync(user.IdUser);
 
-            return Ok(response);
+            return Ok(ApiResponses.Ok(response, "OK", "USER_MODULE_FOUND"));
         }
     }
 }

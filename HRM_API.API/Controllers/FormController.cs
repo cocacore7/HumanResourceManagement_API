@@ -16,18 +16,18 @@ namespace HRM_API.API.Controllers
         public async Task<IActionResult> GetFormAnswers([FromQuery] int PreApplicationId, [FromQuery] int FormId)
         {
             if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
-                return Unauthorized(new ErrorDto { Error = "Token inválido" });
+                return Unauthorized(ApiResponses.Fail("UNAUTHORIZED", "Token inválido"));
 
             var response = await _formService.GetFormAnswersAsync(PreApplicationId, FormId);
 
-            return Ok(response);
+            return Ok(ApiResponses.Ok(response, "OK", "FORM_ANSWER_FOUND"));
         }
 
         [HttpPost("SetFormAnswers")]
         public async Task<IActionResult> SetFormAnswers([FromBody] GeneralFormRequestDto request)
         {
             if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
-                return Unauthorized(new ErrorDto { Error = "Token inválido" });
+                return Unauthorized(ApiResponses.Fail("UNAUTHORIZED", "Token inválido"));
 
             LoginDBResponseDto user = new()
             {
@@ -38,14 +38,14 @@ namespace HRM_API.API.Controllers
 
             var response = await _formService.SetFormAnswersAsync(request, user);
 
-            return Ok(response);
+            return Ok(ApiResponses.Ok(response, "OK", "FORM_ANSWER_CREATE"));
         }
 
         [HttpPut("UpdateFormAnswers")]
         public async Task<IActionResult> UpdateFormAnswers([FromBody] GeneralFormRequestDto request)
         {
             if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
-                return Unauthorized(new ErrorDto { Error = "Token inválido" });
+                return Unauthorized(ApiResponses.Fail("UNAUTHORIZED", "Token inválido"));
 
             LoginDBResponseDto user = new()
             {
@@ -56,7 +56,7 @@ namespace HRM_API.API.Controllers
 
             var response = await _formService.UpdateFormAnswersAsync(request, user);
 
-            return Ok(response);
+            return Ok(ApiResponses.Ok(response, "OK", "FORM_ANSWER_UPDATE"));
         }
     }
 }
