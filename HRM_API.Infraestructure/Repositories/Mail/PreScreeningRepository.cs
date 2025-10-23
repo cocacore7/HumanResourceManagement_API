@@ -15,12 +15,12 @@ namespace HRM_API.Infraestructure.Repositories.Mail
             _configuration = configuration;
         }
 
-        public async Task<PreScreeningDto?> GetPolygraphAsync(int id)
+        public async Task<PreScreeningDto?> GetPreScreeningRepositoryAsync(int id)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
             var sql = @"SSELECT pa.IdPreApplication [Code]
-                              ,u.Name             [FullName_Recruiter] 
+                              ,u.Name              [FullName_Recruiter] 
                               ,pa.FullName         [FullName]
                               ,pa.Age              [Age]
                               ,pa.Gender           [Gender]
