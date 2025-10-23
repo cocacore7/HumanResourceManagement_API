@@ -6,16 +6,16 @@ using Microsoft.Extensions.Configuration;
 
 namespace HRM_API.Infraestructure.Repositories.Mail
 {
-    public class AssessmentRepository : IMailRepository
+    public class BossInterviewRepository : IMailRepository
     {
         private readonly IConfiguration _configuration;
 
-        public AssessmentRepository(IConfiguration configuration)
+        public BossInterviewRepository(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
-        public async Task<AssessmentTestDto?> GetAssessmentTestAsync(int id)
+        public async Task<BossInterviewDto?> GetBossInterviewAsync(int id)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
@@ -37,14 +37,14 @@ namespace HRM_API.Infraestructure.Repositories.Mail
                         INNER JOIN HRM_DB.reclutamiento.Comment cm
                         ON cm.PreApplicationId    = pa.IdPreApplication
                         WHERE pa.IdPreApplication = @id
-                        AND CommentStatus = 'pruebas'";
+                        AND CommentStatus = 'entrevistaJefe'";
 
-            var assessment = await connection.QueryFirstOrDefaultAsync<AssessmentTestDto>(sql, new {id});
+            var boosinterview = await connection.QueryFirstOrDefaultAsync<BossInterviewDto>(sql, new {id});
 
-            if (assessment == null)
+            if (boosinterview  == null)
                 throw new Exception("No se encontraron datos para el correo.");
 
-            return assessment;
+            return boosinterview;
         }
     }
 }
