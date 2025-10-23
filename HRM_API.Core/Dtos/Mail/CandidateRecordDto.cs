@@ -1,6 +1,6 @@
-namespace HRM_API.Core.Dtos.Authorization
+namespace HRM_API.Core.Dtos.Mail
 {
-    public class BossInterviewDto
+    public class CandidateRecordDto
     {
         public string Code { get; set; } = string.Empty;
         public string FullName { get; set; } = string.Empty;

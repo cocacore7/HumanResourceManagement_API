@@ -3,7 +3,7 @@ using HRM_API.Core.Interfaces.Mail;
 
 namespace HRM_API.Application.Templates
 {
-    public class RecordAdapter : ITemplateAdapter
+    public class RecordAdapter : ITemplateRepository
     {
         private readonly IMailRepository _repository;
 

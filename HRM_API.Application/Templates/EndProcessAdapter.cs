@@ -3,18 +3,18 @@ using HRM_API.Core.Interfaces.Mail;
 
 namespace HRM_API.Application.Templates
 {
-    public class EndProcessAdapter : ITemplateAdapter
+    public class EndProcessAdapter : ITemplateRepository
     {
         private readonly IMailRepository _repository;
 
         public string TemplateName => "EndProcesss.html";
 
-        public EndProcessdapter(IMailRepository repository)
+        public EndProcessAdapter(IMailRepository repository)
         {
             _repository = repository;
         }
 
-        public async Task<string> EndProcessAsync(int id)
+        public async Task<string> BuildBodyAsync(int id)
         {
             var dto = await _repository.GetEndProcessAsync(id);
             if (dto == null)
@@ -25,7 +25,7 @@ namespace HRM_API.Application.Templates
 
             htmlBody = htmlBody
                 .Replace("[FULLNAME]", dto.FullName)
-                .Replace("[JOBPOSITIONNAME]", dto.JobPositionName)
+                .Replace("[JOBPOSITIONNAME]", dto.JobPositionName);
 
             return htmlBody;
         }

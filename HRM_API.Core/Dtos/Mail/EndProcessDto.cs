@@ -1,4 +1,4 @@
-namespace HRM_API.Core.Dtos.Authorization
+namespace HRM_API.Core.Dtos.Mail
 {
     public class EndProcessDto
     {

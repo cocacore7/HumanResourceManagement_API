@@ -1,5 +1,8 @@
-public interface ITemplateAdapter
+namespace HRM_API.Core.Interfaces.Mail
 {
-    string TemplateName { get; } 
-    Task<string> BuildBodyAsync(int id);
+    public interface ITemplateRepository
+    {
+        string TemplateName { get; }
+        Task<string> BuildBodyAsync(int id);
+    }
 }

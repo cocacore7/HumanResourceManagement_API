@@ -1,12 +1,14 @@
 ﻿using HRM_API.API.Middleware;
 using HRM_API.Application.Helpers;
 using HRM_API.Application.Services;
+using HRM_API.Application.Templates;
 using HRM_API.Configuration;
 using HRM_API.Core.Interfaces.Authorization;
 using HRM_API.Core.Interfaces.Catalog;
 using HRM_API.Core.Interfaces.File;
 using HRM_API.Core.Interfaces.Form;
 using HRM_API.Core.Interfaces.JobVacancy;
+using HRM_API.Core.Interfaces.Mail;
 using HRM_API.Core.Interfaces.PreApplication;
 using HRM_API.Core.Interfaces.User;
 using HRM_API.Infraestructure.Repositories.Authorization;
@@ -14,6 +16,7 @@ using HRM_API.Infraestructure.Repositories.Catalog;
 using HRM_API.Infraestructure.Repositories.File;
 using HRM_API.Infraestructure.Repositories.Form;
 using HRM_API.Infraestructure.Repositories.JobVacancy;
+using HRM_API.Infraestructure.Repositories.Mail;
 using HRM_API.Infraestructure.Repositories.PreApplication;
 using HRM_API.Infraestructure.Repositories.User;
 using Microsoft.Data.SqlClient;
@@ -96,6 +99,17 @@ builder.Services.AddScoped<IPreApplicationRepository, PreApplicationRepository>(
 builder.Services.AddScoped<PreApplicationService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<IMailRepository, MailRepository>();
+builder.Services.AddScoped<MailService>();
+builder.Services.AddScoped<ITemplateRepository, AssessmentTestAdapter>();
+builder.Services.AddScoped<ITemplateRepository, BossInterviewAdapter>();
+builder.Services.AddScoped<ITemplateRepository, CandidateRecordAdapter>();
+builder.Services.AddScoped<ITemplateRepository, EndProcessAdapter>();
+builder.Services.AddScoped<ITemplateRepository, JobInterviewAdapter>();
+builder.Services.AddScoped<ITemplateRepository, PolygraphAdapter>();
+builder.Services.AddScoped<ITemplateRepository, PreScreeningAdapter>();
+builder.Services.AddScoped<ITemplateRepository, RecordAdapter>();
+builder.Services.AddScoped<TemplateAdapterFactory>();
 #endregion
 
 #region Controladores y Swagger

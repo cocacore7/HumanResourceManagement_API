@@ -3,7 +3,7 @@ using HRM_API.Core.Interfaces.Mail;
 
 namespace HRM_API.Application.Templates
 {
-    public class BossInterviewAdapter : ITemplateAdapter
+    public class BossInterviewAdapter : ITemplateRepository
     {
         private readonly IMailRepository _repository;
 
@@ -31,7 +31,7 @@ namespace HRM_API.Application.Templates
                 .Replace("[GENDER]", dto.Gender)
                 .Replace("[PHONE]", dto.Phone)
                 .Replace("[EMAIL]", dto.Email)
-                .Replace("[JOBPOSITIONNAME]", dto.JobPositionNmae)
+                .Replace("[JOBPOSITIONNAME]", dto.JobPositionName)
                 .Replace("[DATEAT]", DateTime.Parse(dto.CreatedAt).ToString("dd/MM/yyyy"))
                 .Replace("[COMMENT]", dto.Comment ?? "");
 

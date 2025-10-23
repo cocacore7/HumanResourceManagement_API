@@ -1,7 +1,6 @@
 using System.Net;
 using System.Net.Mail;
 using HRM_API.Configuration;
-using Microsoft.Extensions.Configuration;
 
 namespace HRM_API.Application.Services
 {
@@ -9,11 +8,6 @@ namespace HRM_API.Application.Services
     {
         private readonly TemplateAdapterFactory _factory = factory;
         private readonly ISettings _settings = settings;
-        private readonly string _smtpHost = _settings.SmtHost;
-        private readonly int _smtpPort = _settings.SmtPort;
-        private readonly string _smtpUser = _settings.EmailAddress;
-        private readonly string _smtpPass = _settings.EmailKey;
-        private readonly string _fromAddress = _settings.FromAddress;
 
         public async Task<bool> SendEmailFromTemplateAsync(string toEmail, string subject, string templateName, int id)
         {
@@ -23,15 +17,15 @@ namespace HRM_API.Application.Services
             // Genera el cuerpo del mensaje
             var htmlBody = await adapter.BuildBodyAsync(id);
 
-            using var smtp = new SmtpClient(_smtpHost, _smtpPort)
+            using var smtp = new SmtpClient(_settings.SmtHost, _settings.SmtPort ?? 0)
             {
                 EnableSsl = true,
-                Credentials = new NetworkCredential(_smtpUser, _smtpPass)
+                Credentials = new NetworkCredential(_settings.EmailAddress, _settings.EmailKey)
             };
 
             var mail = new MailMessage
             {
-                From = new MailAddress(_fromAddress, "Forza Delivery Express"),
+                From = new MailAddress(_settings.FromAddress, "Forza Delivery Express"),
                 Subject = subject,
                 Body = htmlBody,
                 IsBodyHtml = true

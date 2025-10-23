@@ -3,7 +3,7 @@ using HRM_API.Core.Interfaces.Mail;
 
 namespace HRM_API.Application.Templates
 {
-    public class PreScreeningAdapter : ITemplateAdapter
+    public class PreScreeningAdapter : ITemplateRepository
     {
         private readonly IMailRepository _repository;
 
