@@ -14,33 +14,78 @@ namespace HRM_API.API.Controllers
         public async Task<IActionResult> GetJobCatalog()
         {
             if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
-                return Unauthorized(new ErrorDto { Error = "Token inválido" });
+                return Unauthorized(ApiResponses.Fail("UNAUTHORIZED", "Token inválido"));
 
             var response = await _catalogService.GetJobCatalogAsync();
 
-            return Ok(response);
+            return Ok(ApiResponses.Ok(response, "OK", "JOB_CATALOG_FOUND"));
         }
 
         [HttpGet("GetTownCatalog")]
         public async Task<IActionResult> GetTownCatalog()
         {
             if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
-                return Unauthorized(new ErrorDto { Error = "Token inválido" });
+                return Unauthorized(ApiResponses.Fail("UNAUTHORIZED", "Token inválido"));
 
             var response = await _catalogService.GetTownCatalogAsync();
 
-            return Ok(response);
+            return Ok(ApiResponses.Ok(response, "OK", "TOWN_CATALOG_FOUND"));
         }
 
         [HttpGet("GetTermsAndConditionsCatalog")]
         public async Task<IActionResult> GetTermsAndConditionsCatalog()
         {
             if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
-                return Unauthorized(new ErrorDto { Error = "Token inválido" });
+                return Unauthorized(ApiResponses.Fail("UNAUTHORIZED", "Token inválido"));
 
             var response = await _catalogService.GetTermsAndConditionsCatalogAsync();
 
-            return Ok(response);
+            return Ok(ApiResponses.Ok(response, "OK", "TERMS_CATALOG_FOUND"));
+        }
+
+
+        [HttpGet("GetVacancyReasonCatalog")]
+        public async Task<IActionResult> GetVacancyReasonCatalog()
+        {
+            if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
+                return Unauthorized(ApiResponses.Fail("UNAUTHORIZED", "Token inválido"));
+
+            var response = await _catalogService.GetVacancyReasonCatalogAsync();
+
+            return Ok(ApiResponses.Ok(response, "OK", "VACANCYR_CATALOG_FOUND"));
+        }
+
+        [HttpGet("GetVacancyTypeCatalog")]
+        public async Task<IActionResult> GetVacancyTypeCatalog()
+        {
+            if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
+                return Unauthorized(ApiResponses.Fail("UNAUTHORIZED", "Token inválido"));
+
+            var response = await _catalogService.GetVacancyTypeCatalogAsync();
+
+            return Ok(ApiResponses.Ok(response, "OK", "VACANCYT_CATALOG_FOUND"));
+        }
+
+        [HttpGet("GetUsersCatalog")]
+        public async Task<IActionResult> GetUsersCatalog([FromQuery] string KeyName = "")
+        {
+            if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
+                return Unauthorized(ApiResponses.Fail("UNAUTHORIZED", "Token inválido"));
+
+            var response = await _catalogService.GetUsersCatalogAsync(KeyName);
+
+            return Ok(ApiResponses.Ok(response, "OK", "USERS_CATALOG_FOUND"));
+        }
+
+        [HttpGet("GetRoleCatalog")]
+        public async Task<IActionResult> GetRoleCatalog()
+        {
+            if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
+                return Unauthorized(ApiResponses.Fail("UNAUTHORIZED", "Token inválido"));
+
+            var response = await _catalogService.GetRoleCatalogAsync();
+
+            return Ok(ApiResponses.Ok(response, "OK", "ROLE_CATALOG_FOUND"));
         }
     }
 }

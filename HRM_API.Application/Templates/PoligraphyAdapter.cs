@@ -3,7 +3,7 @@ using HRM_API.Core.Interfaces.Mail;
 
 namespace HRM_API.Application.Templates
 {
-    public class PolygraphAdapter : ITemplateAdapter
+    public class PolygraphAdapter : ITemplateRepository
     {
         private readonly IMailRepository _repository;
 

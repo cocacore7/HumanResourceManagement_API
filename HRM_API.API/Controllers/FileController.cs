@@ -12,22 +12,22 @@ namespace HRM_API.API.Controllers
     {
         private readonly FileService _fileService = fileService;
 
-        [HttpGet("GetJobVacancies")]
+        [HttpGet("GetFileBase64")]
         public async Task<IActionResult> GetFileBase64([FromQuery] string filePath = "")
         {
             if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
-                return Unauthorized(new ErrorDto { Error = "Token inválido" });
+                return Unauthorized(ApiResponses.Fail("UNAUTHORIZED", "Token inválido"));
 
             var response = await _fileService.GetFileBase64Async(filePath);
 
-            return Ok(response);
+            return Ok(ApiResponses.Ok(response, "OK", "FILE_FOUND"));
         }
 
         [HttpPost("SetFile")]
         public async Task<IActionResult> SetFile([FromBody] GeneralFormRequestDto request)
         {
             if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
-                return Unauthorized(new ErrorDto { Error = "Token inválido" });
+                return Unauthorized(ApiResponses.Fail("UNAUTHORIZED", "Token inválido"));
 
             LoginDBResponseDto user = new()
             {
@@ -38,7 +38,7 @@ namespace HRM_API.API.Controllers
 
             var response = await _fileService.SetFileAsync(request, user);
 
-            return Ok(response);
+            return Ok(ApiResponses.Ok(response, "OK", "FILE_CREATE"));
         }
     }
 }

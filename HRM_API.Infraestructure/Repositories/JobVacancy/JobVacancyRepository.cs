@@ -71,5 +71,21 @@ namespace HRM_API.Infraestructure.Repositories.JobVacancy
 
             return rowsAffected > 0;
         }
+
+        public async Task<bool?> UpdateJobVacancyAsync(UpdateJobVacancyDBRequestDto dbRequest)
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
+
+            var sql = @"UPDATE HRM_DB.reclutamiento.JobVacancy 
+                        SET JobPositionName =@JobPositionName, RequesterName = @RequesterName, RequesterPosition = @RequesterPosition, AreaText = @AreaText,
+                        RegionText = @RegionText, HubText = @HubText, Objective = @Objective, Comment = @Comment, VacancyTypeId = @VacancyTypeId, 
+                        ReasonId = @ReasonId, Salary = @Salary, TotalPositions = @TotalPositions, AvailablePositions = @AvailablePositions, 
+                        Status = @Status, UpdatedAt = @UpdatedAt
+                        WHERE IdVacancy = @IdVacancy;";
+
+            var rowsAffected = await connection.ExecuteAsync(sql, dbRequest);
+
+            return rowsAffected > 0;
+        }
     }
 }

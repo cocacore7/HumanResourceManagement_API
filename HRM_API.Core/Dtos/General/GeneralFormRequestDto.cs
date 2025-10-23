@@ -2,8 +2,8 @@
 {
     public class GeneralFormRequestDto
     {
-        public GeneralFormRequestFormDto? Form { get; set; }
-        public GeneralFormRequestOriginDto? Origin { get; set; }
+        public GeneralFormRequestFormDto Form { get; set; } = new();
+        public GeneralFormRequestOriginDto Origin { get; set; } = new();
         public List<GeneralFormRequestAnswerDto>? Answers { get; set; }
     }
 }

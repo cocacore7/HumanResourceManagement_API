@@ -1,5 +1,5 @@
 using Dapper;
-using HRM_API.Core.Dtos.Authorization;
+using HRM_API.Core.Dtos.Mail;
 using HRM_API.Core.Interfaces.Mail;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
@@ -91,7 +91,7 @@ namespace HRM_API.Infraestructure.Repositories.Mail
                         ON jb.IdVacancy  = pa.VacancyId
                         WHERE pa.IdPreApplication = @id";
 
-            var cantidateRecord = await connection.QueryFirstOrDefaultAsync<CandidateRecordDto>(sql, new {id});
+            var candidateRecord = await connection.QueryFirstOrDefaultAsync<CandidateRecordDto>(sql, new {id});
 
             if (candidateRecord  == null)
                 throw new Exception("No se encontraron datos para el correo.");
@@ -183,7 +183,7 @@ namespace HRM_API.Infraestructure.Repositories.Mail
             return polygraph;
         }
 
-        public async Task<PreScreeningDto?> GetPreScreeningRepositoryAsync(int id)
+        public async Task<PreScreeningDto?> GetPreScreeningAsync(int id)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 

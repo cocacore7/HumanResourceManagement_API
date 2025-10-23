@@ -1,4 +1,5 @@
-﻿using HRM_API.Application.Helpers;
+﻿using Azure;
+using HRM_API.Application.Helpers;
 using HRM_API.Configuration;
 using HRM_API.Core.Dtos.Authorization;
 using HRM_API.Core.Dtos.File;
@@ -64,19 +65,30 @@ namespace HRM_API.Application.Services
 
             foreach (var item in request.Answers ?? Enumerable.Empty<GeneralFormRequestAnswerDto>())
             {
-                var filepath = _fileHelper.SaveFile(item, request?.Origin ?? new GeneralFormRequestOriginDto());
-
                 SetFileDBRequestDto newfile = new()
                 {
                     FileName = item.FileName ?? string.Empty,
                     ContentType = item.ContentType ?? string.Empty,
-                    FilePath = filepath ?? string.Empty,
+                    FilePath = "" ?? string.Empty,
                     SizeBytes = item.SizeBytes ?? 0,
                     UploadedBy = int.TryParse(user.IdUser, out int createdBy) ? createdBy : 0
                 };
-
-                var responsedb = await _repository.SetFileAsync(newfile);
-                response.Response.Add(responsedb == 1 ? "Archivo Guardado Exitosamente" : "Error Archivo, No Se Pudo Guardar");
+                var responsedb = (int) await _repository.SetFileAsync(newfile);
+                if (request?.Origin != null)
+                {
+                    request.Origin.RegisterId = responsedb;
+                }
+                var filepath = _fileHelper.SaveFile(item, request?.Origin ?? new GeneralFormRequestOriginDto());
+                UpdateFileDBRequestDto updatefile = new()
+                {
+                    IdFile = responsedb,
+                    FileName = item.FileName ?? string.Empty,
+                    ContentType = item.ContentType ?? string.Empty,
+                    FilePath = filepath ?? string.Empty,
+                    SizeBytes = item.SizeBytes ?? 0
+                };
+                var responsedbupdate = (bool)await _repository.UpdateFileAsync(updatefile);
+                response.Response.Add(responsedbupdate ? "Archivo Guardado Exitosamente" : "Error Archivo, No Se Pudo Guardar");
             }
 
             return response;

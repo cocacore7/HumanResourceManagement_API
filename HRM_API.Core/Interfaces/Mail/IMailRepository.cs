@@ -1,6 +1,4 @@
-
-
-using HRM_API.Core.Dtos.Authorization;
+using HRM_API.Core.Dtos.Mail;
 
 namespace HRM_API.Core.Interfaces.Mail
 {

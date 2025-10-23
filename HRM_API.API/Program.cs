@@ -1,17 +1,22 @@
 ﻿using HRM_API.API.Middleware;
 using HRM_API.Application.Helpers;
 using HRM_API.Application.Services;
+using HRM_API.Application.Templates;
 using HRM_API.Configuration;
 using HRM_API.Core.Interfaces.Authorization;
+using HRM_API.Core.Interfaces.Catalog;
 using HRM_API.Core.Interfaces.File;
 using HRM_API.Core.Interfaces.Form;
 using HRM_API.Core.Interfaces.JobVacancy;
+using HRM_API.Core.Interfaces.Mail;
 using HRM_API.Core.Interfaces.PreApplication;
 using HRM_API.Core.Interfaces.User;
 using HRM_API.Infraestructure.Repositories.Authorization;
+using HRM_API.Infraestructure.Repositories.Catalog;
 using HRM_API.Infraestructure.Repositories.File;
 using HRM_API.Infraestructure.Repositories.Form;
 using HRM_API.Infraestructure.Repositories.JobVacancy;
+using HRM_API.Infraestructure.Repositories.Mail;
 using HRM_API.Infraestructure.Repositories.PreApplication;
 using HRM_API.Infraestructure.Repositories.User;
 using Microsoft.Data.SqlClient;
@@ -82,6 +87,8 @@ builder.Services.AddSingleton<EnumHelper>();
 #region Repositorios y Servicios
 builder.Services.AddScoped<IAuthorizationRepository, AuthorizationRepository>();
 builder.Services.AddScoped<AuthorizationService>();
+builder.Services.AddScoped<ICatalogRepository, CatalogRepository>();
+builder.Services.AddScoped<CatalogService>();
 builder.Services.AddScoped<IFileRepository, FileRepository>();
 builder.Services.AddScoped<FileService>();
 builder.Services.AddScoped<IFormRepository, FormRepository>();
@@ -92,10 +99,25 @@ builder.Services.AddScoped<IPreApplicationRepository, PreApplicationRepository>(
 builder.Services.AddScoped<PreApplicationService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<IMailRepository, MailRepository>();
+builder.Services.AddScoped<MailService>();
+builder.Services.AddScoped<ITemplateRepository, AssessmentTestAdapter>();
+builder.Services.AddScoped<ITemplateRepository, BossInterviewAdapter>();
+builder.Services.AddScoped<ITemplateRepository, CandidateRecordAdapter>();
+builder.Services.AddScoped<ITemplateRepository, EndProcessAdapter>();
+builder.Services.AddScoped<ITemplateRepository, JobInterviewAdapter>();
+builder.Services.AddScoped<ITemplateRepository, PolygraphAdapter>();
+builder.Services.AddScoped<ITemplateRepository, PreScreeningAdapter>();
+builder.Services.AddScoped<ITemplateRepository, RecordAdapter>();
+builder.Services.AddScoped<TemplateAdapterFactory>();
 #endregion
 
 #region Controladores y Swagger
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(o =>
+{
+    o.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+    o.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+});
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(options =>
@@ -143,11 +165,15 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.InjectStylesheet("/swagger-ui/custom-dark.css");
+    });
 }
 app.UseHttpsRedirection();
 //app.UseCors("AllowOrigins"); //CORS Estandar
 app.UseCors(DevCors); //CORS Dev
+app.UseStaticFiles();
 app.UseJwtMiddleware();
 app.UseAuthentication();
 app.UseAuthorization();

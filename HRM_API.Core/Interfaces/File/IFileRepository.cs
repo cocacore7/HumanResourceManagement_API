@@ -6,5 +6,6 @@ namespace HRM_API.Core.Interfaces.File
     {
         Task<GetFileBase64DBResponseDto?> GetFileBase64Async(string folderName, int id, string code);
         Task<int?> SetFileAsync(SetFileDBRequestDto File);
+        Task<bool?> UpdateFileAsync(UpdateFileDBRequestDto File);
     }
 }

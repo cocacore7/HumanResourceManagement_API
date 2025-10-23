@@ -82,19 +82,31 @@ namespace HRM_API.Application.Services
                         break;
 
                     case var code when code == _enumHelper.GetEnumDescription(SetJobVacancyCodeEnum.RequisitionFileId):
-                        var filepath = _fileHelper.SaveFile(item, request?.Origin ?? new GeneralFormRequestOriginDto());
-
                         SetFileDBRequestDto newfile = new()
                         {
                             FileName = item.FileName ?? string.Empty,
                             ContentType = item.ContentType ?? string.Empty,
-                            FilePath = filepath ?? string.Empty,
+                            FilePath = "" ?? string.Empty,
                             SizeBytes = item.SizeBytes ?? 0,
-                            UploadedBy = int.TryParse(user.IdUser, out int createdByfile) ? createdByfile : 0
+                            UploadedBy = int.TryParse(user.IdUser, out int createdByFile) ? createdByFile : 0
                         };
-                        var responsedb = await _fileRepository.SetFileAsync(newfile);
+                        var responsedb = (int)await _fileRepository.SetFileAsync(newfile);
+                        if (request?.Origin != null)
+                        {
+                            request.Origin.RegisterId = responsedb;
+                        }
+                        var filepath = _fileHelper.SaveFile(item, request?.Origin ?? new GeneralFormRequestOriginDto());
+                        UpdateFileDBRequestDto updatefile = new()
+                        {
+                            IdFile = responsedb,
+                            FileName = item.FileName ?? string.Empty,
+                            ContentType = item.ContentType ?? string.Empty,
+                            FilePath = filepath ?? string.Empty,
+                            SizeBytes = item.SizeBytes ?? 0
+                        };
+                        var responsedbupdate = (bool)await _fileRepository.UpdateFileAsync(updatefile);
 
-                        newvacant.RequisitionFileId = responsedb ?? 0;
+                        newvacant.RequisitionFileId = responsedb;
                         break;
 
                     default:
@@ -102,10 +114,93 @@ namespace HRM_API.Application.Services
                 }
             }
 
-            newvacant.Status = "nuevaVacante";
+            newvacant.Status = request?.Origin.State ?? string.Empty;
             newvacant.CreatedBy = int.TryParse(user.IdUser, out int createdBy) ? createdBy : 0;
 
             var newvacancy = (bool)await _repository.SetJobVacancyAsync(newvacant);
+            return newvacancy;
+        }
+
+        public async Task<bool?> UpdateJobVacancyAsync(GeneralFormRequestDto request, LoginDBResponseDto user)
+        {
+            UpdateJobVacancyDBRequestDto vacant = new();
+
+            foreach (var item in request.Answers ?? Enumerable.Empty<GeneralFormRequestAnswerDto>())
+            {
+                switch (item.Code)
+                {
+                    case var code when code == _enumHelper.GetEnumDescription(SetJobVacancyCodeEnum.JobPositionName):
+                        vacant.JobPositionName = item.ValueText ?? string.Empty;
+                        break;
+
+                    case var code when code == _enumHelper.GetEnumDescription(SetJobVacancyCodeEnum.RequesterName):
+                        vacant.RequesterName = item.ValueText ?? string.Empty;
+                        break;
+
+                    case var code when code == _enumHelper.GetEnumDescription(SetJobVacancyCodeEnum.RequesterPosition):
+                        vacant.RequesterPosition = item.ValueText ?? string.Empty;
+                        break;
+
+                    case var code when code == _enumHelper.GetEnumDescription(SetJobVacancyCodeEnum.AreaText):
+                        vacant.AreaText = item.ValueText ?? string.Empty;
+                        break;
+
+                    case var code when code == _enumHelper.GetEnumDescription(SetJobVacancyCodeEnum.RegionText):
+                        vacant.RegionText = item.ValueText ?? string.Empty;
+                        break;
+
+                    case var code when code == _enumHelper.GetEnumDescription(SetJobVacancyCodeEnum.HubText):
+                        vacant.HubText = item.ValueText ?? string.Empty;
+                        break;
+
+                    case var code when code == _enumHelper.GetEnumDescription(SetJobVacancyCodeEnum.Objective):
+                        vacant.Objective = item.ValueText ?? string.Empty;
+                        break;
+
+                    case var code when code == _enumHelper.GetEnumDescription(SetJobVacancyCodeEnum.Comment):
+                        vacant.Comment = item.ValueText ?? string.Empty;
+                        break;
+
+                    case var code when code == _enumHelper.GetEnumDescription(SetJobVacancyCodeEnum.VacancyTypeId):
+                        vacant.VacancyTypeId = item.OptionId ?? 0;
+                        break;
+
+                    case var code when code == _enumHelper.GetEnumDescription(SetJobVacancyCodeEnum.ReasonId):
+                        vacant.ReasonId = item.OptionId ?? 0;
+                        break;
+
+                    case var code when code == _enumHelper.GetEnumDescription(SetJobVacancyCodeEnum.Salary):
+                        vacant.Salary = item.ValueNumber ?? 0;
+                        break;
+
+                    case var code when code == _enumHelper.GetEnumDescription(SetJobVacancyCodeEnum.TotalPositions):
+                        vacant.TotalPositions = item.ValueNumber ?? 0;
+                        vacant.AvailablePositions = item.ValueNumber ?? 0;
+                        break;
+
+                    case var code when code == _enumHelper.GetEnumDescription(SetJobVacancyCodeEnum.RequisitionFileId):
+                        var filepath = _fileHelper.SaveFile(item, request?.Origin ?? new GeneralFormRequestOriginDto());
+
+                        UpdateFileDBRequestDto newfile = new()
+                        {
+                            IdFile = item.IdFile ?? 0,
+                            FileName = item.FileName ?? string.Empty,
+                            ContentType = item.ContentType ?? string.Empty,
+                            FilePath = filepath ?? string.Empty,
+                            SizeBytes = item.SizeBytes ?? 0
+                        };
+                        var responsedb = await _fileRepository.UpdateFileAsync(newfile);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+
+            vacant.Status = request?.Origin.State ?? string.Empty;
+            vacant.IdVacancy = request?.Origin.RegisterId;
+
+            var newvacancy = (bool)await _repository.UpdateJobVacancyAsync(vacant);
             return newvacancy;
         }
     }

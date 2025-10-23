@@ -3,7 +3,7 @@ using HRM_API.Core.Interfaces.Mail;
 
 namespace HRM_API.Application.Templates
 {
-    public class CandidateRecordAdapter : ITemplateAdapter
+    public class CandidateRecordAdapter : ITemplateRepository
     {
         private readonly IMailRepository _repository;
 
@@ -14,7 +14,7 @@ namespace HRM_API.Application.Templates
             _repository = repository;
         }
 
-        public async Task<string> CandidateRecordAsync(int id)
+        public async Task<string> BuildBodyAsync(int id)
         {
             var dto = await _repository.GetCandidateRecordAsync(id);
             if (dto == null)
@@ -26,7 +26,7 @@ namespace HRM_API.Application.Templates
             htmlBody = htmlBody
                 .Replace("[CODE]", dto.Code.ToString())
                 .Replace("[FULLNAME]", dto.FullName)
-                .Replace("[JOBPOSITIONNAME]", dto.JobPositionName)
+                .Replace("[JOBPOSITIONNAME]", dto.JobPositionName);
 
             return htmlBody;
         }

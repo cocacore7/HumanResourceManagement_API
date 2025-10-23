@@ -18,8 +18,9 @@
         public bool? AcceptedTerms { get; set; }
         public string Origin { get; set; } = string.Empty;
         public string Status { get; set; } = "preSolicitud";
-        public bool? IsReferred { get; set; }
+        public bool IsReferred { get; set; } = false;
         public string RefferedBy { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public int? CreatedBy { get; set; }
     }
 }

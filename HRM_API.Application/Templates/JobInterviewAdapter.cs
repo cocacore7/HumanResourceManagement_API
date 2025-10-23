@@ -3,7 +3,7 @@ using HRM_API.Core.Interfaces.Mail;
 
 namespace HRM_API.Application.Templates
 {
-    public class JobInterviewAdapter : ITemplateAdapter
+    public class JobInterviewAdapter : ITemplateRepository
     {
         private readonly IMailRepository _repository;
 
