@@ -14,10 +14,14 @@ namespace HRM_API.Infraestructure.Repositories.User
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
-            var sql = @"SELECT m.IdModule, m.Path, m.Icon, m.Label
-                        FROM HRM_DB.reclutamiento.Module m
-                        INNER JOIN HRM_DB.reclutamiento.UserModule um ON um.ModuleId = m.IdModule
-                        WHERE um.UserId = @IdUser";
+            // ✅ Sin prefijo de base, solo esquema.tabla. La DB la pone la connection string.
+            var sql = @"
+                SELECT m.IdModule, m.Path, m.Icon, m.Label
+                FROM reclutamiento.Module AS m
+                INNER JOIN reclutamiento.UserModule AS um ON um.ModuleId = m.IdModule
+                WHERE um.UserId = @IdUser;
+            ";
+
             var result = await connection.QueryAsync<GetUserModulesDBResponseDto>(sql, new { IdUser });
 
             return [.. result];
