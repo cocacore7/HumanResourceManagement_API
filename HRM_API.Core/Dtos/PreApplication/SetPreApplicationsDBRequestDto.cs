@@ -17,7 +17,7 @@
         public int? CVFileId { get; set; }
         public bool? AcceptedTerms { get; set; }
         public string Origin { get; set; } = string.Empty;
-        public string Status { get; set; } = "preSolicitud";
+        public string Status { get; set; } = "preFiltro";
         public bool IsReferred { get; set; } = false;
         public string RefferedBy { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; } = DateTime.Now;
