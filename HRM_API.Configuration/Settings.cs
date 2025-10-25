@@ -8,5 +8,6 @@
         public string EmailAddress { get; set; } = string.Empty;
         public string SmtHost { get; set; } = string.Empty;
         public int? SmtPort { get; set; }
+        public int? PublicUserId { get; set; }
     }
 }

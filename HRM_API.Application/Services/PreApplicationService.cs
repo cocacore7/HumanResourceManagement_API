@@ -94,21 +94,8 @@ namespace HRM_API.Application.Services
                             UploadedBy = int.TryParse(user.IdUser, out int createdByfileCV) ? createdByfileCV : 0
                         };
                         var responsedb = (int)await _fileRepository.SetFileAsync(newfile);
-                        if (request?.Origin != null)
-                        {
-                            request.Origin.RegisterId = responsedb;
-                        }
-                        var filepath = _fileHelper.SaveFile(item, request?.Origin ?? new GeneralFormRequestOriginDto());
-                        UpdateFileDBRequestDto updatefile = new()
-                        {
-                            IdFile = responsedb,
-                            FileName = item.FileName ?? string.Empty,
-                            ContentType = item.ContentType ?? string.Empty,
-                            FilePath = filepath ?? string.Empty,
-                            SizeBytes = item.SizeBytes ?? 0
-                        };
-                        var responsedbupdate = (bool)await _fileRepository.UpdateFileAsync(updatefile);
                         newApplication.CVFileId = responsedb;
+                        item.IdFile = responsedb;
                         break;
 
                     case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.AcceptedTerms):
@@ -120,13 +107,37 @@ namespace HRM_API.Application.Services
                 }
             }
 
-            bool form = false;
+            int form = 0;
             if (newApplication.TownId != 0 && newApplication.VacancyId != 0)
             {
                 newApplication.CreatedBy = int.TryParse(user.IdUser, out int createdByfileCV) ? createdByfileCV : 0;
-                form = (bool)await _repository.SetPreApplicationsAsync(newApplication);
+                form = (int)await _repository.SetPreApplicationsAsync(newApplication);
+                request.Origin.RegisterId = form;
             }
-            SetPreApplicationsReponseDto response = new() { Response = form ? "Pre Aplicacion Registrada Exitosamente" : "Error Al Registrar Pre Aplicacion" };
+
+            foreach (var item in request.Answers ?? Enumerable.Empty<GeneralFormRequestAnswerDto>())
+            {
+                switch (item.Code)
+                {
+                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.File):
+                        var filepath = _fileHelper.SaveFile(item, request?.Origin ?? new GeneralFormRequestOriginDto());
+                        UpdateFileDBRequestDto updatefile = new()
+                        {
+                            IdFile = item.IdFile,
+                            FileName = item.FileName ?? string.Empty,
+                            ContentType = item.ContentType ?? string.Empty,
+                            FilePath = filepath ?? string.Empty,
+                            SizeBytes = item.SizeBytes ?? 0
+                        };
+                        var responsedbupdate = (bool)await _fileRepository.UpdateFileAsync(updatefile);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+
+            SetPreApplicationsReponseDto response = new() { Response = form > 0 ? "Pre Aplicacion Registrada Exitosamente" : "Error Al Registrar Pre Aplicacion" };
 
             return (response);
         }
@@ -192,6 +203,8 @@ namespace HRM_API.Application.Services
                     case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.File):
                         if (!string.IsNullOrEmpty(item.Base64))
                         {
+                            var file = await _repository.GetPreApplicationFileIdAsync(request?.Origin.RegisterId ?? new());
+                            item.IdFile= file;
                             var filepath = _fileHelper.SaveFile(item, request?.Origin ?? new GeneralFormRequestOriginDto());
 
                             UpdateFileDBRequestDto newfile = new()
@@ -207,12 +220,12 @@ namespace HRM_API.Application.Services
                         } else break;
 
                     case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.AcceptedTerms):
-                                newApplication.AcceptedTerms = item.ValueBool;
-                                break;
+                        newApplication.AcceptedTerms = item.ValueBool;
+                        break;
 
-                            default:
-                                break;
-                            }
+                    default:
+                        break;
+                }
             }
 
             bool form = false;

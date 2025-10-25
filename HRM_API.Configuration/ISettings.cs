@@ -8,5 +8,6 @@
         string EmailAddress { get; set; }
         string SmtHost { get; set; }
         int? SmtPort { get; set; }
+        int? PublicUserId { get; set; }
     }
 }

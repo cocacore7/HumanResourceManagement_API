@@ -52,7 +52,20 @@ namespace HRM_API.Infraestructure.Repositories.PreApplication
             }
         }
 
-        public async Task<bool?> SetPreApplicationsAsync(SetPreApplicationsDBRequestDto request)
+        public async Task<int?> GetPreApplicationFileIdAsync(int id)
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
+
+            var sql = @"SELECT f.IdFile
+                        FROM HRM_DB.reclutamiento.PreApplication pa
+                        INNER JOIN HRM_DB.reclutamiento.Files f ON f.IdFile = pa.CVFileId
+                        WHERE pa.IdPreApplication = @id";
+            var result = await connection.QueryFirstAsync<int?>(sql, new { id });
+
+            return result;
+        }
+
+        public async Task<int?> SetPreApplicationsAsync(SetPreApplicationsDBRequestDto request)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
@@ -61,11 +74,12 @@ namespace HRM_API.Infraestructure.Repositories.PreApplication
                         Experience, HowHeard, CVFileId, AcceptedTerms, Origin, Status, IsReferred, RefferedBy, CreatedAt, CreatedBy) 
                         VALUES 
                         (@FullName, @DPI, @Age, @Gender, @Phone, @Email, @TownId, @Address, @EducationLevel,@VacancyId, 
-                        @Experience, @HowHeard, @CVFileId, @AcceptedTerms, @Origin, @Status, @IsReferred, @RefferedBy, @CreatedAt, @CreatedBy);";
+                        @Experience, @HowHeard, @CVFileId, @AcceptedTerms, @Origin, @Status, @IsReferred, @RefferedBy, @CreatedAt, @CreatedBy);
+                        SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
-            var rowsAffected = await connection.ExecuteAsync(sql, request);
+            var rowsAffected = await connection.QueryFirstAsync<int>(sql, request);
 
-            return true;
+            return rowsAffected;
         }
 
         public async Task<bool?> UpdatePreApplicationsAsync(UpdatePreApplicationsDBRequestDto request)
