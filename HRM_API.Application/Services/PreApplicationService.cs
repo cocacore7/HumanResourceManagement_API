@@ -114,6 +114,7 @@ namespace HRM_API.Application.Services
                 form = (int)await _repository.SetPreApplicationsAsync(newApplication);
                 request.Origin.RegisterId = form;
             }
+            else { return new() { Response = "Error Al Registrar Pre Aplicacion" }; }
 
             foreach (var item in request.Answers ?? Enumerable.Empty<GeneralFormRequestAnswerDto>())
             {
@@ -216,8 +217,8 @@ namespace HRM_API.Application.Services
                                 SizeBytes = item.SizeBytes ?? 0
                             };
                             var responsedb = await _fileRepository.UpdateFileAsync(newfile);
-                            break;
-                        } else break;
+                        } 
+                        break;
 
                     case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.AcceptedTerms):
                         newApplication.AcceptedTerms = item.ValueBool;
