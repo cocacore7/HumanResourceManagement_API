@@ -179,18 +179,21 @@ namespace HRM_API.Application.Services
                         break;
 
                     case var code when code == _enumHelper.GetEnumDescription(SetJobVacancyCodeEnum.RequisitionFileId):
-                        var filepath = _fileHelper.SaveFile(item, request?.Origin ?? new GeneralFormRequestOriginDto());
-
-                        UpdateFileDBRequestDto newfile = new()
+                        if (!string.IsNullOrEmpty(item.Base64))
                         {
-                            IdFile = item.IdFile ?? 0,
-                            FileName = item.FileName ?? string.Empty,
-                            ContentType = item.ContentType ?? string.Empty,
-                            FilePath = filepath ?? string.Empty,
-                            SizeBytes = item.SizeBytes ?? 0
-                        };
-                        var responsedb = await _fileRepository.UpdateFileAsync(newfile);
-                        break;
+                            var filepath = _fileHelper.SaveFile(item, request?.Origin ?? new GeneralFormRequestOriginDto());
+
+                            UpdateFileDBRequestDto newfile = new()
+                            {
+                                IdFile = item.IdFile ?? 0,
+                                FileName = item.FileName ?? string.Empty,
+                                ContentType = item.ContentType ?? string.Empty,
+                                FilePath = filepath ?? string.Empty,
+                                SizeBytes = item.SizeBytes ?? 0
+                            };
+                            var responsedb = await _fileRepository.UpdateFileAsync(newfile);
+                            break;
+                        } else break;
 
                     default:
                         break;
