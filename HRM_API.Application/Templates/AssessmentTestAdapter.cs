@@ -1,18 +1,15 @@
 using System.Text;
 using HRM_API.Core.Interfaces.Mail;
+using Microsoft.AspNetCore.Hosting;
 
 namespace HRM_API.Application.Templates
 {
-    public class AssessmentTestAdapter : ITemplateRepository
+    public class AssessmentTestAdapter(IMailRepository repository, IWebHostEnvironment env) : ITemplateRepository
     {
-        private readonly IMailRepository _repository;
+        private readonly IMailRepository _repository = repository;
+        private readonly IWebHostEnvironment _env;
 
         public string TemplateName => "Assessment.html";
-
-        public AssessmentTestAdapter(IMailRepository repository)
-        {
-            _repository = repository;
-        }
 
         public async Task<string> BuildBodyAsync(int id)
         {
@@ -21,6 +18,7 @@ namespace HRM_API.Application.Templates
                 throw new Exception($"No se encontró la prueba con id={id}");
 
             var templatePath = Path.Combine(AppContext.BaseDirectory, "Templates", TemplateName);
+            var templatePath = Path.Combine(_env.ContentRootPath, "Templates", "Assessment.html");
             var htmlBody = await File.ReadAllTextAsync(templatePath, Encoding.UTF8);
 
             htmlBody = htmlBody

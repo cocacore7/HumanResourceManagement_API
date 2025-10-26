@@ -19,7 +19,7 @@ namespace HRM_API.Core.Dtos.General
         public decimal? ValueNumber { get; set; }
         public int? OptionId { get; set; }
         public string? OptionValue { get; set; }
-        public bool? ValueBool { get; set; }
+        public bool? ValueBool { get; set; } = null;
         public string ValueDate { get; set; } = string.Empty;
 
         // Datos de archivo (solo si type = "file")
