@@ -28,7 +28,7 @@ namespace HRM_API.Infraestructure.Repositories.Mail
                               ,pa.Email            [Email]
                               ,jv.JobPositionName  [JobPositionName]
                               ,pa.CreatedAt        [CreatedAt]
-                              ,c.CommentText      [Comment]
+                              ,c.Comment           [Comment]
                         FROM HRM_DB.reclutamiento.PreApplication pa
                         INNER JOIN HRM_DB.reclutamiento.JobVacancy jv
                         ON jv.IdVacancy  = pa.VacancyId
@@ -65,7 +65,7 @@ namespace HRM_API.Infraestructure.Repositories.Mail
                               ,pa.Email            [Email]
                               ,jv.JobPositionName  [JobPositionName]
                               ,pa.CreatedAt        [CreatedAt]
-                              ,c.CommentText      [Comment]
+                              ,c.Comment           [Comment]
                         FROM HRM_DB.reclutamiento.PreApplication pa
                         INNER JOIN HRM_DB.reclutamiento.JobVacancy jv
                         ON jv.IdVacancy  = pa.VacancyId
@@ -142,7 +142,7 @@ namespace HRM_API.Infraestructure.Repositories.Mail
                               ,pa.Email            [Email]
                               ,jv.JobPositionName  [JobPositionName]
                               ,pa.CreatedAt        [CreatedAt]
-                              ,cm.CommentText      [Comment]
+                              ,c.Comment           [Comment]
                         FROM HRM_DB.reclutamiento.PreApplication pa
                         INNER JOIN HRM_DB.reclutamiento.JobVacancy jv
                         ON jv.IdVacancy  = pa.VacancyId
@@ -179,7 +179,7 @@ namespace HRM_API.Infraestructure.Repositories.Mail
                               ,pa.Email             [Email]
                               ,jv.JobPositionName   [JobPositionName]
                               ,pa.CreatedAt         [CreatedAt]
-                              ,cm.CommentText       [Comment]
+                              ,c.Comment            [Comment]
                         FROM HRM_DB.reclutamiento.PreApplication pa
                         INNER JOIN HRM_DB.reclutamiento.JobVacancy jv
                         ON jv.IdVacancy  = pa.VacancyId
@@ -216,7 +216,7 @@ namespace HRM_API.Infraestructure.Repositories.Mail
                               ,pa.Email            [Email]
                               ,jv.JobPositionName  [JobPositionName]
                               ,pa.CreatedAt        [CreatedAt]
-                              ,cm.CommentText      [Comment]
+                              ,c.Comment           [Comment]
                         FROM HRM_DB.reclutamiento.PreApplication pa
                         INNER JOIN HRM_DB.reclutamiento.JobVacancy jv
                         ON jv.IdVacancy  = pa.VacancyId
