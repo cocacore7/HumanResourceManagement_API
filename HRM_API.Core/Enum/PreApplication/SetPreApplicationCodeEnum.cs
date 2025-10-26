@@ -17,6 +17,9 @@ namespace HRM_API.Core.Enum.PreApplication
         [Description("TIENE_EXPERIENCIA")] Experience,
         [Description("COMO_TE_ENTERASTE")] HowHeard,
         [Description("ADJUNTA_CV")] File,
-        [Description("ACEPTA_TERMINOS")] AcceptedTerms
+        [Description("ACEPTA_TERMINOS")] AcceptedTerms,
+        [Description("HUB_ASIGNADO")] AssignHub,
+        [Description("ES_REFERIDO")] IsReferred,
+        [Description("NAME_REFERIDO")] ReferredBy,
     }
 }

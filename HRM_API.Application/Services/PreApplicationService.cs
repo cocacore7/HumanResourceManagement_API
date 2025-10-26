@@ -224,6 +224,18 @@ namespace HRM_API.Application.Services
                         newApplication.AcceptedTerms = item.ValueBool;
                         break;
 
+                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.AssignHub):
+                        newApplication.AssignHub = item.ValueText ?? string.Empty;
+                        break;
+
+                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.ReferredBy):
+                        newApplication.RefferedBy = item.ValueText ?? string.Empty;
+                        break;
+
+                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.IsReferred):
+                        newApplication.IsReferred = item.ValueBool ?? null;
+                        break;
+
                     default:
                         break;
                 }
