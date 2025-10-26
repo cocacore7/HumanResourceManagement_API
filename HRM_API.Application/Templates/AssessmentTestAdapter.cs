@@ -27,7 +27,7 @@ namespace HRM_API.Application.Templates
                 .Replace("[PHONE]", dto.Phone)
                 .Replace("[EMAIL]", dto.Email)
                 .Replace("[JOBPOSITIONNAME]", dto.JobPositionName)
-                .Replace("[DATEAT]", DateTime.Parse(dto.CreatedAt).ToString("dd/MM/yyyy"))
+                .Replace("[DATEAT]", DateTime.ParseExact(dto.CreatedAt, "MM/dd/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).ToString("dd/MM/yyyy"))
                 .Replace("[COMMENT]", dto.Comment ?? "");
 
             return htmlBody;

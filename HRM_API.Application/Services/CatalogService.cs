@@ -11,7 +11,7 @@ namespace HRM_API.Application.Services
 
         public async Task<CatalogRequestDto?> GetJobCatalogAsync()
         {
-            await _mailRepository.SendEmailFromTemplateAsync("cocacore7@gmail.com", "Prueba correo", "Assessment", 1);
+            //await _mailRepository.SendEmailFromTemplateAsync("cocacore7@gmail.com", "Prueba correo", "Assessment", 1);
 
             var responsedb = await _repository.GetJobCatalogAsync();
 
