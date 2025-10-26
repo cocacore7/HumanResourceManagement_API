@@ -2,14 +2,16 @@
 using HRM_API.Core.Dtos.Authorization;
 using HRM_API.Core.Interfaces.Authorization;
 using HRM_API.Core.Interfaces.User;
+using System.Text;
 
 namespace HRM_API.Application.Services
 {
-    public class AuthorizationService(IAuthorizationRepository repository, IUserRepository userRepository, JwtService jwtService)
+    public class AuthorizationService(IAuthorizationRepository repository, IUserRepository userRepository, JwtService jwtService, AuthorizationHelper authorizationHelper)
     {
         private readonly IAuthorizationRepository _repository = repository;
         private readonly IUserRepository _userRepository = userRepository;
         private readonly JwtService _jwtService = jwtService;
+        private readonly AuthorizationHelper _authorizationHelper = authorizationHelper;
 
         public async Task<string?> AuthenticateAsync(string name, string Password, string role)
         {
@@ -50,7 +52,15 @@ namespace HRM_API.Application.Services
         {
             var userId = await _repository.ValidPasswordCodeAsync(request.RecoveryCode, request.Email);
             var isValidCode = await _repository.UpdatePasswordCodeAsync((int)userId);
-            var response = await _repository.GenerateNewPasswordAsync(new());
+            if (userId == null || isValidCode == false)
+                return null;
+
+            var plainPassword = _authorizationHelper.GenerateSecurePassword();
+            byte[] newPasswordBytes = Encoding.UTF8.GetBytes(plainPassword);
+
+            var response = await _repository.GenerateNewPasswordAsync(new() { UserId = (int)userId, NewPassword = newPasswordBytes });
+
+            //Enviar por correo la nueva contraseña generada (Falta implementar)
 
             return "Nueva contraseña generada con exito";
         }

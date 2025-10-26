@@ -82,6 +82,7 @@ builder.Services.AddScoped<IDbConnection>(sp =>
 builder.Services.AddSingleton<JwtService>();
 builder.Services.AddSingleton<FileHelper>();
 builder.Services.AddSingleton<EnumHelper>();
+builder.Services.AddSingleton<AuthorizationHelper>();
 #endregion
 
 #region Repositorios y Servicios
