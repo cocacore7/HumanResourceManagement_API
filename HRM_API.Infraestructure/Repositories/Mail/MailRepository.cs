@@ -27,17 +27,22 @@ namespace HRM_API.Infraestructure.Repositories.Mail
                               ,pa.Phone            [Phone]
                               ,pa.Email            [Email]
                               ,jv.JobPositionName  [JobPositionName]
-                              ,pa.CreatedAt        [CreatedAt]
-                              ,cm.CommentText      [Comment]
+                              ,pa.CreatedAt        [CreatedAt],
+                              c.Comment            [Comment]
                         FROM HRM_DB.reclutamiento.PreApplication pa
                         INNER JOIN HRM_DB.reclutamiento.JobVacancy jv
-                        ON jb.IdVacancy  = pa.VacancyId
-                        INNER JOIN HRM_DB.Users u
+                        ON jv.IdVacancy  = pa.VacancyId
+                        INNER JOIN HRM_DB.reclutamiento.Users u
                         ON pa.AssignTo =  u.IdUser
-                        INNER JOIN HRM_DB.reclutamiento.Comment cm
-                        ON cm.PreApplicationId    = pa.IdPreApplication
-                        WHERE pa.IdPreApplication = @id
-                        AND CommentStatus = 'pruebas'";
+                        OUTER APPLY (
+                            SELECT STRING_AGG(cm.CommentText, ', ')      [Comment]
+                            FROM HRM_DB.reclutamiento.PreApplication pa
+                            INNER JOIN HRM_DB.reclutamiento.Comment cm
+                            ON cm.PreApplicationId    = pa.IdPreApplication
+                            WHERE pa.IdPreApplication = 1
+                            AND CommentStatus = 'entrevista'
+                        ) c
+                        WHERE pa.IdPreApplication = 1";
 
             var assessment = await connection.QueryFirstOrDefaultAsync<AssessmentTestDto>(sql, new {id});
 

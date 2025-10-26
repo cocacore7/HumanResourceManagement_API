@@ -1,5 +1,4 @@
-﻿using Azure;
-using HRM_API.Application.Services;
+﻿using HRM_API.Application.Services;
 using HRM_API.Core.Dtos.Authorization;
 using HRM_API.Core.Dtos.General;
 using Microsoft.AspNetCore.Mvc;

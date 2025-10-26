@@ -86,6 +86,7 @@ builder.Services.AddSingleton<AuthorizationHelper>();
 #endregion
 
 #region Repositorios y Servicios
+builder.Services.AddScoped<MailHelper>();
 builder.Services.AddScoped<IAuthorizationRepository, AuthorizationRepository>();
 builder.Services.AddScoped<AuthorizationService>();
 builder.Services.AddScoped<ICatalogRepository, CatalogRepository>();
@@ -101,7 +102,6 @@ builder.Services.AddScoped<PreApplicationService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<IMailRepository, MailRepository>();
-builder.Services.AddScoped<MailService>();
 builder.Services.AddScoped<ITemplateRepository, AssessmentTestAdapter>();
 builder.Services.AddScoped<ITemplateRepository, BossInterviewAdapter>();
 builder.Services.AddScoped<ITemplateRepository, CandidateRecordAdapter>();
