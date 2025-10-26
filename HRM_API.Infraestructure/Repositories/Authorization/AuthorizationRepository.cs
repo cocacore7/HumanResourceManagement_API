@@ -15,19 +15,13 @@ namespace HRM_API.Infraestructure.Repositories.Authorization
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
-            // ✅ ya no ponemos HRM_DB, solo esquema.tabla
-            var sql = @"
-                SELECT u.IdUser, u.Name, u.RoleId 
-                FROM reclutamiento.Users AS u
-                INNER JOIN reclutamiento.Role AS r ON r.IdRole = u.RoleId
-                WHERE u.Name = @Name 
-                AND u.PasswordHash = @Password 
-                AND r.KeyName = @Role;
-            ";
-
-            var user = await connection.QueryFirstOrDefaultAsync<LoginDBResponseDto>(
-                sql, new { Name = name, Password, Role = role }
-            );
+            var sql = @"SELECT u.IdUser, u.Name, u.RoleId 
+                        FROM HRM_DB.reclutamiento.Users u
+                        INNER JOIN HRM_DB.reclutamiento.Role r ON r.IdRole = u.RoleId
+                        WHERE u.Name = @Name 
+                        AND u.PasswordHash = @Password 
+                        AND r.KeyName = @Role";
+            var user = await connection.QueryFirstOrDefaultAsync<LoginDBResponseDto>(sql, new {name, Password, role });
 
             return user;
         }
