@@ -95,9 +95,7 @@ namespace HRM_API.Infraestructure.Repositories.PreApplication
                         Status = @Status, IsReferred = @IsReferred, RefferedBy = @RefferedBy
                         WHERE IdPreApplication = @IdPreApplication";
 
-            var rowsAffected = await connection.ExecuteAsync(sql, new { request.FullName, request.DPI, request.Age, request.Gender, request.Phone, request.Email,
-                request.TownId, request.Address, request.EducationLevel, request.VacancyId, request.Experience, request.HowHeard, request.AcceptedTerms,
-                request.Origin, request.Status, request.IsReferred, request.RefferedBy, request.IdPreApplication});
+            var rowsAffected = await connection.ExecuteAsync(sql, request);
 
             return true;
         }
