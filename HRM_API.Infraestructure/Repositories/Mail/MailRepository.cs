@@ -27,22 +27,22 @@ namespace HRM_API.Infraestructure.Repositories.Mail
                               ,pa.Phone            [Phone]
                               ,pa.Email            [Email]
                               ,jv.JobPositionName  [JobPositionName]
-                              ,pa.CreatedAt        [CreatedAt],
-                              c.Comment            [Comment]
+                              ,pa.CreatedAt        [CreatedAt]
+                              ,c.CommentText      [Comment]
                         FROM HRM_DB.reclutamiento.PreApplication pa
                         INNER JOIN HRM_DB.reclutamiento.JobVacancy jv
                         ON jv.IdVacancy  = pa.VacancyId
                         INNER JOIN HRM_DB.reclutamiento.Users u
                         ON pa.AssignTo =  u.IdUser
                         OUTER APPLY (
-                            SELECT STRING_AGG(cm.CommentText, ', ')      [Comment]
+                            SELECT STRING_AGG(cm.CommentText, ', ')    [Comment]
                             FROM HRM_DB.reclutamiento.PreApplication pa
                             INNER JOIN HRM_DB.reclutamiento.Comment cm
                             ON cm.PreApplicationId    = pa.IdPreApplication
-                            WHERE pa.IdPreApplication = 1
+                            WHERE pa.IdPreApplication = @id
                             AND CommentStatus = 'entrevista'
                         ) c
-                        WHERE pa.IdPreApplication = 1";
+                        WHERE pa.IdPreApplication = @id";
 
             var assessment = await connection.QueryFirstOrDefaultAsync<AssessmentTestDto>(sql, new {id});
 
@@ -65,16 +65,21 @@ namespace HRM_API.Infraestructure.Repositories.Mail
                               ,pa.Email            [Email]
                               ,jv.JobPositionName  [JobPositionName]
                               ,pa.CreatedAt        [CreatedAt]
-                              ,cm.CommentText      [Comment]
+                              ,c.CommentText      [Comment]
                         FROM HRM_DB.reclutamiento.PreApplication pa
                         INNER JOIN HRM_DB.reclutamiento.JobVacancy jv
-                        ON jb.IdVacancy  = pa.VacancyId
-                        INNER JOIN HRM_DB.Users u
+                        ON jv.IdVacancy  = pa.VacancyId
+                        INNER JOIN HRM_DB.reclutamiento.Users u
                         ON pa.AssignTo =  u.IdUser
-                        INNER JOIN HRM_DB.reclutamiento.Comment cm
-                        ON cm.PreApplicationId    = pa.IdPreApplication
-                        WHERE pa.IdPreApplication = @id
-                        AND CommentStatus = 'entrevistaJefe'";
+                        OUTER APPLY (
+                            SELECT STRING_AGG(cm.CommentText, ', ')    [Comment]
+                            FROM HRM_DB.reclutamiento.PreApplication pa
+                            INNER JOIN HRM_DB.reclutamiento.Comment cm
+                            ON cm.PreApplicationId    = pa.IdPreApplication
+                            WHERE pa.IdPreApplication = @id
+                            AND CommentStatus = 'entrevistaJefe'
+                        ) c
+                        WHERE pa.IdPreApplication = @id";
 
             var boosinterview = await connection.QueryFirstOrDefaultAsync<BossInterviewDto>(sql, new {id});
 
@@ -93,7 +98,7 @@ namespace HRM_API.Infraestructure.Repositories.Mail
                               ,jv.JobPositionName  [JobPositionName]
                         FROM HRM_DB.reclutamiento.PreApplication pa
                         INNER JOIN HRM_DB.reclutamiento.JobVacancy jv
-                        ON jb.IdVacancy  = pa.VacancyId
+                        ON jv.IdVacancy  = pa.VacancyId
                         WHERE pa.IdPreApplication = @id";
 
             var candidateRecord = await connection.QueryFirstOrDefaultAsync<CandidateRecordDto>(sql, new {id});
@@ -113,7 +118,7 @@ namespace HRM_API.Infraestructure.Repositories.Mail
                               ,jv.JobPositionName  [JobPositionName]
                         FROM HRM_DB.reclutamiento.PreApplication pa
                         INNER JOIN HRM_DB.reclutamiento.JobVacancy jv
-                        ON jb.IdVacancy  = pa.VacancyId
+                        ON jv.IdVacancy  = pa.VacancyId
                         WHERE pa.IdPreApplication = @id";
 
             var endprocess = await connection.QueryFirstOrDefaultAsync<EndProcessDto>(sql, new {id});
@@ -140,13 +145,18 @@ namespace HRM_API.Infraestructure.Repositories.Mail
                               ,cm.CommentText      [Comment]
                         FROM HRM_DB.reclutamiento.PreApplication pa
                         INNER JOIN HRM_DB.reclutamiento.JobVacancy jv
-                        ON jb.IdVacancy  = pa.VacancyId
-                        INNER JOIN HRM_DB.Users u
+                        ON jv.IdVacancy  = pa.VacancyId
+                        INNER JOIN HRM_DB.reclutamiento.Users u
                         ON pa.AssignTo =  u.IdUser
-                        INNER JOIN HRM_DB.reclutamiento.Comment cm
-                        ON cm.PreApplicationId    = pa.IdPreApplication
-                        WHERE pa.IdPreApplication = @id
-                        AND CommentStatus = 'entrevista'";
+                        OUTER APPLY (
+                            SELECT STRING_AGG(cm.CommentText, ', ')    [Comment]
+                            FROM HRM_DB.reclutamiento.PreApplication pa
+                            INNER JOIN HRM_DB.reclutamiento.Comment cm
+                            ON cm.PreApplicationId    = pa.IdPreApplication
+                            WHERE pa.IdPreApplication = @id
+                            AND CommentStatus = 'entrevista'
+                        ) c
+                        WHERE pa.IdPreApplication = @id";
 
             var jobinterview = await connection.QueryFirstOrDefaultAsync<JobInterviewDto>(sql, new {id});
 
@@ -172,13 +182,18 @@ namespace HRM_API.Infraestructure.Repositories.Mail
                               ,cm.CommentText       [Comment]
                         FROM HRM_DB.reclutamiento.PreApplication pa
                         INNER JOIN HRM_DB.reclutamiento.JobVacancy jv
-                        ON jb.IdVacancy  = pa.VacancyId
-                        INNER JOIN HRM_DB.Users u
+                        ON jv.IdVacancy  = pa.VacancyId
+                        INNER JOIN HRM_DB.reclutamiento.Users u
                         ON pa.AssignTo =  u.IdUser
-                        INNER JOIN HRM_DB.reclutamiento.Comment cm
-                        ON cm.PreApplicationId    = pa.IdPreApplication
-                        WHERE pa.IdPreApplication = @id
-                        AND CommentStatus = 'poligrafo'";
+                        OUTER APPLY (
+                            SELECT STRING_AGG(cm.CommentText, ', ')    [Comment]
+                            FROM HRM_DB.reclutamiento.PreApplication pa
+                            INNER JOIN HRM_DB.reclutamiento.Comment cm
+                            ON cm.PreApplicationId    = pa.IdPreApplication
+                            WHERE pa.IdPreApplication = @id
+                            AND CommentStatus = 'poligrafo'
+                        ) c
+                        WHERE pa.IdPreApplication = @id";
 
             var polygraph= await connection.QueryFirstOrDefaultAsync<PolygraphDto>(sql, new {id});
 
@@ -204,13 +219,18 @@ namespace HRM_API.Infraestructure.Repositories.Mail
                               ,cm.CommentText      [Comment]
                         FROM HRM_DB.reclutamiento.PreApplication pa
                         INNER JOIN HRM_DB.reclutamiento.JobVacancy jv
-                        ON jb.IdVacancy  = pa.VacancyId
-                        INNER JOIN HRM_DB.Users u
+                        ON jv.IdVacancy  = pa.VacancyId
+                        INNER JOIN HRM_DB.reclutamiento.Users u
                         ON pa.AssignTo =  u.IdUser
-                        INNER JOIN HRM_DB.reclutamiento.Comment cm
-                        ON cm.PreApplicationId    = pa.IdPreApplication
-                        WHERE pa.IdPreApplication = @id
-                        AND CommentStatus = 'Prefiltro'";
+                        OUTER APPLY (
+                            SELECT STRING_AGG(cm.CommentText, ', ')    [Comment]
+                            FROM HRM_DB.reclutamiento.PreApplication pa
+                            INNER JOIN HRM_DB.reclutamiento.Comment cm
+                            ON cm.PreApplicationId    = pa.IdPreApplication
+                            WHERE pa.IdPreApplication = @id
+                            AND CommentStatus = 'Prefiltro'
+                        ) c
+                        WHERE pa.IdPreApplication = @id";
 
             var preScreening= await connection.QueryFirstOrDefaultAsync<PreScreeningDto>(sql, new {id});
 
@@ -231,8 +251,8 @@ namespace HRM_API.Infraestructure.Repositories.Mail
                               ,jv.JobPositionName  [JobPositionName]    
                         FROM HRM_DB.reclutamiento.PreApplication pa
                         INNER JOIN HRM_DB.reclutamiento.JobVacancy jv
-                        ON jb.IdVacancy  = pa.VacancyId 
-                        INNER JOIN HRM_DB.Users u
+                        ON jv.IdVacancy  = pa.VacancyId 
+                        INNER JOIN HRM_DB.reclutamiento.Users u
                         ON pa.AssignTo =  u.IdUser
                         WHERE pa.IdPreApplication = @id";
 
