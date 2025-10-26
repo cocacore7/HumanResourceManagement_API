@@ -20,7 +20,7 @@ namespace HRM_API.API.Controllers
 
             var response = await _formService.GetFormAnswersAsync(PreApplicationId, FormId);
 
-            return response is null ? Unauthorized(ApiResponses.Fail("FORM_ANSWER_NOTFOUND", "No se encontraron respuestas asociadas")) : Ok(ApiResponses.Ok(response, "OK", "FORM_ANSWER_FOUND"));
+            return response is null ? BadRequest(ApiResponses.Fail("FORM_ANSWER_NOTFOUND", "No se encontraron respuestas asociadas")) : Ok(ApiResponses.Ok(response, "OK", "FORM_ANSWER_FOUND"));
         }
 
         [HttpPost("SetFormAnswers")]

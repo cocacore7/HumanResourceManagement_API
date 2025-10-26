@@ -28,7 +28,9 @@ namespace HRM_API.API.Controllers
         {
             var response = await _authService.SendRecoveryCodeAsync(request);
 
-            return Ok(ApiResponses.Ok(new SendRecoveryCodeResponseDto { Response = response ?? "Error al generar codigo de recuperacion" }, "OK", "RECOVERY_SUCCES"));
+            return response is null ? 
+                BadRequest(ApiResponses.Fail("BAD_REQUEST", "Error al enviar codigo de recuperacion")) : 
+                Ok(ApiResponses.Ok(new SendRecoveryCodeResponseDto { Response = response ?? "Error al generar codigo de recuperacion" }, "OK", "RECOVERY_SUCCES"));
         }
 
         [HttpPost("GenerateNewPassword")]

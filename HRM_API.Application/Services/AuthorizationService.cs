@@ -26,7 +26,7 @@ namespace HRM_API.Application.Services
         {
             var user = (bool)await _userRepository.GetUserByEmailAsync(request.email);
             if (!user)
-                return "Error, no existe un usuario asociado al correo";
+                return null;
             var response = await _repository.SetLoginAttemptAsync(new());
 
             return "Codigo de recuperación generado con exito";
