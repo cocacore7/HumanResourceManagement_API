@@ -26,21 +26,35 @@ using System.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 #region CORS
-//CORS Dev
+// Nombre de la política
 const string DevCors = "DevCors";
+
+// Lista de orígenes permitidos
+var allowedOrigins = new[]
+{
+    // Local
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://192.168.0.8:5173",
+
+    // QA en IIS (HTTP y HTTPS)
+    "http://dev-portal-talento.forzadelivery.com",
+    "https://dev-portal-talento.forzadelivery.com"
+};
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(DevCors, policy =>
         policy
-            .WithOrigins("http://localhost:5173") // agrega más orígenes si hace falta
+            .WithOrigins(allowedOrigins)
             .AllowAnyMethod()
             .AllowAnyHeader()
-    // OJO: solo si usas cookies/sesión:
-    //.AllowCredentials()
+    // Habilitar solo si usas cookies/sesión:
+    // .AllowCredentials()
     );
 });
 
-//CORS Estandar
+// Política estándar (comentada por ahora)
 //builder.Services.AddCors(options =>
 //{
 //    options.AddPolicy("AllowOrigins", policy =>
