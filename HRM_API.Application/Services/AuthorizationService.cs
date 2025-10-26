@@ -45,9 +45,11 @@ namespace HRM_API.Application.Services
 
             return "Codigo de recuperación generado con exito";
         }
-
+            
         public async Task<string?> GenerateNewPasswordAsync(GenerateNewPasswordRequestDto request)
         {
+            var userId = await _repository.ValidPasswordCodeAsync(request.RecoveryCode, request.Email);
+            var isValidCode = await _repository.UpdatePasswordCodeAsync((int)userId);
             var response = await _repository.GenerateNewPasswordAsync(new());
 
             return "Nueva contraseña generada con exito";

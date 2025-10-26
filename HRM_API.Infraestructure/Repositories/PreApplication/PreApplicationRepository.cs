@@ -88,16 +88,69 @@ namespace HRM_API.Infraestructure.Repositories.PreApplication
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
-            var sql = @"UPDATE HRM_DB.reclutamiento.PreApplication 
+            if (request.Experience == null)
+            {
+
+                var sql = @"UPDATE HRM_DB.reclutamiento.PreApplication 
+                        SET FullName = @FullName, DPI = @DPI, Age = @Age, Gender = @Gender, Phone = @Phone, Email = @Email, 
+                        TownId = @TownId, Address = @Address, EducationLevel = @EducationLevel, VacancyId = @VacancyId, 
+                        HowHeard = @HowHeard, AssignHub = @AssignHub, IsReferred = @IsReferred, RefferedBy = @RefferedBy
+                        WHERE IdPreApplication = @IdPreApplication";
+
+                var rowsAffected = await connection.ExecuteAsync(sql, new {
+                    request.FullName,
+                    request.DPI,
+                    request.Age,
+                    request.Gender,
+                    request.Phone,
+                    request.Email,
+                    request.TownId,
+                    request.Address,
+                    request.EducationLevel,
+                    request.VacancyId,
+                    request.HowHeard,
+                    request.AssignHub,
+                    request.IsReferred,
+                    request.RefferedBy,
+                    request.IdPreApplication
+                });
+
+                return rowsAffected > 0;
+            }
+            else
+            {
+
+                var sql = @"UPDATE HRM_DB.reclutamiento.PreApplication 
                         SET FullName = @FullName, DPI = @DPI, Age = @Age, Gender = @Gender, Phone = @Phone, Email = @Email, 
                         TownId = @TownId, Address = @Address, EducationLevel = @EducationLevel, VacancyId = @VacancyId, 
                         Experience = @Experience, HowHeard = @HowHeard, AcceptedTerms = @AcceptedTerms, Origin = @Origin, 
                         Status = @Status, IsReferred = @IsReferred, RefferedBy = @RefferedBy
                         WHERE IdPreApplication = @IdPreApplication";
 
-            var rowsAffected = await connection.ExecuteAsync(sql, request);
+                var rowsAffected = await connection.ExecuteAsync(sql, new
+                {
+                    request.FullName,
+                    request.DPI,
+                    request.Age,
+                    request.Gender,
+                    request.Phone,
+                    request.Email,
+                    request.TownId,
+                    request.Address,
+                    request.EducationLevel,
+                    request.VacancyId,
+                    request.Experience,
+                    request.HowHeard,
+                    request.AcceptedTerms,
+                    request.Origin,
+                    request.Status,
+                    request.IsReferred,
+                    request.RefferedBy,
+                    request.IdPreApplication
+                });
 
-            return true;
+                return rowsAffected > 0;
+            }
         }
 
         public async Task<bool?> UpdateIsDocumentedAsync(int? PreApplicationId, bool? IsDocumented)

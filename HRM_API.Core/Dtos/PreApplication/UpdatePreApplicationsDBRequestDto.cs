@@ -14,6 +14,7 @@
         public int? VacancyId { get; set; }
         public bool? Experience { get; set; }
         public string HowHeard { get; set; } = string.Empty;
+        public string AssignHub { get; set; } = string.Empty;
         public bool? AcceptedTerms { get; set; }
         public string Origin { get; set; } = string.Empty;
         public string Status { get; set; } = "preSolicitud";

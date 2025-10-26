@@ -55,7 +55,7 @@ namespace HRM_API.Infraestructure.Repositories.Authorization
             return user;
         }
 
-        public async Task<int?> ValidPasswordCodeAsync(int code, int email)
+        public async Task<int?> ValidPasswordCodeAsync(int code, string email)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
@@ -72,12 +72,10 @@ namespace HRM_API.Infraestructure.Repositories.Authorization
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
-            var sql = @"SELECT u.IdUser, u.Name, u.RoleId 
-                        FROM HRM_DB.reclutamiento.Users u
-                        INNER JOIN HRM_DB.reclutamiento.Role r ON r.IdRole = u.RoleId
-                        WHERE u.Name = @Name 
-                        AND u.PasswordHash = @Password 
-                        AND r.KeyName = @Role";
+            var sql = @"UPDATE HRM_DB.reclutamiento.LoginAttempt
+                        SET RecoveryCodeUsed = 1
+                        WHERE UserId = @UserId
+                        AND RecoveryCodeUsed = 0";
             var user = await connection.QueryFirstOrDefaultAsync<int>(sql, new { userId });
 
             return user > 0;
