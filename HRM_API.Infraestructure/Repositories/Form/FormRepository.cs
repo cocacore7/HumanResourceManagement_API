@@ -194,7 +194,7 @@ namespace HRM_API.Infraestructure.Repositories.Form
                         VALUES
                         (@ResponseId,@QuestionId,@AnswerType,@CreatedAt,@UpdatedAt);
                         SELECT CAST(SCOPE_IDENTITY() AS INT);";
-            var result = await connection.QueryFirstAsync<int>(sql, new { request });
+            var result = await connection.QueryFirstAsync<int>(sql, request);
 
             return result;
         }

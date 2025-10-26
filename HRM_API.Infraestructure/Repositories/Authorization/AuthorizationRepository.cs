@@ -35,7 +35,7 @@ namespace HRM_API.Infraestructure.Repositories.Authorization
                         VALUES
                         (@UserId,@EmailEntered,@Success,@RecoveryCode,@RecoveryCodeUsed,@CreatedAt);
                         SELECT CAST(SCOPE_IDENTITY() AS INT);";
-            var user = await connection.QueryFirstOrDefaultAsync<int?>(sql, new { requestdb });
+            var user = await connection.QueryFirstOrDefaultAsync<int?>(sql, requestdb);
 
             return user;
         }
