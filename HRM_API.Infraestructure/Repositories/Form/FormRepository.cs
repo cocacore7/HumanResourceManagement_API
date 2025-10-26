@@ -88,7 +88,7 @@ namespace HRM_API.Infraestructure.Repositories.Form
                         FROM HRM_DB.reclutamiento.FormQuestionOption fqo
                         WHERE fqo.QuestionId = @QuestionId
                         AND fqo.CatalogId = @CatalogId";
-            var result = await connection.QueryFirstAsync<int>(sql, new { QuestionId, CatalogId });
+            var result = await connection.QuerySingleOrDefaultAsync<int?>(sql, new { QuestionId, CatalogId });
 
             return result;
         }
@@ -128,7 +128,7 @@ namespace HRM_API.Infraestructure.Repositories.Form
                         (ResponseId, QuestionId, AnswerType, ValueText, CreatedAt, UpdatedAt)
                         VALUES
                         (@ResponseId,@QuestionId,@AnswerType,@ValueText,@CreatedAt,@UpdatedAt);";
-            var result = await connection.ExecuteAsync(sql, new { request });
+            var result = await connection.ExecuteAsync(sql, request);
 
             return result > 0;
         }
@@ -141,7 +141,7 @@ namespace HRM_API.Infraestructure.Repositories.Form
                         (ResponseId, QuestionId, AnswerType, ValueNumber, CreatedAt, UpdatedAt)
                         VALUES
                         (@ResponseId,@QuestionId,@AnswerType,@ValueNumber,@CreatedAt,@UpdatedAt);";
-            var result = await connection.ExecuteAsync(sql, new { request });
+            var result = await connection.ExecuteAsync(sql, request);
 
             return result > 0;
         }
@@ -154,7 +154,7 @@ namespace HRM_API.Infraestructure.Repositories.Form
                         (ResponseId, QuestionId, AnswerType, ValueBool, CreatedAt, UpdatedAt)
                         VALUES
                         (@ResponseId,@QuestionId,@AnswerType,@ValueBool,@CreatedAt,@UpdatedAt);";
-            var result = await connection.ExecuteAsync(sql, new { request });
+            var result = await connection.ExecuteAsync(sql, request);
 
             return result > 0;
         }
@@ -167,7 +167,7 @@ namespace HRM_API.Infraestructure.Repositories.Form
                         (ResponseId, QuestionId, AnswerType, FileId, CreatedAt, UpdatedAt)
                         VALUES
                         (@ResponseId,@QuestionId,@AnswerType,@FileId,@CreatedAt,@UpdatedAt);";
-            var result = await connection.ExecuteAsync(sql, new { request });
+            var result = await connection.ExecuteAsync(sql, request);
 
             return result > 0;
         }
@@ -180,7 +180,7 @@ namespace HRM_API.Infraestructure.Repositories.Form
                         (ResponseId, QuestionId, AnswerType, ValueDate, CreatedAt, UpdatedAt)
                         VALUES
                         (@ResponseId,@QuestionId,@AnswerType,@ValueDate,@CreatedAt,@UpdatedAt);";
-            var result = await connection.ExecuteAsync(sql, new { request });
+            var result = await connection.ExecuteAsync(sql, request);
 
             return result > 0;
         }

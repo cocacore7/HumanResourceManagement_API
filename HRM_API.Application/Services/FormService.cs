@@ -161,9 +161,7 @@ namespace HRM_API.Application.Services
 
                         case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Enum) || type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Multienum):
                             //Obtener questionOptionId
-                            var questionOptionId = (int)await _repository.GetQuestionOptionAsync(question.QuestionId, item.OptionId);
-                            if (questionOptionId <= 0) { responseList.Add("Respuesta registrada con exito, codigo: " + item.Code); break; }
-
+                            var questionOptionId = await _repository.GetQuestionOptionAsync(question.QuestionId, item.OptionId);
                             //Guardar Answer
                             var enumAnswer = new SetEnumAnswerDBResponseDto()
                             {
