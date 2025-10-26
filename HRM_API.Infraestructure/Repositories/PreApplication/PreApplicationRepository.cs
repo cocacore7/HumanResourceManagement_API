@@ -79,7 +79,29 @@ namespace HRM_API.Infraestructure.Repositories.PreApplication
                         @Experience, @HowHeard, @CVFileId, @AcceptedTerms, @Origin, @Status, @IsReferred, @RefferedBy, @CreatedAt, @CreatedBy);
                         SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
-            var rowsAffected = await connection.QueryFirstAsync<int>(sql, request);
+            var rowsAffected = await connection.QueryFirstAsync<int>(sql, new
+            {
+                request.FullName,
+                request.DPI,
+                request.Age,
+                request.Gender,
+                request.Phone,
+                request.Email,
+                request.TownId,
+                request.Address,
+                request.EducationLevel,
+                request.VacancyId,
+                request.Experience,
+                request.HowHeard,
+                request.CVFileId,
+                request.AcceptedTerms,
+                request.Origin,
+                request.Status,
+                request.IsReferred,
+                request.RefferedBy,
+                request.CreatedAt,
+                request.CreatedBy
+            });
 
             return rowsAffected;
         }
