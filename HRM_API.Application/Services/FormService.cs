@@ -24,8 +24,10 @@ namespace HRM_API.Application.Services
             var form = await _repository.GetFormAsync(FormId);
             //Traer cabecera response
             var header = await _repository.GetFormHeaderAsync(PreApplicationId, FormId);
+            if (header == null) {  return null; }
             //Traer Answers Response
             var answers = await _repository.GetFormAnswersAsync(header?.IdResponse);
+            if (answers == null) { return null; }
 
             //Asignar resultados a respuesta
 

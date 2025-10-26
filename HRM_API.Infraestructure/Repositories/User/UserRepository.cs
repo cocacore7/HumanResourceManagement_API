@@ -22,5 +22,17 @@ namespace HRM_API.Infraestructure.Repositories.User
 
             return [.. result];
         }
+
+        public async Task<bool?> GetUserByEmailAsync(string Email)
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
+
+            var sql = @"SELECT u.IdUser
+                        FROM HRM_DB.reclutamiento.Users u
+                        WHERE u.Email = @Email";
+            var result = await connection.QueryFirstOrDefaultAsync<int?>(sql, new { Email });
+
+            return result > 0;
+        }
     }
 }

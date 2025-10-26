@@ -19,11 +19,12 @@ namespace HRM_API.Infraestructure.Repositories.PreApplication
                 var sql = @"SELECT pa.IdPreApplication AS [id], pa.FullName AS [nombre], pa.DPI AS [dpi], pa.Age AS [edad], 
                             pa.Gender AS [genero], pa.Phone AS [telefono], pa.Email AS [correo],t.TownName AS [departamento], 
                             pa.Address as [direccion], jv.JobPositionName AS [puesto], pa.Status AS [estado], 
-                            pa.AssignTo AS [assignedTo], pa.EducationLevel AS [ultimoGrado], pa.HowHeard AS [fuente], 
+                            u.Name AS [assignedTo], pa.EducationLevel AS [ultimoGrado], pa.HowHeard AS [fuente], 
                             pa.AssignHub AS [hub], pa.IsReferred AS [esReferido], pa.RefferedBy AS [referidoPor]
                             FROM HRM_DB.reclutamiento.PreApplication pa
                             INNER JOIN HRM_DB.reclutamiento.JobVacancy jv ON jv.IdVacancy = pa.VacancyId
                             LEFT JOIN HRM_DB.reclutamiento.Town t ON t.IdTown = pa.TownId
+                            LEFT JOIN HRM_DB.reclutamiento.Users u ON u.IdUser = pa.AssignTo
                             WHERE pa.Status = @estado
                             ORDER BY pa.CreatedAt DESC";
                 var result = await connection.QueryAsync<GetPreApplicationsDBResponseDto>(sql, new { estado });
@@ -35,11 +36,12 @@ namespace HRM_API.Infraestructure.Repositories.PreApplication
                 var sql = @"SELECT pa.IdPreApplication AS [id], pa.FullName AS [nombre], pa.DPI AS [dpi], pa.Age AS [edad], 
                             pa.Gender AS [genero], pa.Phone AS [telefono], pa.Email AS [correo],t.TownName AS [departamento], 
                             pa.Address as [direccion], jv.JobPositionName AS [puesto], pa.Status AS [estado], 
-                            pa.AssignTo AS [assignedTo], pa.EducationLevel AS [ultimoGrado], pa.HowHeard AS [fuente], 
+                            u.Name AS [assignedTo], pa.EducationLevel AS [ultimoGrado], pa.HowHeard AS [fuente], 
                             pa.AssignHub AS [hub], pa.IsReferred AS [esReferido], pa.RefferedBy AS [referidoPor]
                             FROM HRM_DB.reclutamiento.PreApplication pa
                             INNER JOIN HRM_DB.reclutamiento.JobVacancy jv ON jv.IdVacancy = pa.VacancyId
                             LEFT JOIN HRM_DB.reclutamiento.Town t ON t.IdTown = pa.TownId
+                            LEFT JOIN HRM_DB.reclutamiento.Users u ON u.IdUser = pa.AssignTo
                             WHERE pa.IdPreApplication = @id
                             ORDER BY pa.CreatedAt DESC";
                 var result = await connection.QueryAsync<GetPreApplicationsDBResponseDto>(sql, new { id });

@@ -17,7 +17,7 @@
         public string UltimoGrado { get; set; } = string.Empty;
         public string Fuente { get; set; } = string.Empty;
         public string Hub { get; set; } = string.Empty;
-        public bool EsReferido { get; set; } = false;
+        public bool? EsReferido { get; set; } = null;
         public string ReferidoPor { get; set; } = string.Empty;
     }
 }

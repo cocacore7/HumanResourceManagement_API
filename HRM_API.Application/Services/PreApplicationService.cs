@@ -99,7 +99,7 @@ namespace HRM_API.Application.Services
                         break;
 
                     case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.AcceptedTerms):
-                        newApplication.AcceptedTerms = item.ValueBool;
+                        newApplication.AcceptedTerms = item.ValueBool ?? null;
                         break;
 
                     default:

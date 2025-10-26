@@ -22,5 +22,21 @@ namespace HRM_API.API.Controllers
 
             return Ok(ApiResponses.Ok(new LoginResponseDto { Token = token }, "OK", "LOGIN_SUCCES"));
         }
+
+        [HttpPost("SendRecoveryCode")]
+        public async Task<IActionResult> SendRecoveryCode([FromBody] SendRecoveryCodeRequestDto request)
+        {
+            var response = await _authService.SendRecoveryCodeAsync(request);
+
+            return Ok(ApiResponses.Ok(new SendRecoveryCodeResponseDto { Response = response ?? "Error al generar codigo de recuperacion" }, "OK", "RECOVERY_SUCCES"));
+        }
+
+        [HttpPost("GenerateNewPassword")]
+        public async Task<IActionResult> GenerateNewPassword([FromBody] GenerateNewPasswordRequestDto request)
+        {
+            var response = await _authService.GenerateNewPasswordAsync(request);
+
+            return Ok(ApiResponses.Ok(new GenerateNewPasswordResponseDto { Response = response ?? "Error al generar nueva contraseña" }, "OK", "GENERATE_SUCCES"));
+        }
     }
 }

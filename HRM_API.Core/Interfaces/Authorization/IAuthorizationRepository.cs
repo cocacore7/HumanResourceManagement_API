@@ -5,5 +5,7 @@ namespace HRM_API.Core.Interfaces.Authorization
     public interface IAuthorizationRepository
     {
         Task<LoginDBResponseDto?> GetUserByCredentialsAsync(string name, byte[] Password, string role);
+        Task<SetLoginAttemptDBResponseDto?> SetLoginAttemptAsync(SetLoginAttemptDBRequestDto requestdb);
+        Task<GenerateNewPasswordDBResponseDto?> GenerateNewPasswordAsync(GenerateNewPasswordDBRequestDto requestdb);
     }
 }
