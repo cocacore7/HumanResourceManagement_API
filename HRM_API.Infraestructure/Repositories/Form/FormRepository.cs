@@ -115,7 +115,7 @@ namespace HRM_API.Infraestructure.Repositories.Form
                         VALUES
                         (@PreApplicationId,@FormId,@CreatedAt,@CreatedBy,@UpdatedAt,@UpdatedBy);
                         SELECT CAST(SCOPE_IDENTITY() AS INT);";
-            var result = await connection.QueryFirstAsync<int>(sql, new { PreApplicationForm });
+            var result = await connection.QueryFirstAsync<int>(sql, PreApplicationForm);
 
             return result;
         }
