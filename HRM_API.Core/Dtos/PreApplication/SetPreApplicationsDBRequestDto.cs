@@ -18,7 +18,7 @@
         public bool? AcceptedTerms { get; set; } = null;
         public string Origin { get; set; } = string.Empty;
         public string Status { get; set; } = "preFiltro";
-        public bool IsReferred { get; set; } = false;
+        public bool? IsReferred { get; set; } = null;
         public string RefferedBy { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public int? CreatedBy { get; set; }
