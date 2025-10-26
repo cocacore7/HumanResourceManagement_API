@@ -24,10 +24,24 @@ namespace HRM_API.Application.Services
 
         public async Task<string?> SendRecoveryCodeAsync(SendRecoveryCodeRequestDto request)
         {
-            var user = (bool)await _userRepository.GetUserByEmailAsync(request.email);
-            if (!user)
+            var user = (int)await _userRepository.GetUserByEmailAsync(request.email);
+            if (user > 0)
                 return null;
-            var response = await _repository.SetLoginAttemptAsync(new());
+
+            var random = new Random();
+            var recoveryCode = random.Next(100000, 999999);
+
+            SetLoginAttemptDBRequestDto newAttempt = new()
+            {
+                UserId = user,
+                EmailEntered = request.email,
+                Success = false,
+                RecoveryCode = recoveryCode,
+                RecoveryCodeUsed = false
+            };
+
+            await _repository.SetLoginAttemptAsync(newAttempt);
+            //Metodo para generar Codigo de recuperacion de 6 digitos para enviar el correo con el codigo de recuperacion
 
             return "Codigo de recuperación generado con exito";
         }

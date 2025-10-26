@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using Azure.Core;
+using Dapper;
 using HRM_API.Core.Dtos.Authorization;
 using HRM_API.Core.Interfaces.Authorization;
 using Microsoft.Data.SqlClient;
@@ -25,17 +26,16 @@ namespace HRM_API.Infraestructure.Repositories.Authorization
             return user;
         }
 
-        public async Task<SetLoginAttemptDBResponseDto?> SetLoginAttemptAsync(SetLoginAttemptDBRequestDto requestdb)
+        public async Task<int?> SetLoginAttemptAsync(SetLoginAttemptDBRequestDto requestdb)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
-            var sql = @"SELECT u.IdUser, u.Name, u.RoleId 
-                        FROM HRM_DB.reclutamiento.Users u
-                        INNER JOIN HRM_DB.reclutamiento.Role r ON r.IdRole = u.RoleId
-                        WHERE u.Name = @Name 
-                        AND u.PasswordHash = @Password 
-                        AND r.KeyName = @Role";
-            var user = await connection.QueryFirstOrDefaultAsync<SetLoginAttemptDBResponseDto>(sql, new { requestdb });
+            var sql = @"INSERT INTO HRM_DB.reclutamiento.LoginAttempt
+                        (UserId, EmailEntered, Success, RecoveryCode, RecoveryCodeUsed, CreatedAt)
+                        VALUES
+                        (@UserId,@EmailEntered,@Success,@RecoveryCode,@RecoveryCodeUsed,@CreatedAt);
+                        SELECT CAST(SCOPE_IDENTITY() AS INT);";
+            var user = await connection.QueryFirstOrDefaultAsync<int?>(sql, new { requestdb });
 
             return user;
         }
@@ -53,6 +53,34 @@ namespace HRM_API.Infraestructure.Repositories.Authorization
             var user = await connection.QueryFirstOrDefaultAsync<GenerateNewPasswordDBResponseDto>(sql, new { requestdb });
 
             return user;
+        }
+
+        public async Task<int?> ValidPasswordCodeAsync(int code, int email)
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
+
+            var sql = @"SELECT la.UserId
+                        FROM HRM_DB.reclutamiento.LoginAttempt la
+                        WHERE la.EmailEntered = @email
+                        AND la.RecoveryCode = @code";
+            var user = await connection.QueryFirstOrDefaultAsync<int>(sql, new { code, email });
+
+            return user;
+        }
+
+        public async Task<bool?> UpdatePasswordCodeAsync(int userId)
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
+
+            var sql = @"SELECT u.IdUser, u.Name, u.RoleId 
+                        FROM HRM_DB.reclutamiento.Users u
+                        INNER JOIN HRM_DB.reclutamiento.Role r ON r.IdRole = u.RoleId
+                        WHERE u.Name = @Name 
+                        AND u.PasswordHash = @Password 
+                        AND r.KeyName = @Role";
+            var user = await connection.QueryFirstOrDefaultAsync<int>(sql, new { userId });
+
+            return user > 0;
         }
     }
 }

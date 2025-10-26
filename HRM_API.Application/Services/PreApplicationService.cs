@@ -232,6 +232,7 @@ namespace HRM_API.Application.Services
             if (request != null)
             {
                 newApplication.Status = request.Origin.State;
+                newApplication.IdPreApplication = request.Origin.RegisterId;
             }
             bool form = false;
             if (newApplication.TownId != 0 && newApplication.VacancyId != 0)

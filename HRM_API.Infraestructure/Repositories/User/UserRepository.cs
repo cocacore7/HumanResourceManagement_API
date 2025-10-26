@@ -23,7 +23,7 @@ namespace HRM_API.Infraestructure.Repositories.User
             return [.. result];
         }
 
-        public async Task<bool?> GetUserByEmailAsync(string Email)
+        public async Task<int?> GetUserByEmailAsync(string Email)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
@@ -32,7 +32,7 @@ namespace HRM_API.Infraestructure.Repositories.User
                         WHERE u.Email = @Email";
             var result = await connection.QueryFirstOrDefaultAsync<int?>(sql, new { Email });
 
-            return result > 0;
+            return result;
         }
     }
 }
