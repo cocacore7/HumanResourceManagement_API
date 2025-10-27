@@ -210,7 +210,7 @@ namespace HRM_API.Application.Services
             var preApplication = await _preApplicationRepository.GetPreApplicationsAsync(string.Empty, request.Origin.RegisterId.ToString());
             if (preApplication == null) { return new() { Response = ["No existe la Pre Aplicación solicitada"] }; }
             //Validar Registro PreApplicationFormResponse
-            var reponseId = await _repository.GetPreApplicationFormResponseAsync(form.IdForm, preApplication.FirstOrDefault()?.Id);
+            var reponseId = await _repository.GetPreApplicationFormResponseAsync(preApplication.FirstOrDefault()?.Id, form.IdForm);
             if (reponseId == null) { return new() { Response = ["No existe una respuesta asociada a la pre solicitud y formulario solicitados"] }; }
 
             //registrar cada pregunta por su tipo
