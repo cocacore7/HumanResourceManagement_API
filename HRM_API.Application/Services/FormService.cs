@@ -7,16 +7,19 @@ using HRM_API.Core.Enum.Form;
 using HRM_API.Core.Interfaces.File;
 using HRM_API.Core.Interfaces.Form;
 using HRM_API.Core.Interfaces.PreApplication;
+using HRM_API.Core.Interfaces.User;
 
 namespace HRM_API.Application.Services
 {
-    public class FormService(IFormRepository repository, IPreApplicationRepository preApplicationRepository, IFileRepository fileRepository, EnumHelper enumHelper, FileHelper fileHelper)
+    public class FormService(IFormRepository repository, IPreApplicationRepository preApplicationRepository, IFileRepository fileRepository, IUserRepository userRepository, EnumHelper enumHelper, FileHelper fileHelper, MailHelper mailRepository)
     {
         private readonly IFormRepository _repository = repository;
         private readonly IPreApplicationRepository _preApplicationRepository = preApplicationRepository;
         private readonly IFileRepository _fileRepository = fileRepository;
+        private readonly IUserRepository _userRepository = userRepository;
         private readonly EnumHelper _enumHelper = enumHelper;
         private readonly FileHelper _fileHelper = fileHelper;
+        private readonly MailHelper _mailRepository = mailRepository;
 
         public async Task<GetFormAnswersResponseDto?> GetFormAnswersAsync(int PreApplicationId, int FormId)
         {
@@ -175,9 +178,13 @@ namespace HRM_API.Application.Services
                             var answerOptionId = (bool)await _repository.SetEnumAnswerOptionAsync(answerId, questionOptionId);
                             if (item.Code == _enumHelper.GetEnumDescription(SetFormAnswersValidationEnum.assignTo))
                             {
-                                //Agregar get para obtener email de usuario assignto y despues poder mandarlo en el correo
-                                var StatusAssignToValid = (bool)await _preApplicationRepository.UpdateStatusAssignToAsync(preApplication.FirstOrDefault()?.Id, request?.Origin.State, item.OptionId);
-                                if (StatusAssignToValid) { responseList.Add("Estado y siguiente revisor actualizado con exito"); }
+                                if (item.OptionId != null)
+                                {
+                                    var StatusAssignToValid = (bool)await _preApplicationRepository.UpdateStatusAssignToAsync(preApplication.FirstOrDefault()?.Id, request?.Origin.State, item.OptionId);
+                                    var email = await _userRepository.GetEmailByUserAsync((int)item.OptionId);
+                                    await _mailRepository.SendEmailFromTemplateAsync(email ?? string.Empty, "Nueva gestión de candidato", "PreScreening", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
+                                    if (StatusAssignToValid) { responseList.Add("Estado y siguiente revisor actualizado con exito"); }
+                                }
                             }
                             if (answerOptionId) { responseList.Add("Respuesta registrada con exito, codigo: " + item.Code); }
                             else { responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code); }
@@ -290,46 +297,94 @@ namespace HRM_API.Application.Services
                             break;
 
                         case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Date):
-                                    var dateAnswer = new UpdateDateAnswerDBResponseDto()
+                            var dateAnswer = new UpdateDateAnswerDBResponseDto()
+                            {
+                                ResponseId = reponseId.IdResponse,
+                                QuestionId = question.QuestionId,
+                                AnswerType = question.Type,
+                                ValueDate = item.ValueDate
+                            };
+                            var dateQuestionResponse = (bool)await _repository.UpdateDateAnswerAsync(dateAnswer);
+                            if (dateQuestionResponse) { responseList.Add("Respuesta registrada con exito, codigo: " + item.Code); }
+                            else { responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code); }
+                            break;
+
+                        case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Enum) || type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Multienum):
+                            //Obtener questionOptionId
+                            var questionOptionId = await _repository.GetQuestionOptionAsync(question.QuestionId, item.OptionId);
+                            if (questionOptionId != null)
+                            {
+                                //Guardar Answer
+                                var enumAnswer = new UpdateEnumAnswerDBResponseDto()
+                                {
+                                    ResponseId = reponseId.IdResponse,
+                                    QuestionId = question.QuestionId,
+                                    AnswerType = question.Type
+                                };
+                                var answerId = (int)await _repository.UpdateEnumAnswerAsync(enumAnswer);
+
+                                //Guardar AnswerOption
+                                var answerOptionId = (bool)await _repository.UpdateEnumAnswerOptionAsync(answerId, questionOptionId);
+                                if (item.Code == _enumHelper.GetEnumDescription(SetFormAnswersValidationEnum.assignTo))
+                                {
+                                    if (item.OptionId != null)
                                     {
-                                        ResponseId = reponseId.IdResponse,
-                                        QuestionId = question.QuestionId,
-                                        AnswerType = question.Type,
-                                        ValueDate = item.ValueDate
-                                    };
-                                    var dateQuestionResponse = (bool)await _repository.UpdateDateAnswerAsync(dateAnswer);
-                                    if (dateQuestionResponse) { responseList.Add("Respuesta registrada con exito, codigo: " + item.Code); }
-                                    else { responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code); }
-                                    break;
+                                        var StatusAssignToValid = (bool)await _preApplicationRepository.UpdateStatusAssignToAsync(preApplication.FirstOrDefault()?.Id, request?.Origin.State, item.OptionId);
+                                        
+                                        var emailRecruiter = await _userRepository.GetEmailByUserAsync((int)item.OptionId);
+                                        string emailCandidate = preApplication.FirstOrDefault()?.Correo ?? string.Empty;
+                                        string preApplicationState = preApplication.FirstOrDefault()?.Estado ?? string.Empty;
 
-                                case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Enum) || type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Multienum):
-                                    //Obtener questionOptionId
-                                    var questionOptionId = (int)await _repository.GetQuestionOptionAsync(question.QuestionId, item.OptionId);
-                                    if (questionOptionId <= 0) { responseList.Add("Respuesta registrada con exito, codigo: " + item.Code); break; }
+                                        if (preApplicationState == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.PreFilter) && request?.Origin.State == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Request))
+                                        {//Correo a reclutador
+                                            await _mailRepository.SendEmailFromTemplateAsync(emailRecruiter ?? string.Empty, "Nueva gestión de candidato", "PreScreening", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
+                                        }
+                                        else if (preApplicationState == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Request) && request?.Origin.State == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Interview))
+                                        {//Correo a reclutador
+                                            await _mailRepository.SendEmailFromTemplateAsync(emailRecruiter ?? string.Empty, "Gestión en etapa de " + request?.Origin.State, "JobInterview", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
+                                        }
+                                        else if (preApplicationState == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Interview) && request?.Origin.State == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Test))
+                                        {//Correo a reclutador
+                                            await _mailRepository.SendEmailFromTemplateAsync(emailRecruiter ?? string.Empty, "Gestión en etapa de " + request?.Origin.State, "Assessment", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
+                                        }
+                                        else if (preApplicationState == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Interview) && request?.Origin.State == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.InterviewFail))
+                                        {//Correo a Candidato
+                                            await _mailRepository.SendEmailFromTemplateAsync(emailCandidate ?? string.Empty, "Gestión en etapa de " + request?.Origin.State, "EndProcess", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
+                                        }
+                                        else if (preApplicationState == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Test) && request?.Origin.State == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.BossInterview))
+                                        {//Correo a reclutador
+                                            await _mailRepository.SendEmailFromTemplateAsync(emailRecruiter ?? string.Empty, "Gestión en etapa de " + request?.Origin.State, "BossInterview", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
+                                        }
+                                        else if (preApplicationState == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.BossInterview) && request?.Origin.State == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Poligrahp))
+                                        {//Correo a reclutador
+                                            await _mailRepository.SendEmailFromTemplateAsync(emailRecruiter ?? string.Empty, "Gestión en etapa de " + request?.Origin.State, "Poligraphy", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
+                                        }
+                                        else if (preApplicationState == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Poligrahp) && request?.Origin.State == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.ExpNotLoaded))
+                                        {//Correo a Candidato
+                                            await _mailRepository.SendEmailFromTemplateAsync(emailCandidate ?? string.Empty, "Gestión en etapa de " + request?.Origin.State, "CandidateRecord", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
+                                        }
+                                        else if (preApplicationState == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.ExpNotLoaded) && request?.Origin.State == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.ExpLoaded))
+                                        {//Correo a Candidato
+                                            await _mailRepository.SendEmailFromTemplateAsync(emailRecruiter ?? string.Empty, "Gestión en etapa de " + request?.Origin.State, "Record", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
+                                        }
 
-                                    //Guardar Answer
-                                    var enumAnswer = new UpdateEnumAnswerDBResponseDto()
-                                    {
-                                        ResponseId = reponseId.IdResponse,
-                                        QuestionId = question.QuestionId,
-                                        AnswerType = question.Type
-                                    };
-                                    var answerId = (int)await _repository.UpdateEnumAnswerAsync(enumAnswer);
-
-                                    //Guardar AnswerOption
-                                    var answerOptionId = (bool)await _repository.UpdateEnumAnswerOptionAsync(answerId, questionOptionId);
-                                    if (answerOptionId) { responseList.Add("Respuesta registrada con exito, codigo: " + item.Code); }
-                                    else { responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code); }
-                                    break;
-
-                                case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Void):
-                                    responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code);
-                                    break;
-
-                                default:
-                                    responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code);
-                                    break;
+                                        if (StatusAssignToValid) { responseList.Add("Estado y siguiente revisor actualizado con exito"); }
+                                    }
                                 }
+                                if (answerOptionId) { responseList.Add("Respuesta actualizada con exito, codigo: " + item.Code); }
+                                else { responseList.Add("Error al intentar actualizar respuesta con codigo: " + item.Code); }
+                            }
+                            else { responseList.Add("Error al intentar actualizar respuesta con codigo: " + item.Code); }
+                            break;
+
+                        case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Void):
+                            responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code);
+                            break;
+
+                        default:
+                            responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code);
+                            break;
+                        }
                 }
             }
             responseList.Add(reponseId.IdResponse > 0 ? "Formulario Actualizado Exitosamente" : "Error Al Actualizar Formulario");

@@ -6,5 +6,6 @@ namespace HRM_API.Core.Interfaces.User
     {
         Task<List<GetUserModulesDBResponseDto>?> GetUserModulesAsync(int userId);
         Task<int?> GetUserByEmailAsync(string Email);
+        Task<string?> GetEmailByUserAsync(int IdUser);
     }
 }
