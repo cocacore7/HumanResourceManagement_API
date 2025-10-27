@@ -23,14 +23,15 @@ namespace HRM_API.Infraestructure.Repositories.User
             return [.. result];
         }
 
-        public async Task<int?> GetUserByEmailAsync(string Email)
+        public async Task<GetUserByEmailDBResponseDto?> GetUserByEmailAsync(string Email)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
-            var sql = @"SELECT u.IdUser
+            var sql = @"SELECT u.IdUser, u.Name
                         FROM HRM_DB.reclutamiento.Users u
-                        WHERE u.Email = @Email";
-            var result = await connection.QueryFirstOrDefaultAsync<int?>(sql, new { Email });
+                        WHERE u.Email = @Email
+                        AND u.IsActive = 1";
+            var result = await connection.QueryFirstOrDefaultAsync<GetUserByEmailDBResponseDto?>(sql, new { Email });
 
             return result;
         }
@@ -41,7 +42,8 @@ namespace HRM_API.Infraestructure.Repositories.User
 
             var sql = @"SELECT u.Email
                         FROM HRM_DB.reclutamiento.Users u
-                        WHERE u.IdUser = @IdUser";
+                        WHERE u.IdUser = @IdUser
+                        AND u.IsActive = 1";
             var result = await connection.QueryFirstOrDefaultAsync<string?>(sql, new { IdUser });
 
             return result;

@@ -11,7 +11,7 @@ using HRM_API.Core.Interfaces.User;
 
 namespace HRM_API.Application.Services
 {
-    public class FormService(IFormRepository repository, IPreApplicationRepository preApplicationRepository, IFileRepository fileRepository, IUserRepository userRepository, EnumHelper enumHelper, FileHelper fileHelper, MailHelper mailRepository)
+    public class FormService(IFormRepository repository, IPreApplicationRepository preApplicationRepository, IFileRepository fileRepository, IUserRepository userRepository, EnumHelper enumHelper, FileHelper fileHelper, MailHelper mailHelper)
     {
         private readonly IFormRepository _repository = repository;
         private readonly IPreApplicationRepository _preApplicationRepository = preApplicationRepository;
@@ -19,7 +19,7 @@ namespace HRM_API.Application.Services
         private readonly IUserRepository _userRepository = userRepository;
         private readonly EnumHelper _enumHelper = enumHelper;
         private readonly FileHelper _fileHelper = fileHelper;
-        private readonly MailHelper _mailRepository = mailRepository;
+        private readonly MailHelper _mailHelper = mailHelper;
 
         public async Task<GetFormAnswersResponseDto?> GetFormAnswersAsync(int PreApplicationId, int FormId)
         {
@@ -182,7 +182,7 @@ namespace HRM_API.Application.Services
                                 {
                                     var StatusAssignToValid = (bool)await _preApplicationRepository.UpdateStatusAssignToAsync(preApplication.FirstOrDefault()?.Id, request?.Origin.State, item.OptionId);
                                     var email = await _userRepository.GetEmailByUserAsync((int)item.OptionId);
-                                    await _mailRepository.SendEmailFromTemplateAsync(email ?? string.Empty, "Nueva gestión de candidato", "PreScreening", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
+                                    await _mailHelper.SendEmailFromTemplateAsync(email ?? string.Empty, "Nueva gestión de candidato", "PreScreening", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
                                     if (StatusAssignToValid) { responseList.Add("Estado y siguiente revisor actualizado con exito"); }
                                 }
                             }
@@ -337,35 +337,35 @@ namespace HRM_API.Application.Services
 
                                         if (preApplicationState == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.PreFilter) && request?.Origin.State == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Request))
                                         {//Correo a reclutador
-                                            await _mailRepository.SendEmailFromTemplateAsync(emailRecruiter ?? string.Empty, "Nueva gestión de candidato", "PreScreening", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
+                                            await _mailHelper.SendEmailFromTemplateAsync(emailRecruiter ?? string.Empty, "Nueva gestión de candidato", "PreScreening", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
                                         }
                                         else if (preApplicationState == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Request) && request?.Origin.State == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Interview))
                                         {//Correo a reclutador
-                                            await _mailRepository.SendEmailFromTemplateAsync(emailRecruiter ?? string.Empty, "Gestión en etapa de " + request?.Origin.State, "JobInterview", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
+                                            await _mailHelper.SendEmailFromTemplateAsync(emailRecruiter ?? string.Empty, "Gestión en etapa de " + request?.Origin.State, "JobInterview", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
                                         }
                                         else if (preApplicationState == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Interview) && request?.Origin.State == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Test))
                                         {//Correo a reclutador
-                                            await _mailRepository.SendEmailFromTemplateAsync(emailRecruiter ?? string.Empty, "Gestión en etapa de " + request?.Origin.State, "Assessment", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
+                                            await _mailHelper.SendEmailFromTemplateAsync(emailRecruiter ?? string.Empty, "Gestión en etapa de " + request?.Origin.State, "Assessment", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
                                         }
                                         else if (preApplicationState == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Interview) && request?.Origin.State == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.InterviewFail))
                                         {//Correo a Candidato
-                                            await _mailRepository.SendEmailFromTemplateAsync(emailCandidate ?? string.Empty, "Gestión en etapa de " + request?.Origin.State, "EndProcess", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
+                                            await _mailHelper.SendEmailFromTemplateAsync(emailCandidate ?? string.Empty, "Gestión en etapa de " + request?.Origin.State, "EndProcess", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
                                         }
                                         else if (preApplicationState == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Test) && request?.Origin.State == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.BossInterview))
                                         {//Correo a reclutador
-                                            await _mailRepository.SendEmailFromTemplateAsync(emailRecruiter ?? string.Empty, "Gestión en etapa de " + request?.Origin.State, "BossInterview", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
+                                            await _mailHelper.SendEmailFromTemplateAsync(emailRecruiter ?? string.Empty, "Gestión en etapa de " + request?.Origin.State, "BossInterview", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
                                         }
                                         else if (preApplicationState == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.BossInterview) && request?.Origin.State == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Poligrahp))
                                         {//Correo a reclutador
-                                            await _mailRepository.SendEmailFromTemplateAsync(emailRecruiter ?? string.Empty, "Gestión en etapa de " + request?.Origin.State, "Poligraphy", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
+                                            await _mailHelper.SendEmailFromTemplateAsync(emailRecruiter ?? string.Empty, "Gestión en etapa de " + request?.Origin.State, "Poligraphy", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
                                         }
                                         else if (preApplicationState == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Poligrahp) && request?.Origin.State == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.ExpNotLoaded))
                                         {//Correo a Candidato
-                                            await _mailRepository.SendEmailFromTemplateAsync(emailCandidate ?? string.Empty, "Gestión en etapa de " + request?.Origin.State, "CandidateRecord", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
+                                            await _mailHelper.SendEmailFromTemplateAsync(emailCandidate ?? string.Empty, "Gestión en etapa de " + request?.Origin.State, "CandidateRecord", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
                                         }
                                         else if (preApplicationState == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.ExpNotLoaded) && request?.Origin.State == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.ExpLoaded))
                                         {//Correo a Candidato
-                                            await _mailRepository.SendEmailFromTemplateAsync(emailRecruiter ?? string.Empty, "Gestión en etapa de " + request?.Origin.State, "Record", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
+                                            await _mailHelper.SendEmailFromTemplateAsync(emailRecruiter ?? string.Empty, "Gestión en etapa de " + request?.Origin.State, "Record", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
                                         }
 
                                         if (StatusAssignToValid) { responseList.Add("Estado y siguiente revisor actualizado con exito"); }
