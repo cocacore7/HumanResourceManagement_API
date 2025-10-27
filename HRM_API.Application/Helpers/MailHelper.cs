@@ -9,13 +9,21 @@ namespace HRM_API.Application.Helpers
         private readonly TemplateAdapterFactory _factory = factory;
         private readonly ISettings _settings = settings;
 
-        public async Task<bool> SendEmailFromTemplateAsync(string toEmail, string subject, string templateName, int id)
+        public async Task<bool> SendEmailFromTemplateAsync(string toEmail, string subject, string templateName, int id, string fullname = "", string other = "")
         {
             // Obtiene el adaptador correcto
             var adapter = _factory.GetAdapter(templateName);
 
             // Genera el cuerpo del mensaje
-            var htmlBody = await adapter.BuildBodyAsync(id);
+            var htmlBody;
+            if(fullname == "" && other == "")
+            {
+                htmlBody = await adapter.BuildBodyAsync(id);
+            }
+            else
+            {
+                htmlBody = await adapter.BuildBodyAsync(fullname, other);
+            }
 
             using var smtp = new SmtpClient(_settings.SmtHost, _settings.SmtPort ?? 0)
             {
