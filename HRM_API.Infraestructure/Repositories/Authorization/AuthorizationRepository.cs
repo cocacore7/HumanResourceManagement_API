@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using Dapper;
+﻿using Dapper;
 using HRM_API.Core.Dtos.Authorization;
 using HRM_API.Core.Interfaces.Authorization;
 using Microsoft.Data.SqlClient;
@@ -20,7 +19,8 @@ namespace HRM_API.Infraestructure.Repositories.Authorization
                         INNER JOIN HRM_DB.reclutamiento.Role r ON r.IdRole = u.RoleId
                         WHERE u.Name = @Name 
                         AND u.PasswordHash = @Password 
-                        AND r.KeyName = @Role";
+                        AND r.KeyName = @Role
+                        AND u.IsActive = 1";
             var user = await connection.QueryFirstOrDefaultAsync<LoginDBResponseDto>(sql, new {name, Password, role });
 
             return user;
@@ -49,7 +49,8 @@ namespace HRM_API.Infraestructure.Repositories.Authorization
                         INNER JOIN HRM_DB.reclutamiento.Role r ON r.IdRole = u.RoleId
                         WHERE u.Name = @Name 
                         AND u.PasswordHash = @Password 
-                        AND r.KeyName = @Role";
+                        AND r.KeyName = @Role
+                        AND u.IsActive = 1";
             var user = await connection.QueryFirstOrDefaultAsync<GenerateNewPasswordDBResponseDto>(sql, new { requestdb });
 
             return user;
