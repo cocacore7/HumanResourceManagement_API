@@ -297,22 +297,23 @@ namespace HRM_API.Application.Services
                             break;
 
                         case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Date):
-                                    var dateAnswer = new UpdateDateAnswerDBResponseDto()
-                                    {
-                                        ResponseId = reponseId.IdResponse,
-                                        QuestionId = question.QuestionId,
-                                        AnswerType = question.Type,
-                                        ValueDate = item.ValueDate
-                                    };
-                                    var dateQuestionResponse = (bool)await _repository.UpdateDateAnswerAsync(dateAnswer);
-                                    if (dateQuestionResponse) { responseList.Add("Respuesta registrada con exito, codigo: " + item.Code); }
-                                    else { responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code); }
-                                    break;
+                                var dateAnswer = new UpdateDateAnswerDBResponseDto()
+                                {
+                                    ResponseId = reponseId.IdResponse,
+                                    QuestionId = question.QuestionId,
+                                    AnswerType = question.Type,
+                                    ValueDate = item.ValueDate
+                                };
+                                var dateQuestionResponse = (bool)await _repository.UpdateDateAnswerAsync(dateAnswer);
+                                if (dateQuestionResponse) { responseList.Add("Respuesta registrada con exito, codigo: " + item.Code); }
+                                else { responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code); }
+                                break;
 
-                                case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Enum) || type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Multienum):
-                                    //Obtener questionOptionId
-                                    var questionOptionId = await _repository.GetQuestionOptionAsync(question.QuestionId, item.OptionId);
-
+                        case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Enum) || type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Multienum):
+                                //Obtener questionOptionId
+                                var questionOptionId = await _repository.GetQuestionOptionAsync(question.QuestionId, item.OptionId);
+                                if (questionOptionId != null)
+                                {
                                     //Guardar Answer
                                     var enumAnswer = new UpdateEnumAnswerDBResponseDto()
                                     {
@@ -324,18 +325,20 @@ namespace HRM_API.Application.Services
 
                                     //Guardar AnswerOption
                                     var answerOptionId = (bool)await _repository.UpdateEnumAnswerOptionAsync(answerId, questionOptionId);
-                                    if (answerOptionId) { responseList.Add("Respuesta registrada con exito, codigo: " + item.Code); }
-                                    else { responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code); }
-                                    break;
-
-                                case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Void):
-                                    responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code);
-                                    break;
-
-                                default:
-                                    responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code);
-                                    break;
+                                    if (answerOptionId) { responseList.Add("Respuesta actualizada con exito, codigo: " + item.Code); }
+                                    else { responseList.Add("Error al intentar actualizar respuesta con codigo: " + item.Code); }
                                 }
+                                else { responseList.Add("Error al intentar actualizar respuesta con codigo: " + item.Code); }
+                                break;
+
+                        case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Void):
+                            responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code);
+                            break;
+
+                        default:
+                            responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code);
+                            break;
+                        }
                 }
             }
             responseList.Add(reponseId.IdResponse > 0 ? "Formulario Actualizado Exitosamente" : "Error Al Actualizar Formulario");
