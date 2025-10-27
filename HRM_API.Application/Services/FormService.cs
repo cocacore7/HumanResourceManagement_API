@@ -24,8 +24,10 @@ namespace HRM_API.Application.Services
             var form = await _repository.GetFormAsync(FormId);
             //Traer cabecera response
             var header = await _repository.GetFormHeaderAsync(PreApplicationId, FormId);
+            if (header == null) {  return null; }
             //Traer Answers Response
             var answers = await _repository.GetFormAnswersAsync(header?.IdResponse);
+            if (answers == null) { return null; }
 
             //Asignar resultados a respuesta
 
@@ -49,7 +51,7 @@ namespace HRM_API.Application.Services
             var preApplication = await _preApplicationRepository.GetPreApplicationsAsync(string.Empty, request.Origin.RegisterId.ToString());
             if (preApplication == null) { return new() { Response = ["No existe la Pre Aplicación solicitada"] }; }
             //Validar Registro PreApplicationFormResponse
-            var preApplicationFormIdValid = await _repository.GetPreApplicationFormResponseAsync(form.IdForm, preApplication.FirstOrDefault()?.Id);
+            var preApplicationFormIdValid = await _repository.GetPreApplicationFormResponseAsync(preApplication.FirstOrDefault()?.Id, form.IdForm);
             if (preApplicationFormIdValid != null) { return new() { Response = ["Ya existe una respuesta asociada a la pre solicitud y formulario solicitados"] }; }
 
             //Crear Registro PreApplicationFormResponse
@@ -117,41 +119,31 @@ namespace HRM_API.Application.Services
                             break;
 
                         case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.File):
-                            //Guardar imagen y traer idFile
-                            SetFileDBRequestDto newfile = new()
+                            if (string.IsNullOrEmpty(item.Base64)) 
                             {
-                                FileName = item.FileName ?? string.Empty,
-                                ContentType = item.ContentType ?? string.Empty,
-                                FilePath = "" ?? string.Empty,
-                                SizeBytes = item.SizeBytes ?? 0,
-                                UploadedBy = int.TryParse(user.IdUser, out int createdByfile) ? createdByfile : 0
-                            };
-                            var responseFileId = (int)await _fileRepository.SetFileAsync(newfile);
-                            if (request?.Origin != null)
-                            {
-                                request.Origin.RegisterId = responseFileId;
-                            }
-                            var filepath = _fileHelper.SaveFile(item, request?.Origin ?? new GeneralFormRequestOriginDto());
-                            UpdateFileDBRequestDto updatefile = new()
-                            {
-                                IdFile = responseFileId,
-                                FileName = item.FileName ?? string.Empty,
-                                ContentType = item.ContentType ?? string.Empty,
-                                FilePath = filepath ?? string.Empty,
-                                SizeBytes = item.SizeBytes ?? 0
-                            };
-                            await _fileRepository.UpdateFileAsync(updatefile);
+                                var filepath = _fileHelper.SaveFile(item, request?.Origin ?? new GeneralFormRequestOriginDto());
+                                //Guardar imagen y traer idFile
+                                SetFileDBRequestDto newfile = new()
+                                {
+                                    FileName = item.FileName ?? string.Empty,
+                                    ContentType = item.ContentType ?? string.Empty,
+                                    FilePath = filepath ?? string.Empty,
+                                    SizeBytes = item.SizeBytes ?? 0,
+                                    UploadedBy = int.TryParse(user.IdUser, out int createdByfile) ? createdByfile : 0
+                                };
+                                var responseFileId = (int)await _fileRepository.SetFileAsync(newfile);
 
-                            var fileAnswer = new SetFileAnswerDBResponseDto()
-                            {
-                                ResponseId = responseId,
-                                QuestionId = question.QuestionId,
-                                AnswerType = question.Type,
-                                FileId = responseFileId
-                            };
-                            var fileQuestionResponse = (bool)await _repository.SetFileAnswerAsync(fileAnswer);
-                            if (fileQuestionResponse) { responseList.Add("Respuesta registrada con exito, codigo: " + item.Code); }
-                            else { responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code); }
+                                var fileAnswer = new SetFileAnswerDBResponseDto()
+                                {
+                                    ResponseId = responseId,
+                                    QuestionId = question.QuestionId,
+                                    AnswerType = question.Type,
+                                    FileId = responseFileId
+                                };
+                                var fileQuestionResponse = (bool)await _repository.SetFileAnswerAsync(fileAnswer);
+                                if (fileQuestionResponse) { responseList.Add("Respuesta registrada con exito, codigo: " + item.Code); }
+                                else { responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code); }
+                            }
                             break;
 
                         case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Date):
@@ -169,9 +161,7 @@ namespace HRM_API.Application.Services
 
                         case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Enum) || type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Multienum):
                             //Obtener questionOptionId
-                            var questionOptionId = (int)await _repository.GetQuestionOptionAsync(question.QuestionId, item.OptionId);
-                            if (questionOptionId <= 0) { responseList.Add("Respuesta registrada con exito, codigo: " + item.Code); break; }
-
+                            var questionOptionId = await _repository.GetQuestionOptionAsync(question.QuestionId, item.OptionId);
                             //Guardar Answer
                             var enumAnswer = new SetEnumAnswerDBResponseDto()
                             {
@@ -272,72 +262,74 @@ namespace HRM_API.Application.Services
                             break;
 
                         case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.File):
-                            //Guardar imagen
-                            var filepath = _fileHelper.SaveFile(item, request?.Origin ?? new GeneralFormRequestOriginDto());
-                            //Metodo para traer fileid con responseid y questionid en tabla PreApplicationAnswer
-                            var IdFile = (int)await _repository.GetPreApplicationAnswerFileIdAsync(question.QuestionId, reponseId.IdResponse);
-                            UpdateFileDBRequestDto newfile = new()
-                            {
-                                IdFile = IdFile,
-                                FileName = item.FileName ?? string.Empty,
-                                ContentType = item.ContentType ?? string.Empty,
-                                FilePath = filepath ?? string.Empty,
-                                SizeBytes = item.SizeBytes ?? 0
-                            };
-                            await _fileRepository.UpdateFileAsync(newfile);
+                            if (!string.IsNullOrEmpty(item.Base64))
+                            { //Guardar imagen
+                                var filepath = _fileHelper.SaveFile(item, request?.Origin ?? new GeneralFormRequestOriginDto());
+                                //Metodo para traer fileid con responseid y questionid en tabla PreApplicationAnswer
+                                var IdFile = (int)await _repository.GetPreApplicationAnswerFileIdAsync(question.QuestionId, reponseId.IdResponse);
+                                UpdateFileDBRequestDto newfile = new()
+                                {
+                                    IdFile = IdFile,
+                                    FileName = item.FileName ?? string.Empty,
+                                    ContentType = item.ContentType ?? string.Empty,
+                                    FilePath = filepath ?? string.Empty,
+                                    SizeBytes = item.SizeBytes ?? 0
+                                };
+                                await _fileRepository.UpdateFileAsync(newfile);
 
-                            var fileAnswer = new UpdateFileAnswerDBResponseDto()
-                            {
-                                ResponseId = reponseId.IdResponse,
-                                QuestionId = question.QuestionId,
-                                AnswerType = question.Type
-                            };
-                            var fileQuestionResponse = (bool)await _repository.UpdateFileAnswerAsync(fileAnswer);
-                            if (fileQuestionResponse) { responseList.Add("Respuesta registrada con exito, codigo: " + item.Code); }
-                            else { responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code); }
+                                var fileAnswer = new UpdateFileAnswerDBResponseDto()
+                                {
+                                    ResponseId = reponseId.IdResponse,
+                                    QuestionId = question.QuestionId,
+                                    AnswerType = question.Type
+                                };
+                                var fileQuestionResponse = (bool)await _repository.UpdateFileAnswerAsync(fileAnswer);
+                                if (fileQuestionResponse) { responseList.Add("Respuesta registrada con exito, codigo: " + item.Code); }
+                                else { responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code); }
+                            } 
                             break;
 
                         case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Date):
-                            var dateAnswer = new UpdateDateAnswerDBResponseDto()
-                            {
-                                ResponseId = reponseId.IdResponse,
-                                QuestionId = question.QuestionId,
-                                AnswerType = question.Type,
-                                ValueDate = item.ValueDate
-                            };
-                            var dateQuestionResponse = (bool)await _repository.UpdateDateAnswerAsync(dateAnswer);
-                            if (dateQuestionResponse) { responseList.Add("Respuesta registrada con exito, codigo: " + item.Code); }
-                            else { responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code); }
-                            break;
+                                    var dateAnswer = new UpdateDateAnswerDBResponseDto()
+                                    {
+                                        ResponseId = reponseId.IdResponse,
+                                        QuestionId = question.QuestionId,
+                                        AnswerType = question.Type,
+                                        ValueDate = item.ValueDate
+                                    };
+                                    var dateQuestionResponse = (bool)await _repository.UpdateDateAnswerAsync(dateAnswer);
+                                    if (dateQuestionResponse) { responseList.Add("Respuesta registrada con exito, codigo: " + item.Code); }
+                                    else { responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code); }
+                                    break;
 
-                        case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Enum) || type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Multienum):
-                            //Obtener questionOptionId
-                            var questionOptionId = (int)await _repository.GetQuestionOptionAsync(question.QuestionId, item.OptionId);
-                            if (questionOptionId <= 0) { responseList.Add("Respuesta registrada con exito, codigo: " + item.Code); break; }
+                                case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Enum) || type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Multienum):
+                                    //Obtener questionOptionId
+                                    var questionOptionId = (int)await _repository.GetQuestionOptionAsync(question.QuestionId, item.OptionId);
+                                    if (questionOptionId <= 0) { responseList.Add("Respuesta registrada con exito, codigo: " + item.Code); break; }
 
-                            //Guardar Answer
-                            var enumAnswer = new UpdateEnumAnswerDBResponseDto()
-                            {
-                                ResponseId = reponseId.IdResponse,
-                                QuestionId = question.QuestionId,
-                                AnswerType = question.Type
-                            };
-                            var answerId = (int)await _repository.UpdateEnumAnswerAsync(enumAnswer);
+                                    //Guardar Answer
+                                    var enumAnswer = new UpdateEnumAnswerDBResponseDto()
+                                    {
+                                        ResponseId = reponseId.IdResponse,
+                                        QuestionId = question.QuestionId,
+                                        AnswerType = question.Type
+                                    };
+                                    var answerId = (int)await _repository.UpdateEnumAnswerAsync(enumAnswer);
 
-                            //Guardar AnswerOption
-                            var answerOptionId = (bool)await _repository.UpdateEnumAnswerOptionAsync(answerId, questionOptionId);
-                            if (answerOptionId) { responseList.Add("Respuesta registrada con exito, codigo: " + item.Code); }
-                            else { responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code); }
-                            break;
+                                    //Guardar AnswerOption
+                                    var answerOptionId = (bool)await _repository.UpdateEnumAnswerOptionAsync(answerId, questionOptionId);
+                                    if (answerOptionId) { responseList.Add("Respuesta registrada con exito, codigo: " + item.Code); }
+                                    else { responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code); }
+                                    break;
 
-                        case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Void):
-                            responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code);
-                            break;
+                                case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Void):
+                                    responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code);
+                                    break;
 
-                        default:
-                            responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code);
-                            break;
-                    }
+                                default:
+                                    responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code);
+                                    break;
+                                }
                 }
             }
             responseList.Add(reponseId.IdResponse > 0 ? "Formulario Actualizado Exitosamente" : "Error Al Actualizar Formulario");

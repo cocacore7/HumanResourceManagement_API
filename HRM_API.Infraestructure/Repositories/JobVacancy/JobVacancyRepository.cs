@@ -56,7 +56,19 @@ namespace HRM_API.Infraestructure.Repositories.JobVacancy
             }
         }
 
-        public async Task<bool?> SetJobVacancyAsync(SetJobVacancyDBRequestDto dbRequest)
+        public async Task<int?> GetJobVacancyFileIdAsync(int id)
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
+
+            var sql = @"SELECT jv.RequisitionFileId
+                        FROM HRM_DB.reclutamiento.JobVacancy jv
+                        WHERE jv.IdVacancy = @id";
+            var result = await connection.QueryFirstAsync<int?>(sql, new { id });
+
+            return result;
+        }
+
+        public async Task<int?> SetJobVacancyAsync(SetJobVacancyDBRequestDto dbRequest)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
@@ -65,11 +77,12 @@ namespace HRM_API.Infraestructure.Repositories.JobVacancy
                         ReasonId, Salary, TotalPositions, AvailablePositions, RequisitionFileId, Status, CreatedBy, CreatedAt, UpdatedAt) 
                         VALUES 
                         (@JobPositionName, @RequesterName, @RequesterPosition, @AreaText, @RegionText, @HubText, @Objective, @Comment, @VacancyTypeId,
-                        @ReasonId, @Salary, @TotalPositions, @AvailablePositions, @RequisitionFileId, @Status, @CreatedBy, @CreatedAt, @UpdatedAt);";
+                        @ReasonId, @Salary, @TotalPositions, @AvailablePositions, @RequisitionFileId, @Status, @CreatedBy, @CreatedAt, @UpdatedAt);
+                        SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
-            var rowsAffected = await connection.ExecuteAsync(sql, dbRequest);
+            var rowsAffected = await connection.QueryFirstAsync<int>(sql, dbRequest);
 
-            return rowsAffected > 0;
+            return rowsAffected;
         }
 
         public async Task<bool?> UpdateJobVacancyAsync(UpdateJobVacancyDBRequestDto dbRequest)

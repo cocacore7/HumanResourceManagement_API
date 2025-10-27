@@ -7,7 +7,7 @@ namespace HRM_API.Application.Templates
     {
         private readonly IMailRepository _repository;
 
-        public string TemplateName => "EndProcesss.html";
+        public string TemplateName => "EndProcess.html";
 
         public EndProcessAdapter(IMailRepository repository)
         {

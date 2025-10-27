@@ -53,7 +53,7 @@ namespace HRM_API.Infraestructure.Repositories.File
                         VALUES 
                         (@FileName, @ContentType, @FilePath, @SizeBytes, @UploadedBy, @UploadedAt);
                         SELECT CAST(SCOPE_IDENTITY() AS INT);";
-            var result = await connection.QueryFirstOrDefaultAsync<int?>(sql, new { File.FileName, File.ContentType, File.FilePath, File.SizeBytes, File.UploadedBy, File.UploadedAt });
+            var result = await connection.QueryFirstOrDefaultAsync<int?>(sql, File);
 
             return result;
         }

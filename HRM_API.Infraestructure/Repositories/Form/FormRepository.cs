@@ -18,7 +18,7 @@ namespace HRM_API.Infraestructure.Repositories.Form
             var sql = @"SELECT IdForm, KeyName, Name, VersionNumber
                         FROM HRM_DB.reclutamiento.Form
                         WHERE IdForm = @FormId";
-            var result = await connection.QueryFirstAsync<GetFormAnswersDBFormResponseDto>(sql, new { FormId });
+            var result = await connection.QueryFirstAsync<GetFormAnswersDBFormResponseDto?>(sql, new { FormId });
 
             return result;
         }
@@ -31,7 +31,7 @@ namespace HRM_API.Infraestructure.Repositories.Form
                         FROM HRM_DB.reclutamiento.PreApplicationFormResponse pafr
                         WHERE pafr.PreApplicationId = @PreApplicationId
                         AND pafr.FormId = @FormId";
-            var result = await connection.QueryFirstAsync<GetFormAnswersDBHeaderResponseDto>(sql, new { PreApplicationId, FormId });
+            var result = await connection.QueryFirstAsync<GetFormAnswersDBHeaderResponseDto?>(sql, new { PreApplicationId, FormId });
 
             return result;
         }
@@ -49,7 +49,7 @@ namespace HRM_API.Infraestructure.Repositories.Form
                         LEFT JOIN HRM_DB.reclutamiento.FormQuestionOption fqo ON fqo.IdOption = paao.OptionId
                         LEFT JOIN HRM_DB.reclutamiento.Files f ON f.IdFile = paa.FileId
                         WHERE ResponseId = @IdResponse";
-            var result = await connection.QueryAsync<GetFormAnswersDBAnswersResponseDto>(sql, new { IdResponse });
+            var result = await connection.QueryAsync<GetFormAnswersDBAnswersResponseDto?>(sql, new { IdResponse });
 
             return [.. result];
         }
@@ -62,7 +62,7 @@ namespace HRM_API.Infraestructure.Repositories.Form
                         FROM HRM_DB.reclutamiento.PreApplicationFormResponse pafr
                         WHERE pafr.PreApplicationId = @PreApplicationId
                         AND pafr.FormId = @FormId";
-            var result = await connection.QueryFirstAsync<GetPreApplicationFormResponseDBResponseDto>(sql, new { PreApplicationId, FormId });
+            var result = await connection.QuerySingleOrDefaultAsync<GetPreApplicationFormResponseDBResponseDto?>(sql, new { PreApplicationId, FormId });
 
             return result;
         }
@@ -88,7 +88,7 @@ namespace HRM_API.Infraestructure.Repositories.Form
                         FROM HRM_DB.reclutamiento.FormQuestionOption fqo
                         WHERE fqo.QuestionId = @QuestionId
                         AND fqo.CatalogId = @CatalogId";
-            var result = await connection.QueryFirstAsync<int>(sql, new { QuestionId, CatalogId });
+            var result = await connection.QuerySingleOrDefaultAsync<int?>(sql, new { QuestionId, CatalogId });
 
             return result;
         }
@@ -115,7 +115,7 @@ namespace HRM_API.Infraestructure.Repositories.Form
                         VALUES
                         (@PreApplicationId,@FormId,@CreatedAt,@CreatedBy,@UpdatedAt,@UpdatedBy);
                         SELECT CAST(SCOPE_IDENTITY() AS INT);";
-            var result = await connection.QueryFirstAsync<int>(sql, new { PreApplicationForm });
+            var result = await connection.QueryFirstAsync<int>(sql, PreApplicationForm);
 
             return result;
         }
@@ -128,7 +128,7 @@ namespace HRM_API.Infraestructure.Repositories.Form
                         (ResponseId, QuestionId, AnswerType, ValueText, CreatedAt, UpdatedAt)
                         VALUES
                         (@ResponseId,@QuestionId,@AnswerType,@ValueText,@CreatedAt,@UpdatedAt);";
-            var result = await connection.ExecuteAsync(sql, new { request });
+            var result = await connection.ExecuteAsync(sql, request);
 
             return result > 0;
         }
@@ -141,7 +141,7 @@ namespace HRM_API.Infraestructure.Repositories.Form
                         (ResponseId, QuestionId, AnswerType, ValueNumber, CreatedAt, UpdatedAt)
                         VALUES
                         (@ResponseId,@QuestionId,@AnswerType,@ValueNumber,@CreatedAt,@UpdatedAt);";
-            var result = await connection.ExecuteAsync(sql, new { request });
+            var result = await connection.ExecuteAsync(sql, request);
 
             return result > 0;
         }
@@ -154,7 +154,7 @@ namespace HRM_API.Infraestructure.Repositories.Form
                         (ResponseId, QuestionId, AnswerType, ValueBool, CreatedAt, UpdatedAt)
                         VALUES
                         (@ResponseId,@QuestionId,@AnswerType,@ValueBool,@CreatedAt,@UpdatedAt);";
-            var result = await connection.ExecuteAsync(sql, new { request });
+            var result = await connection.ExecuteAsync(sql, request);
 
             return result > 0;
         }
@@ -167,7 +167,7 @@ namespace HRM_API.Infraestructure.Repositories.Form
                         (ResponseId, QuestionId, AnswerType, FileId, CreatedAt, UpdatedAt)
                         VALUES
                         (@ResponseId,@QuestionId,@AnswerType,@FileId,@CreatedAt,@UpdatedAt);";
-            var result = await connection.ExecuteAsync(sql, new { request });
+            var result = await connection.ExecuteAsync(sql, request);
 
             return result > 0;
         }
@@ -180,7 +180,7 @@ namespace HRM_API.Infraestructure.Repositories.Form
                         (ResponseId, QuestionId, AnswerType, ValueDate, CreatedAt, UpdatedAt)
                         VALUES
                         (@ResponseId,@QuestionId,@AnswerType,@ValueDate,@CreatedAt,@UpdatedAt);";
-            var result = await connection.ExecuteAsync(sql, new { request });
+            var result = await connection.ExecuteAsync(sql, request);
 
             return result > 0;
         }
@@ -194,7 +194,7 @@ namespace HRM_API.Infraestructure.Repositories.Form
                         VALUES
                         (@ResponseId,@QuestionId,@AnswerType,@CreatedAt,@UpdatedAt);
                         SELECT CAST(SCOPE_IDENTITY() AS INT);";
-            var result = await connection.QueryFirstAsync<int>(sql, new { request });
+            var result = await connection.QueryFirstAsync<int>(sql, request);
 
             return result;
         }

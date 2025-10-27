@@ -1,18 +1,15 @@
 using System.Text;
+using HRM_API.Configuration;
 using HRM_API.Core.Interfaces.Mail;
 
 namespace HRM_API.Application.Templates
 {
-    public class CandidateRecordAdapter : ITemplateRepository
+    public class CandidateRecordAdapter(IMailRepository repository, ISettings settings) : ITemplateRepository
     {
-        private readonly IMailRepository _repository;
+        private readonly IMailRepository _repository = repository;
+        private readonly ISettings _settings = settings;
 
         public string TemplateName => "CandidateRecord.html";
-
-        public CandidateRecordAdapter(IMailRepository repository)
-        {
-            _repository = repository;
-        }
 
         public async Task<string> BuildBodyAsync(int id)
         {
@@ -26,7 +23,8 @@ namespace HRM_API.Application.Templates
             htmlBody = htmlBody
                 .Replace("[CODE]", dto.Code.ToString())
                 .Replace("[FULLNAME]", dto.FullName)
-                .Replace("[JOBPOSITIONNAME]", dto.JobPositionName);
+                .Replace("[JOBPOSITIONNAME]", dto.JobPositionName)
+                .Replace("[CANDIDATE_URL]", _settings.CandidateUrl ?? "");
 
             return htmlBody;
         }

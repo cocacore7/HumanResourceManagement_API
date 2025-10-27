@@ -1,10 +1,10 @@
+﻿using HRM_API.Configuration;
 using System.Net;
 using System.Net.Mail;
-using HRM_API.Configuration;
 
-namespace HRM_API.Application.Services
+namespace HRM_API.Application.Helpers
 {
-    public class MailService(TemplateAdapterFactory factory, ISettings settings)
+    public class MailHelper(TemplateAdapterFactory factory, ISettings settings)
     {
         private readonly TemplateAdapterFactory _factory = factory;
         private readonly ISettings _settings = settings;
@@ -35,6 +35,6 @@ namespace HRM_API.Application.Services
             await smtp.SendMailAsync(mail);
 
             return true;
-        }   
+        }
     }
 }

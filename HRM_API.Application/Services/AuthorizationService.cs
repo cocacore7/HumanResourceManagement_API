@@ -1,12 +1,17 @@
 ﻿using HRM_API.Application.Helpers;
+using HRM_API.Core.Dtos.Authorization;
 using HRM_API.Core.Interfaces.Authorization;
+using HRM_API.Core.Interfaces.User;
+using System.Text;
 
 namespace HRM_API.Application.Services
 {
-    public class AuthorizationService(IAuthorizationRepository repository, JwtService jwtService)
+    public class AuthorizationService(IAuthorizationRepository repository, IUserRepository userRepository, JwtService jwtService, AuthorizationHelper authorizationHelper)
     {
         private readonly IAuthorizationRepository _repository = repository;
+        private readonly IUserRepository _userRepository = userRepository;
         private readonly JwtService _jwtService = jwtService;
+        private readonly AuthorizationHelper _authorizationHelper = authorizationHelper;
 
         public async Task<string?> AuthenticateAsync(string name, string Password, string role)
         {
@@ -17,6 +22,47 @@ namespace HRM_API.Application.Services
                 return null;
              
             return _jwtService.GenerateToken(user.IdUser, user.Name, user.RoleId);
+        }
+
+        public async Task<string?> SendRecoveryCodeAsync(SendRecoveryCodeRequestDto request)
+        {
+            var user = (int)await _userRepository.GetUserByEmailAsync(request.email);
+            if (user > 0)
+                return null;
+
+            var random = new Random();
+            var recoveryCode = random.Next(100000, 999999);
+
+            SetLoginAttemptDBRequestDto newAttempt = new()
+            {
+                UserId = user,
+                EmailEntered = request.email,
+                Success = false,
+                RecoveryCode = recoveryCode,
+                RecoveryCodeUsed = false
+            };
+
+            await _repository.SetLoginAttemptAsync(newAttempt);
+            //Metodo para generar Codigo de recuperacion de 6 digitos para enviar el correo con el codigo de recuperacion
+
+            return "Codigo de recuperación generado con exito";
+        }
+            
+        public async Task<string?> GenerateNewPasswordAsync(GenerateNewPasswordRequestDto request)
+        {
+            var userId = await _repository.ValidPasswordCodeAsync(request.RecoveryCode, request.Email);
+            var isValidCode = await _repository.UpdatePasswordCodeAsync((int)userId);
+            if (userId == null || isValidCode == false)
+                return null;
+
+            var plainPassword = _authorizationHelper.GenerateSecurePassword();
+            byte[] newPasswordBytes = Encoding.UTF8.GetBytes(plainPassword);
+
+            var response = await _repository.GenerateNewPasswordAsync(new() { UserId = (int)userId, NewPassword = newPasswordBytes });
+
+            //Enviar por correo la nueva contraseña generada (Falta implementar)
+
+            return "Nueva contraseña generada con exito";
         }
     }
 }

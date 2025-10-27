@@ -28,7 +28,7 @@ namespace HRM_API.Infraestructure.Repositories.Mail
                               ,pa.Email            [Email]
                               ,jv.JobPositionName  [JobPositionName]
                               ,pa.CreatedAt        [CreatedAt]
-                              ,c.CommentText      [Comment]
+                              ,c.Comment           [Comment]
                         FROM HRM_DB.reclutamiento.PreApplication pa
                         INNER JOIN HRM_DB.reclutamiento.JobVacancy jv
                         ON jv.IdVacancy  = pa.VacancyId
@@ -39,7 +39,7 @@ namespace HRM_API.Infraestructure.Repositories.Mail
                             FROM HRM_DB.reclutamiento.PreApplication pa
                             INNER JOIN HRM_DB.reclutamiento.Comment cm
                             ON cm.PreApplicationId    = pa.IdPreApplication
-                            WHERE pa.IdPreApplication = 1
+                            WHERE pa.IdPreApplication = @id
                             AND CommentStatus = 'entrevista'
                         ) c
                         WHERE pa.IdPreApplication = @id";
@@ -65,7 +65,7 @@ namespace HRM_API.Infraestructure.Repositories.Mail
                               ,pa.Email            [Email]
                               ,jv.JobPositionName  [JobPositionName]
                               ,pa.CreatedAt        [CreatedAt]
-                              ,c.CommentText      [Comment]
+                              ,c.Comment           [Comment]
                         FROM HRM_DB.reclutamiento.PreApplication pa
                         INNER JOIN HRM_DB.reclutamiento.JobVacancy jv
                         ON jv.IdVacancy  = pa.VacancyId
@@ -76,8 +76,8 @@ namespace HRM_API.Infraestructure.Repositories.Mail
                             FROM HRM_DB.reclutamiento.PreApplication pa
                             INNER JOIN HRM_DB.reclutamiento.Comment cm
                             ON cm.PreApplicationId    = pa.IdPreApplication
-                            WHERE pa.IdPreApplication = 1
-                            AND CommentStatus = 'entrevistaJefe'
+                            WHERE pa.IdPreApplication = @id
+                            AND CommentStatus = 'pruebas'
                         ) c
                         WHERE pa.IdPreApplication = @id";
 
@@ -142,7 +142,7 @@ namespace HRM_API.Infraestructure.Repositories.Mail
                               ,pa.Email            [Email]
                               ,jv.JobPositionName  [JobPositionName]
                               ,pa.CreatedAt        [CreatedAt]
-                              ,cm.CommentText      [Comment]
+                              ,c.Comment           [Comment]
                         FROM HRM_DB.reclutamiento.PreApplication pa
                         INNER JOIN HRM_DB.reclutamiento.JobVacancy jv
                         ON jv.IdVacancy  = pa.VacancyId
@@ -153,8 +153,8 @@ namespace HRM_API.Infraestructure.Repositories.Mail
                             FROM HRM_DB.reclutamiento.PreApplication pa
                             INNER JOIN HRM_DB.reclutamiento.Comment cm
                             ON cm.PreApplicationId    = pa.IdPreApplication
-                            WHERE pa.IdPreApplication = 1
-                            AND CommentStatus = 'entrevista'
+                            WHERE pa.IdPreApplication = @id
+                            AND CommentStatus = 'solicitud'
                         ) c
                         WHERE pa.IdPreApplication = @id";
 
@@ -179,7 +179,7 @@ namespace HRM_API.Infraestructure.Repositories.Mail
                               ,pa.Email             [Email]
                               ,jv.JobPositionName   [JobPositionName]
                               ,pa.CreatedAt         [CreatedAt]
-                              ,cm.CommentText       [Comment]
+                              ,c.Comment            [Comment]
                         FROM HRM_DB.reclutamiento.PreApplication pa
                         INNER JOIN HRM_DB.reclutamiento.JobVacancy jv
                         ON jv.IdVacancy  = pa.VacancyId
@@ -190,8 +190,8 @@ namespace HRM_API.Infraestructure.Repositories.Mail
                             FROM HRM_DB.reclutamiento.PreApplication pa
                             INNER JOIN HRM_DB.reclutamiento.Comment cm
                             ON cm.PreApplicationId    = pa.IdPreApplication
-                            WHERE pa.IdPreApplication = 1
-                            AND CommentStatus = 'poligrafo'
+                            WHERE pa.IdPreApplication = @id
+                            AND CommentStatus = 'entrevistaJefe'
                         ) c
                         WHERE pa.IdPreApplication = @id";
 
@@ -216,7 +216,7 @@ namespace HRM_API.Infraestructure.Repositories.Mail
                               ,pa.Email            [Email]
                               ,jv.JobPositionName  [JobPositionName]
                               ,pa.CreatedAt        [CreatedAt]
-                              ,cm.CommentText      [Comment]
+                              ,c.Comment           [Comment]
                         FROM HRM_DB.reclutamiento.PreApplication pa
                         INNER JOIN HRM_DB.reclutamiento.JobVacancy jv
                         ON jv.IdVacancy  = pa.VacancyId
@@ -227,8 +227,8 @@ namespace HRM_API.Infraestructure.Repositories.Mail
                             FROM HRM_DB.reclutamiento.PreApplication pa
                             INNER JOIN HRM_DB.reclutamiento.Comment cm
                             ON cm.PreApplicationId    = pa.IdPreApplication
-                            WHERE pa.IdPreApplication = 1
-                            AND CommentStatus = 'Prefiltro'
+                            WHERE pa.IdPreApplication = @id
+                            AND CommentStatus = 'preFiltro'
                         ) c
                         WHERE pa.IdPreApplication = @id";
 

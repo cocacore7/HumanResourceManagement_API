@@ -82,9 +82,11 @@ builder.Services.AddScoped<IDbConnection>(sp =>
 builder.Services.AddSingleton<JwtService>();
 builder.Services.AddSingleton<FileHelper>();
 builder.Services.AddSingleton<EnumHelper>();
+builder.Services.AddSingleton<AuthorizationHelper>();
 #endregion
 
 #region Repositorios y Servicios
+builder.Services.AddScoped<MailHelper>();
 builder.Services.AddScoped<IAuthorizationRepository, AuthorizationRepository>();
 builder.Services.AddScoped<AuthorizationService>();
 builder.Services.AddScoped<ICatalogRepository, CatalogRepository>();
@@ -100,7 +102,6 @@ builder.Services.AddScoped<PreApplicationService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<IMailRepository, MailRepository>();
-builder.Services.AddScoped<MailService>();
 builder.Services.AddScoped<ITemplateRepository, AssessmentTestAdapter>();
 builder.Services.AddScoped<ITemplateRepository, BossInterviewAdapter>();
 builder.Services.AddScoped<ITemplateRepository, CandidateRecordAdapter>();
@@ -116,7 +117,7 @@ builder.Services.AddScoped<TemplateAdapterFactory>();
 builder.Services.AddControllers().AddJsonOptions(o =>
 {
     o.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
-    o.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+    o.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.Never;
 });
 builder.Services.AddEndpointsApiExplorer();
 
