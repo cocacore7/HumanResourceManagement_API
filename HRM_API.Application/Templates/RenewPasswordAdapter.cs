@@ -4,9 +4,8 @@ using System.Text;
 
 namespace HRM_API.Application.Templates
 {
-    public class RenewPasswordAdapter(IMailRepository repository, ISettings settings) : ITemplateRepository
+    public class RenewPasswordAdapter(ISettings settings) : ITemplateRepository
     {
-        private readonly IMailRepository _repository = repository;
         private readonly ISettings _settings = settings;
 
         public string TemplateName => "RenewPassword.html";

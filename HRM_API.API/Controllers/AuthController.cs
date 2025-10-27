@@ -37,7 +37,9 @@ namespace HRM_API.API.Controllers
         {
             var response = await _authService.GenerateNewPasswordAsync(request);
 
-            return Ok(ApiResponses.Ok(new GenerateNewPasswordResponseDto { Response = response ?? "Error al generar nueva contraseña" }, "OK", "GENERATE_SUCCES"));
+            return response is null ?
+                BadRequest(ApiResponses.Fail("BAD_REQUEST", "Error al enviar nueva contraseña")) : 
+                Ok(ApiResponses.Ok(new GenerateNewPasswordResponseDto { Response = response ?? "Error al generar nueva contraseña" }, "OK", "GENERATE_SUCCES"));
         }
     }
 }

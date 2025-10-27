@@ -40,18 +40,14 @@ namespace HRM_API.Infraestructure.Repositories.Authorization
             return user;
         }
 
-        public async Task<GenerateNewPasswordDBResponseDto?> GenerateNewPasswordAsync(GenerateNewPasswordDBRequestDto requestdb)
+        public async Task<int?> GenerateNewPasswordAsync(GenerateNewPasswordDBRequestDto requestdb)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
-            var sql = @"SELECT u.IdUser, u.Name, u.RoleId 
-                        FROM HRM_DB.reclutamiento.Users u
-                        INNER JOIN HRM_DB.reclutamiento.Role r ON r.IdRole = u.RoleId
-                        WHERE u.Name = @Name 
-                        AND u.PasswordHash = @Password 
-                        AND r.KeyName = @Role
-                        AND u.IsActive = 1";
-            var user = await connection.QueryFirstOrDefaultAsync<GenerateNewPasswordDBResponseDto>(sql, new { requestdb });
+            var sql = @"UPDATE HRM_DB.reclutamiento.Users
+                        SET PasswordHash = @NewPassword
+                        WHERE IdUser = @UserId";
+            var user = await connection.ExecuteAsync(sql, new { requestdb.NewPassword, requestdb.UserId });
 
             return user;
         }
@@ -75,9 +71,9 @@ namespace HRM_API.Infraestructure.Repositories.Authorization
 
             var sql = @"UPDATE HRM_DB.reclutamiento.LoginAttempt
                         SET RecoveryCodeUsed = 1
-                        WHERE UserId = @UserId
+                        WHERE UserId = @userId
                         AND RecoveryCodeUsed = 0";
-            var user = await connection.QueryFirstOrDefaultAsync<int>(sql, new { userId });
+            var user = await connection.ExecuteAsync(sql, new { userId });
 
             return user > 0;
         }

@@ -39,7 +39,7 @@ namespace HRM_API.API.Controllers
 
             var response = await _commentService.SetCommentsAsync(request, user);
             if (response == null) { BadRequest(ApiResponses.Fail("COMMENT_NOT_SAVED", "Error al registrar comentario")); }
-            return Ok(ApiResponses.Ok(response, "OK", "COMMENT_NOT_SAVED"));
+            return Ok(ApiResponses.Ok(response, "OK", "COMMENT_SAVED"));
         }
     }
 }

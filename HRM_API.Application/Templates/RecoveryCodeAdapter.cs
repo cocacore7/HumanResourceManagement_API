@@ -1,14 +1,10 @@
-using HRM_API.Configuration;
 using HRM_API.Core.Interfaces.Mail;
 using System.Text;
 
 namespace HRM_API.Application.Templates
 {
-    public class RecoveryCodeAdapter(IMailRepository repository, ISettings settings) : ITemplateRepository
+    public class RecoveryCodeAdapter() : ITemplateRepository
     {
-        private readonly IMailRepository _repository = repository;
-        private readonly ISettings _settings = settings;
-
         public string TemplateName => "RecoveryCode.html";
 
         public async Task<string> BuildBodyAsync(int id)
