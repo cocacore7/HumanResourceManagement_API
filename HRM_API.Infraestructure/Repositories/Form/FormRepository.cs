@@ -312,12 +312,11 @@ namespace HRM_API.Infraestructure.Repositories.Form
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
             var sql = @"UPDATE HRM_DB.reclutamiento.PreApplicationAnswer
-                        SET AnswerType = @AnswerType, UpdatedAt = @UpdatedAt
+                        SET AnswerType = @AnswerType
                         WHERE ResponseId = @ResponseId
                         AND QuestionId = @QuestionId;";
-            var result = await connection.QueryFirstAsync<int>(sql, new {
+            var result = await connection.ExecuteAsync(sql, new {
                 request.AnswerType,
-                request.UpdatedAt,
                 request.ResponseId,
                 request.QuestionId
             });
