@@ -7,16 +7,19 @@ using HRM_API.Core.Enum.Form;
 using HRM_API.Core.Interfaces.File;
 using HRM_API.Core.Interfaces.Form;
 using HRM_API.Core.Interfaces.PreApplication;
+using HRM_API.Core.Interfaces.User;
 
 namespace HRM_API.Application.Services
 {
-    public class FormService(IFormRepository repository, IPreApplicationRepository preApplicationRepository, IFileRepository fileRepository, EnumHelper enumHelper, FileHelper fileHelper)
+    public class FormService(IFormRepository repository, IPreApplicationRepository preApplicationRepository, IFileRepository fileRepository, IUserRepository userRepository, EnumHelper enumHelper, FileHelper fileHelper, MailHelper mailRepository)
     {
         private readonly IFormRepository _repository = repository;
         private readonly IPreApplicationRepository _preApplicationRepository = preApplicationRepository;
         private readonly IFileRepository _fileRepository = fileRepository;
+        private readonly IUserRepository _userRepository = userRepository;
         private readonly EnumHelper _enumHelper = enumHelper;
         private readonly FileHelper _fileHelper = fileHelper;
+        private readonly MailHelper _mailRepository = mailRepository;
 
         public async Task<GetFormAnswersResponseDto?> GetFormAnswersAsync(int PreApplicationId, int FormId)
         {
@@ -175,9 +178,13 @@ namespace HRM_API.Application.Services
                             var answerOptionId = (bool)await _repository.SetEnumAnswerOptionAsync(answerId, questionOptionId);
                             if (item.Code == _enumHelper.GetEnumDescription(SetFormAnswersValidationEnum.assignTo))
                             {
-                                //Agregar get para obtener email de usuario assignto y despues poder mandarlo en el correo
-                                var StatusAssignToValid = (bool)await _preApplicationRepository.UpdateStatusAssignToAsync(preApplication.FirstOrDefault()?.Id, request?.Origin.State, item.OptionId);
-                                if (StatusAssignToValid) { responseList.Add("Estado y siguiente revisor actualizado con exito"); }
+                                if (item.OptionId != null)
+                                {
+                                    var StatusAssignToValid = (bool)await _preApplicationRepository.UpdateStatusAssignToAsync(preApplication.FirstOrDefault()?.Id, request?.Origin.State, item.OptionId);
+                                    var email = await _userRepository.GetEmailByUserAsync((int)item.OptionId);
+                                    //await _mailRepository.SendEmailFromTemplateAsync(email ?? "", "Nueva gestión de candidato5", "PreScreening", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
+                                    if (StatusAssignToValid) { responseList.Add("Estado y siguiente revisor actualizado con exito"); }
+                                }
                             }
                             if (answerOptionId) { responseList.Add("Respuesta registrada con exito, codigo: " + item.Code); }
                             else { responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code); }
@@ -304,8 +311,7 @@ namespace HRM_API.Application.Services
 
                                 case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Enum) || type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Multienum):
                                     //Obtener questionOptionId
-                                    var questionOptionId = (int)await _repository.GetQuestionOptionAsync(question.QuestionId, item.OptionId);
-                                    if (questionOptionId <= 0) { responseList.Add("Respuesta registrada con exito, codigo: " + item.Code); break; }
+                                    var questionOptionId = await _repository.GetQuestionOptionAsync(question.QuestionId, item.OptionId);
 
                                     //Guardar Answer
                                     var enumAnswer = new UpdateEnumAnswerDBResponseDto()
