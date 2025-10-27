@@ -1,4 +1,5 @@
-﻿using HRM_API.Configuration;
+﻿using HRM_API.Application.Templates;
+using HRM_API.Configuration;
 using System.Net;
 using System.Net.Mail;
 

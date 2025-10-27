@@ -10,12 +10,11 @@ using HRM_API.Core.Interfaces.PreApplication;
 
 namespace HRM_API.Application.Services
 {
-    public class PreApplicationService(IPreApplicationRepository repository, IFileRepository fileRepository, ICatalogRepository catalogRepository, EnumHelper enumHelper, FileHelper fileHelper)
+    public class PreApplicationService(IPreApplicationRepository repository, IFileRepository fileRepository, ICatalogRepository catalogRepository, FileHelper fileHelper)
     {
         private readonly IPreApplicationRepository _repository = repository;
         private readonly IFileRepository _fileRepository = fileRepository;
         private readonly ICatalogRepository _catalogRepository = catalogRepository;
-        private readonly EnumHelper _enumHelper = enumHelper;
         private readonly FileHelper _fileHelper = fileHelper;
 
         public async Task<GetPreApplicationsResponseDto?> GetPreApplicationsAsync(string estado, string id)
@@ -34,57 +33,57 @@ namespace HRM_API.Application.Services
             {
                 switch (item.Code)
                 {
-                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.FullName):
+                    case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.FullName):
                         newApplication.FullName = item.ValueText ?? string.Empty;
                         break;
 
-                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.DPI):
+                    case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.DPI):
                         newApplication.DPI = item.ValueText ?? string.Empty;
                         break;
 
-                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Age):
+                    case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Age):
                         newApplication.Age = int.TryParse(item.ValueText, out int createdByfile) ? createdByfile : 0;
                         break;
 
-                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Gender):
+                    case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Gender):
                         newApplication.Gender = item.OptionValue == "Femenino" ? "Femenino" : "Masculino";
                         break;
 
-                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Phone):
+                    case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Phone):
                         newApplication.Phone = item.ValueText ?? string.Empty;
                         break;
 
-                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Email):
+                    case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Email):
                         newApplication.Email = item.ValueText ?? string.Empty;
                         break;
 
-                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Town):
+                    case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Town):
                         var towns = await _catalogRepository.GetTownCatalogAsync();
                         newApplication.TownId = towns.FirstOrDefault(p => p.Value.ToLower().Contains(item.OptionValue?.ToLower() ?? "", StringComparison.OrdinalIgnoreCase)) ?.Id ?? 0;
                         break;
 
-                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Address):
+                    case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Address):
                         newApplication.Address = item.ValueText ?? string.Empty;
                         break;
 
-                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.EducationLevel):
+                    case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.EducationLevel):
                         newApplication.EducationLevel = item.OptionValue ?? "";
                         break;
 
-                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Vacancy):
+                    case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Vacancy):
                         var jobs = await _catalogRepository.GetJobCatalogAsync();
                         newApplication.VacancyId = jobs.FirstOrDefault(p => p.Value.ToLower().Contains(item.OptionValue?.ToLower() ?? "", StringComparison.OrdinalIgnoreCase))?.Id ?? 0;
                         break;
 
-                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Experience):
+                    case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Experience):
                         newApplication.Experience = item.OptionValue == "no";
                         break;
 
-                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.HowHeard):
+                    case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.HowHeard):
                         newApplication.HowHeard = item.OptionValue ?? string.Empty;
                         break;
 
-                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.File):
+                    case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.File):
                         SetFileDBRequestDto newfile = new()
                         {
                             FileName = item.FileName ?? string.Empty,
@@ -98,7 +97,7 @@ namespace HRM_API.Application.Services
                         item.IdFile = responsedb;
                         break;
 
-                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.AcceptedTerms):
+                    case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.AcceptedTerms):
                         newApplication.AcceptedTerms = item.ValueBool ?? null;
                         break;
 
@@ -120,7 +119,7 @@ namespace HRM_API.Application.Services
             {
                 switch (item.Code)
                 {
-                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.File):
+                    case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.File):
                         var filepath = _fileHelper.SaveFile(item, request?.Origin ?? new GeneralFormRequestOriginDto());
                         UpdateFileDBRequestDto updatefile = new()
                         {
@@ -151,57 +150,57 @@ namespace HRM_API.Application.Services
             {
                 switch (item.Code)
                 {
-                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.FullName):
+                    case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.FullName):
                         newApplication.FullName = item.ValueText ?? string.Empty;
                         break;
 
-                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.DPI):
+                    case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.DPI):
                         newApplication.DPI = item.ValueText ?? string.Empty;
                         break;
 
-                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Age):
+                    case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Age):
                         newApplication.Age = int.TryParse(item.ValueText, out int createdByfile) ? createdByfile : 0;
                         break;
 
-                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Gender):
+                    case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Gender):
                         newApplication.Gender = item.OptionValue == "Femenino" ? "Femenino" : "Masculino";
                         break;
 
-                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Phone):
+                    case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Phone):
                         newApplication.Phone = item.ValueText ?? string.Empty;
                         break;
 
-                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Email):
+                    case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Email):
                         newApplication.Email = item.ValueText ?? string.Empty;
                         break;
 
-                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Town):
+                    case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Town):
                         var towns = await _catalogRepository.GetTownCatalogAsync();
                         newApplication.TownId = towns.FirstOrDefault(p => p.Value.ToLower().Contains(item.OptionValue?.ToLower() ?? "", StringComparison.OrdinalIgnoreCase))?.Id ?? 0;
                         break;
 
-                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Address):
+                    case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Address):
                         newApplication.Address = item.ValueText ?? string.Empty;
                         break;
 
-                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.EducationLevel):
+                    case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.EducationLevel):
                         newApplication.EducationLevel = item.OptionValue ?? "";
                         break;
 
-                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Vacancy):
+                    case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Vacancy):
                         var jobs = await _catalogRepository.GetJobCatalogAsync();
                         newApplication.VacancyId = jobs.FirstOrDefault(p => p.Value.ToLower().Contains(item.OptionValue?.ToLower() ?? "", StringComparison.OrdinalIgnoreCase))?.Id ?? 0;
                         break;
 
-                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Experience):
+                    case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Experience):
                         newApplication.Experience = item.OptionValue == "no";
                         break;
 
-                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.HowHeard):
+                    case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.HowHeard):
                         newApplication.HowHeard = item.OptionValue ?? string.Empty;
                         break;
 
-                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.File):
+                    case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.File):
                         if (!string.IsNullOrEmpty(item.Base64))
                         {
                             var file = await _repository.GetPreApplicationFileIdAsync(request?.Origin.RegisterId ?? new());
@@ -220,19 +219,19 @@ namespace HRM_API.Application.Services
                         } 
                         break;
 
-                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.AcceptedTerms):
+                    case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.AcceptedTerms):
                         newApplication.AcceptedTerms = item.ValueBool;
                         break;
 
-                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.AssignHub):
+                    case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.AssignHub):
                         newApplication.AssignHub = item.ValueText ?? string.Empty;
                         break;
 
-                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.ReferredBy):
+                    case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.ReferredBy):
                         newApplication.RefferedBy = item.ValueText ?? string.Empty;
                         break;
 
-                    case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.IsReferred):
+                    case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.IsReferred):
                         newApplication.IsReferred = item.ValueBool ?? null;
                         break;
 

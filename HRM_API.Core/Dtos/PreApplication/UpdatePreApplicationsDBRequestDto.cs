@@ -17,7 +17,7 @@
         public string AssignHub { get; set; } = string.Empty;
         public bool? AcceptedTerms { get; set; }
         public string Origin { get; set; } = string.Empty;
-        public string Status { get; set; } = "preSolicitud";
+        public string Status { get; set; } = "preFiltro";
         public bool? IsReferred { get; set; } = null;
         public string RefferedBy { get; set; } = string.Empty;
         public int? IdPreApplication { get; set; }

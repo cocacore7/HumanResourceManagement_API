@@ -14,5 +14,5 @@ namespace HRM_API.Core.Enum.Form
         [Description("multienum")] Multienum,
         [Description("date")] Date,
         [Description("void")] Void
-}
+    }
 }

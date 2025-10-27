@@ -6,12 +6,11 @@ using System.Text;
 
 namespace HRM_API.Application.Services
 {
-    public class AuthorizationService(IAuthorizationRepository repository, IUserRepository userRepository, JwtService jwtService, AuthorizationHelper authorizationHelper, MailHelper mailHelper)
+    public class AuthorizationService(IAuthorizationRepository repository, IUserRepository userRepository, JwtService jwtService, MailHelper mailHelper)
     {
         private readonly IAuthorizationRepository _repository = repository;
         private readonly IUserRepository _userRepository = userRepository;
         private readonly JwtService _jwtService = jwtService;
-        private readonly AuthorizationHelper _authorizationHelper = authorizationHelper;
         private readonly MailHelper _mailHelper = mailHelper;
 
         public async Task<string?> AuthenticateAsync(string name, string Password, string role)
@@ -58,10 +57,10 @@ namespace HRM_API.Application.Services
             if (user == null || userId == null || isValidCode == false)
                 return null;
 
-            var plainPassword = _authorizationHelper.GenerateSecurePassword();
+            var plainPassword = AuthorizationHelper.GenerateSecurePassword();
             byte[] newPasswordBytes = Encoding.UTF8.GetBytes(plainPassword);
 
-            var response = await _repository.GenerateNewPasswordAsync(new() { UserId = (int)userId, NewPassword = newPasswordBytes });
+            await _repository.GenerateNewPasswordAsync(new() { UserId = (int)userId, NewPassword = newPasswordBytes });
 
             //Enviar por correo la nueva contraseña generada (Falta implementar)
             await _mailHelper.SendEmailFromTemplateAsync(request.Email ?? string.Empty, "Nueva Contraseña Generada", "RenewPassword", 0, user.Name, plainPassword);

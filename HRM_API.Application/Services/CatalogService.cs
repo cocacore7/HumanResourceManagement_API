@@ -1,13 +1,11 @@
 ﻿using HRM_API.Core.Dtos.General;
 using HRM_API.Core.Interfaces.Catalog;
-using HRM_API.Application.Helpers;
 
 namespace HRM_API.Application.Services
 {
-    public class CatalogService(ICatalogRepository repository, MailHelper mailRepository)
+    public class CatalogService(ICatalogRepository repository)
     {
         private readonly ICatalogRepository _repository = repository;
-        private readonly MailHelper _mailRepository = mailRepository;
 
         public async Task<CatalogRequestDto?> GetJobCatalogAsync()
         {

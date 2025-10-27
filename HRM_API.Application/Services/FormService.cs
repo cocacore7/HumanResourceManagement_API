@@ -12,13 +12,12 @@ using HRM_API.Core.Interfaces.User;
 
 namespace HRM_API.Application.Services
 {
-    public class FormService(IFormRepository repository, IPreApplicationRepository preApplicationRepository, IFileRepository fileRepository, IUserRepository userRepository, EnumHelper enumHelper, FileHelper fileHelper, MailHelper mailHelper)
+    public class FormService(IFormRepository repository, IPreApplicationRepository preApplicationRepository, IFileRepository fileRepository, IUserRepository userRepository, FileHelper fileHelper, MailHelper mailHelper)
     {
         private readonly IFormRepository _repository = repository;
         private readonly IPreApplicationRepository _preApplicationRepository = preApplicationRepository;
         private readonly IFileRepository _fileRepository = fileRepository;
         private readonly IUserRepository _userRepository = userRepository;
-        private readonly EnumHelper _enumHelper = enumHelper;
         private readonly FileHelper _fileHelper = fileHelper;
         private readonly MailHelper _mailHelper = mailHelper;
 
@@ -76,15 +75,15 @@ namespace HRM_API.Application.Services
             }
 
             //Validar estados rechazados
-            if (request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.PreFilterFail) ||
-                request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.RequestFail) ||
-                request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.ReviewFail) ||
-                request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.InterviewFail) ||
-                request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.TestFail) ||
-                request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.BossInterviewFail) ||
-                request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.PoligraphFail) ||
-                request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.ExpLoadFail) ||
-                request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.HiringFail))
+            if (request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.PreFilterFail) ||
+                request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.RequestFail) ||
+                request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.ReviewFail) ||
+                request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.InterviewFail) ||
+                request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.TestFail) ||
+                request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.BossInterviewFail) ||
+                request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.PoligraphFail) ||
+                request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.ExpLoadFail) ||
+                request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.HiringFail))
             {
                 var StatusfailValid = (bool)await _preApplicationRepository.UpdateStatusFailAsync(preApplication.FirstOrDefault()?.Id, request?.Origin.State);
                 if (StatusfailValid) { responseList.Add("Estado de rechazo actualizado con exito"); }
@@ -98,7 +97,7 @@ namespace HRM_API.Application.Services
                 {
                     switch (item.Type)
                     {
-                        case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Text) || type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Textarea):
+                        case var type when type == EnumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Text) || type == EnumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Textarea):
                             var textAnswer = new SetTextAnswerDBResponseDto()
                             {
                                 ResponseId = responseId,
@@ -111,7 +110,7 @@ namespace HRM_API.Application.Services
                             else { responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code); }
                             break;
 
-                        case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Number) || type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Currency):
+                        case var type when type == EnumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Number) || type == EnumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Currency):
                             var numberAnswer = new SetNumberAnswerDBResponseDto()
                             {
                                 ResponseId = responseId,
@@ -124,7 +123,7 @@ namespace HRM_API.Application.Services
                             else { responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code); }
                             break;
 
-                        case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Boolean):
+                        case var type when type == EnumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Boolean):
                             var boolAnswer = new SetBoolAnswerDBResponseDto()
                             {
                                 ResponseId = responseId,
@@ -137,7 +136,7 @@ namespace HRM_API.Application.Services
                             else { responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code); }
                             break;
 
-                        case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.File):
+                        case var type when type == EnumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.File):
                             if (string.IsNullOrEmpty(item.Base64)) 
                             {
                                 var filepath = _fileHelper.SaveFile(item, request?.Origin ?? new GeneralFormRequestOriginDto());
@@ -165,7 +164,7 @@ namespace HRM_API.Application.Services
                             }
                             break;
 
-                        case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Date):
+                        case var type when type == EnumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Date):
                             var dateAnswer = new SetDateAnswerDBResponseDto()
                             {
                                 ResponseId = responseId,
@@ -178,7 +177,7 @@ namespace HRM_API.Application.Services
                             else { responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code); }
                             break;
 
-                        case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Enum) || type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Multienum):
+                        case var type when type == EnumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Enum) || type == EnumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Multienum):
                             //Obtener questionOptionId
                             var questionOptionId = await _repository.GetQuestionOptionAsync(question.QuestionId, item.OptionId);
                             //Guardar Answer
@@ -192,7 +191,7 @@ namespace HRM_API.Application.Services
 
                             //Guardar AnswerOption
                             var answerOptionId = (bool)await _repository.SetEnumAnswerOptionAsync(answerId, questionOptionId);
-                            if (item.Code == _enumHelper.GetEnumDescription(SetFormAnswersValidationEnum.assignTo))
+                            if (item.Code == EnumHelper.GetEnumDescription(SetFormAnswersValidationEnum.assignTo))
                             {
                                 if (item.OptionId != null)
                                 {
@@ -206,7 +205,7 @@ namespace HRM_API.Application.Services
                             else { responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code); }
                             break;
 
-                        case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Void):
+                        case var type when type == EnumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Void):
                             
                             responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code);
                             break;
@@ -240,28 +239,28 @@ namespace HRM_API.Application.Services
             List<string> responseList = [];
 
             //Validar estados rechazados
-            if (request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.PreFilterFail) ||
-                request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.RequestFail) ||
-                request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.ReviewFail) ||
-                request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.InterviewFail) ||
-                request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.TestFail) ||
-                request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.BossInterviewFail) ||
-                request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.PoligraphFail) ||
-                request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.ExpLoadFail) ||
-                request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.HiringFail))
+            if (request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.PreFilterFail) ||
+                request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.RequestFail) ||
+                request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.ReviewFail) ||
+                request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.InterviewFail) ||
+                request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.TestFail) ||
+                request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.BossInterviewFail) ||
+                request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.PoligraphFail) ||
+                request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.ExpLoadFail) ||
+                request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.HiringFail))
             {
                 var StatusfailValid = (bool)await _preApplicationRepository.UpdateStatusFailAsync(preApplication.FirstOrDefault()?.Id, request?.Origin.State);
                 if (StatusfailValid) { responseList.Add("Estado de rechazo actualizado con exito"); }
             }
 
-            foreach (var item in request.Answers ?? [])
+            foreach (var item in request?.Answers ?? [])
             {
                 var question = await _repository.GetValidQuestionAsync(form.IdForm, item.Code);
                 if (question?.Type == item.Type)
                 {
                     switch (item.Type)
                     {
-                        case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Text) || type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Textarea):
+                        case var type when type == EnumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Text) || type == EnumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Textarea):
                             var textAnswer = new UpdateTextAnswerDBResponseDto()
                             {
                                 ResponseId = reponseId.IdResponse,
@@ -274,7 +273,7 @@ namespace HRM_API.Application.Services
                             else { responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code); }
                             break;
 
-                        case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Number) || type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Currency):
+                        case var type when type == EnumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Number) || type == EnumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Currency):
                             var numberAnswer = new UpdateNumberAnswerDBResponseDto()
                             {
                                 ResponseId = reponseId.IdResponse,
@@ -287,7 +286,7 @@ namespace HRM_API.Application.Services
                             else { responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code); }
                             break;
 
-                        case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Boolean):
+                        case var type when type == EnumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Boolean):
                             var boolAnswer = new UpdateBoolAnswerDBResponseDto()
                             {
                                 ResponseId = reponseId.IdResponse,
@@ -300,7 +299,7 @@ namespace HRM_API.Application.Services
                             else { responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code); }
                             break;
 
-                        case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.File):
+                        case var type when type == EnumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.File):
                             if (!string.IsNullOrEmpty(item.Base64))
                             { //Guardar imagen
                                 var filepath = _fileHelper.SaveFile(item, request?.Origin ?? new GeneralFormRequestOriginDto());
@@ -328,7 +327,7 @@ namespace HRM_API.Application.Services
                             } 
                             break;
 
-                        case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Date):
+                        case var type when type == EnumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Date):
                             var dateAnswer = new UpdateDateAnswerDBResponseDto()
                             {
                                 ResponseId = reponseId.IdResponse,
@@ -341,7 +340,7 @@ namespace HRM_API.Application.Services
                             else { responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code); }
                             break;
 
-                        case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Enum) || type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Multienum):
+                        case var type when type == EnumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Enum) || type == EnumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Multienum):
                             //Obtener questionOptionId
                             var questionOptionId = await _repository.GetQuestionOptionAsync(question.QuestionId, item.OptionId);
                             if (questionOptionId != null)
@@ -357,7 +356,7 @@ namespace HRM_API.Application.Services
 
                                 //Guardar AnswerOption
                                 var answerOptionId = (bool)await _repository.UpdateEnumAnswerOptionAsync(answerId, questionOptionId);
-                                if (item.Code == _enumHelper.GetEnumDescription(SetFormAnswersValidationEnum.assignTo))
+                                if (item.Code == EnumHelper.GetEnumDescription(SetFormAnswersValidationEnum.assignTo))
                                 {
                                     if (item.OptionId != null)
                                     {
@@ -367,35 +366,35 @@ namespace HRM_API.Application.Services
                                         string emailCandidate = preApplication.FirstOrDefault()?.Correo ?? string.Empty;
                                         string preApplicationState = preApplication.FirstOrDefault()?.Estado ?? string.Empty;
 
-                                        if (preApplicationState == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.PreFilter) && request?.Origin.State == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Request))
+                                        if (preApplicationState == EnumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.PreFilter) && request?.Origin.State == EnumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Request))
                                         {//Correo a reclutador
                                             await _mailHelper.SendEmailFromTemplateAsync(emailRecruiter ?? string.Empty, "Nueva gestión de candidato", "PreScreening", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
                                         }
-                                        else if (preApplicationState == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Request) && request?.Origin.State == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Interview))
+                                        else if (preApplicationState == EnumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Request) && request?.Origin.State == EnumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Interview))
                                         {//Correo a reclutador
                                             await _mailHelper.SendEmailFromTemplateAsync(emailRecruiter ?? string.Empty, "Gestión en etapa de " + request?.Origin.State, "JobInterview", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
                                         }
-                                        else if (preApplicationState == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Interview) && request?.Origin.State == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Test))
+                                        else if (preApplicationState == EnumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Interview) && request?.Origin.State == EnumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Test))
                                         {//Correo a reclutador
                                             await _mailHelper.SendEmailFromTemplateAsync(emailRecruiter ?? string.Empty, "Gestión en etapa de " + request?.Origin.State, "Assessment", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
                                         }
-                                        else if (preApplicationState == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Interview) && request?.Origin.State == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.InterviewFail))
+                                        else if (preApplicationState == EnumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Interview) && request?.Origin.State == EnumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.InterviewFail))
                                         {//Correo a Candidato
                                             await _mailHelper.SendEmailFromTemplateAsync(emailCandidate ?? string.Empty, "Gestión en etapa de " + request?.Origin.State, "EndProcess", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
                                         }
-                                        else if (preApplicationState == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Test) && request?.Origin.State == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.BossInterview))
+                                        else if (preApplicationState == EnumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Test) && request?.Origin.State == EnumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.BossInterview))
                                         {//Correo a reclutador
                                             await _mailHelper.SendEmailFromTemplateAsync(emailRecruiter ?? string.Empty, "Gestión en etapa de " + request?.Origin.State, "BossInterview", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
                                         }
-                                        else if (preApplicationState == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.BossInterview) && request?.Origin.State == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Poligrahp))
+                                        else if (preApplicationState == EnumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.BossInterview) && request?.Origin.State == EnumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Poligrahp))
                                         {//Correo a reclutador
                                             await _mailHelper.SendEmailFromTemplateAsync(emailRecruiter ?? string.Empty, "Gestión en etapa de " + request?.Origin.State, "Poligraphy", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
                                         }
-                                        else if (preApplicationState == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Poligrahp) && request?.Origin.State == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.ExpNotLoaded))
+                                        else if (preApplicationState == EnumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.Poligrahp) && request?.Origin.State == EnumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.ExpNotLoaded))
                                         {//Correo a Candidato
                                             await _mailHelper.SendEmailFromTemplateAsync(emailCandidate ?? string.Empty, "Gestión en etapa de " + request?.Origin.State, "CandidateRecord", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
                                         }
-                                        else if (preApplicationState == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.ExpNotLoaded) && request?.Origin.State == _enumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.ExpLoaded))
+                                        else if (preApplicationState == EnumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.ExpNotLoaded) && request?.Origin.State == EnumHelper.GetEnumDescription(UpdateFormAnswersEmailStatusEnum.ExpLoaded))
                                         {//Correo a Candidato
                                             await _mailHelper.SendEmailFromTemplateAsync(emailRecruiter ?? string.Empty, "Gestión en etapa de " + request?.Origin.State, "Record", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
                                         }
@@ -409,7 +408,7 @@ namespace HRM_API.Application.Services
                             else { responseList.Add("Error al intentar actualizar respuesta con codigo: " + item.Code); }
                             break;
 
-                        case var type when type == _enumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Void):
+                        case var type when type == EnumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.Void):
                             responseList.Add("Error al intentar guardar respuesta con codigo: " + item.Code);
                             break;
 

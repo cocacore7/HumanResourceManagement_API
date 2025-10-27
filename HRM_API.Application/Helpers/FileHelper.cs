@@ -3,12 +3,11 @@ using HRM_API.Core.Dtos.General;
 
 namespace HRM_API.Application.Helpers
 {
-    public class FileHelper(EnumHelper enumHelper, ISettings settings)
+    public class FileHelper(ISettings settings)
     {
-        private readonly EnumHelper _enumHelper = enumHelper;
         private readonly ISettings _settings = settings;
 
-        public string FileToBase64(string filePath)
+        public static string FileToBase64(string filePath)
         {
             if (string.IsNullOrWhiteSpace(filePath))
                 throw new ArgumentException("La ruta del archivo no puede estar vacía.", nameof(filePath));

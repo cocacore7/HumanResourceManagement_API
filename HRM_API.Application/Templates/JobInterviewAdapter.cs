@@ -1,6 +1,5 @@
 using HRM_API.Configuration;
 using HRM_API.Core.Interfaces.Mail;
-using System.Runtime;
 using System.Text;
 
 namespace HRM_API.Application.Templates
@@ -14,10 +13,7 @@ namespace HRM_API.Application.Templates
 
         public async Task<string> BuildBodyAsync(int id)
         {
-            var dto = await _repository.GetJobInterviewAsync(id);
-            if (dto == null)
-                throw new Exception($"No se encontró la prueba con id={id}");
-
+            var dto = await _repository.GetJobInterviewAsync(id) ?? throw new Exception($"No se encontró la prueba con id={id}");
             var templatePath = Path.Combine(AppContext.BaseDirectory, "Templates", TemplateName);
             var htmlBody = await File.ReadAllTextAsync(templatePath, Encoding.UTF8);
 

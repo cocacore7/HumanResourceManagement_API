@@ -1,5 +1,4 @@
-﻿using Azure;
-using HRM_API.Application.Helpers;
+﻿using HRM_API.Application.Helpers;
 using HRM_API.Configuration;
 using HRM_API.Core.Dtos.Authorization;
 using HRM_API.Core.Dtos.File;
@@ -49,7 +48,7 @@ namespace HRM_API.Application.Services
 
             string fullPath = Path.Combine(basePath, filePathDB.FilePath);
 
-            string fileBase64 = _fileHelper.FileToBase64(fullPath);
+            string fileBase64 = FileHelper.FileToBase64(fullPath);
 
             var response = new GetFileBase64ResponseDto
             {

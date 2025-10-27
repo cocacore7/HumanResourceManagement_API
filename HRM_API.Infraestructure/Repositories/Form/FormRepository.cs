@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using Dapper;
+﻿using Dapper;
 using HRM_API.Core.Dtos.Form;
 using HRM_API.Core.Interfaces.Form;
 using Microsoft.Data.SqlClient;

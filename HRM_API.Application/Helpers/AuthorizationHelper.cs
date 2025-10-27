@@ -1,10 +1,8 @@
-﻿using System.ComponentModel;
-
-namespace HRM_API.Application.Helpers
+﻿namespace HRM_API.Application.Helpers
 {
     public class AuthorizationHelper
     {
-        public string GenerateSecurePassword(int length = 10)
+        public static string GenerateSecurePassword(int length = 10)
         {
             const string upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             const string lower = "abcdefghijklmnopqrstuvwxyz";
