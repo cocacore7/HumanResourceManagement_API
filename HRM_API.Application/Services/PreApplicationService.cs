@@ -47,7 +47,7 @@ namespace HRM_API.Application.Services
                         break;
 
                     case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Gender):
-                        newApplication.Gender = item.OptionValue == "F" ? "Masculino" : "Femenino";
+                        newApplication.Gender = item.OptionValue == "Femenino" ? "Femenino" : "Masculino";
                         break;
 
                     case var code when code == _enumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Phone):
