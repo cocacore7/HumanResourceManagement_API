@@ -182,7 +182,7 @@ namespace HRM_API.Application.Services
                                 {
                                     var StatusAssignToValid = (bool)await _preApplicationRepository.UpdateStatusAssignToAsync(preApplication.FirstOrDefault()?.Id, request?.Origin.State, item.OptionId);
                                     var email = await _userRepository.GetEmailByUserAsync((int)item.OptionId);
-                                    //await _mailRepository.SendEmailFromTemplateAsync(email ?? "", "Nueva gestión de candidato5", "PreScreening", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
+                                    await _mailRepository.SendEmailFromTemplateAsync(email ?? "", "Nueva gestión de candidato5", "PreScreening", int.TryParse(preApplication.FirstOrDefault()?.Id.ToString(), out int UserId) ? UserId : 0);
                                     if (StatusAssignToValid) { responseList.Add("Estado y siguiente revisor actualizado con exito"); }
                                 }
                             }
