@@ -4,6 +4,7 @@ using HRM_API.Core.Dtos.File;
 using HRM_API.Core.Dtos.Form;
 using HRM_API.Core.Dtos.General;
 using HRM_API.Core.Enum.Form;
+using HRM_API.Core.Enum.PreApplication;
 using HRM_API.Core.Interfaces.File;
 using HRM_API.Core.Interfaces.Form;
 using HRM_API.Core.Interfaces.PreApplication;
@@ -74,8 +75,23 @@ namespace HRM_API.Application.Services
                 if (IsDocumentedValid) { responseList.Add("IsDocumented para preaplicacion actualizado con exito"); }
             }
 
+            //Validar estados rechazados
+            if (request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.PreFilterFail) ||
+                request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.RequestFail) ||
+                request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.ReviewFail) ||
+                request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.InterviewFail) ||
+                request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.TestFail) ||
+                request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.BossInterviewFail) ||
+                request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.PoligraphFail) ||
+                request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.ExpLoadFail) ||
+                request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.HiringFail))
+            {
+                var StatusfailValid = (bool)await _preApplicationRepository.UpdateStatusFailAsync(preApplication.FirstOrDefault()?.Id, request?.Origin.State);
+                if (StatusfailValid) { responseList.Add("Estado de rechazo actualizado con exito"); }
+            }
+
             //registrar cada pregunta por su tipo
-            foreach (var item in request.Answers ?? []) 
+            foreach (var item in request?.Answers ?? []) 
             {
                 var question = await _repository.GetValidQuestionAsync(form.IdForm, item.Code);
                 if (question?.Type == item.Type)
@@ -222,6 +238,22 @@ namespace HRM_API.Application.Services
 
             //registrar cada pregunta por su tipo
             List<string> responseList = [];
+
+            //Validar estados rechazados
+            if (request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.PreFilterFail) ||
+                request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.RequestFail) ||
+                request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.ReviewFail) ||
+                request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.InterviewFail) ||
+                request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.TestFail) ||
+                request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.BossInterviewFail) ||
+                request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.PoligraphFail) ||
+                request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.ExpLoadFail) ||
+                request?.Origin.State == _enumHelper.GetEnumDescription(PreApplicationFailStatusEnum.HiringFail))
+            {
+                var StatusfailValid = (bool)await _preApplicationRepository.UpdateStatusFailAsync(preApplication.FirstOrDefault()?.Id, request?.Origin.State);
+                if (StatusfailValid) { responseList.Add("Estado de rechazo actualizado con exito"); }
+            }
+
             foreach (var item in request.Answers ?? [])
             {
                 var question = await _repository.GetValidQuestionAsync(form.IdForm, item.Code);

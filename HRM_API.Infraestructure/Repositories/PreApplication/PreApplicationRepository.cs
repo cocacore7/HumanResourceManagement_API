@@ -198,5 +198,17 @@ namespace HRM_API.Infraestructure.Repositories.PreApplication
 
             return result > 0;
         }
+
+        public async Task<bool?> UpdateStatusFailAsync(int? PreApplicationId, string? Status)
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
+
+            var sql = @"UPDATE HRM_DB.reclutamiento.PreApplication 
+                        SET Status = @Status
+                        WHERE  IdPreApplication = @PreApplicationId;";
+            var result = await connection.ExecuteAsync(sql, new { Status, PreApplicationId });
+
+            return result > 0;
+        }
     }
 }
