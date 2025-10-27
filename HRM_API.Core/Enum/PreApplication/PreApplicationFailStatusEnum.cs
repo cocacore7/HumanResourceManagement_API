@@ -12,6 +12,14 @@ namespace HRM_API.Core.Enum.PreApplication
         [Description("rechazoEntrevistaJefe")] BossInterviewFail,
         [Description("rechazoPoligrafo")] PoligraphFail,
         [Description("rechazoCargaExpediente")] ExpLoadFail,
-        [Description("rechazoContratacion")] HiringFail
+        [Description("rechazoContratacion")] HiringFail,
+        [Description("preFiltro")] PreFilter,
+        [Description("solicitud")] Request,
+        [Description("entrevista")] Interview,
+        [Description("pruebas")] Test,
+        [Description("entrevistaJefe")] BossInterview,
+        [Description("poligrafo")] Poligrahp,
+        [Description("cargaExpedienteNoCargado")] ExpNotLoaded,
+        [Description("cargaExpedienteCompletado")] ExpLoaded
     }
 }

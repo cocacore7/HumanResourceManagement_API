@@ -247,7 +247,15 @@ namespace HRM_API.Application.Services
                 request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.BossInterviewFail) ||
                 request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.PoligraphFail) ||
                 request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.ExpLoadFail) ||
-                request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.HiringFail))
+                request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.HiringFail) ||
+                request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.PreFilter) ||
+                request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.Request) ||
+                request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.Interview) ||
+                request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.Test) ||
+                request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.BossInterview) ||
+                request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.Poligrahp) ||
+                request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.ExpNotLoaded) ||
+                request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.ExpLoaded) )
             {
                 var StatusfailValid = (bool)await _preApplicationRepository.UpdateStatusFailAsync(preApplication.FirstOrDefault()?.Id, request?.Origin.State);
                 if (StatusfailValid) { responseList.Add("Estado de rechazo actualizado con exito"); }
