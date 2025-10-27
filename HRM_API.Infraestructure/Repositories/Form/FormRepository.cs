@@ -27,7 +27,7 @@ namespace HRM_API.Infraestructure.Repositories.Form
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
-            var sql = @"SELECT pafr.IdResponse, pafr.CreatedAt, pafr.CreatedAt, pafr.UpdatedAt
+            var sql = @"SELECT pafr.IdResponse, pafr.CreatedAt, pafr.CreatedAt, pafr.UpdatedAt  
                         FROM HRM_DB.reclutamiento.PreApplicationFormResponse pafr
                         WHERE pafr.PreApplicationId = @PreApplicationId
                         AND pafr.FormId = @FormId";
@@ -220,7 +220,14 @@ namespace HRM_API.Infraestructure.Repositories.Form
                         SET AnswerType = @AnswerType, ValueText = @ValueText, UpdatedAt = @UpdatedAt
                         WHERE ResponseId = @ResponseId
                         AND QuestionId = @QuestionId;";
-            var result = await connection.ExecuteAsync(sql, new { request });
+            var result = await connection.ExecuteAsync(sql, new
+            {
+                request.AnswerType, 
+                request.ValueText, 
+                request.UpdatedAt,
+                request.ResponseId,
+                request.QuestionId
+            });
 
             return result > 0;
         }
@@ -233,7 +240,13 @@ namespace HRM_API.Infraestructure.Repositories.Form
                         SET AnswerType = @AnswerType, ValueNumber = @ValueNumber, UpdatedAt = @UpdatedAt
                         WHERE ResponseId = @ResponseId
                         AND QuestionId = @QuestionId;";
-            var result = await connection.ExecuteAsync(sql, new { request });
+            var result = await connection.ExecuteAsync(sql, new {
+                request.AnswerType,
+                request.ValueNumber,
+                request.UpdatedAt,
+                request.ResponseId,
+                request.QuestionId
+            });
 
             return result > 0;
         }
@@ -246,8 +259,14 @@ namespace HRM_API.Infraestructure.Repositories.Form
                         SET AnswerType = @AnswerType, ValueBool = @ValueBool, UpdatedAt = @UpdatedAt
                         WHERE ResponseId = @ResponseId
                         AND QuestionId = @QuestionId;";
-            var result = await connection.ExecuteAsync(sql, new { request });
-
+            var result = await connection.ExecuteAsync(sql, new
+            {
+                request.AnswerType, 
+                request.ValueBool,
+                request.UpdatedAt,
+                request.ResponseId,
+                request.QuestionId
+            });
             return result > 0;
         }
 
@@ -259,7 +278,12 @@ namespace HRM_API.Infraestructure.Repositories.Form
                         SET AnswerType = @AnswerType, UpdatedAt = @UpdatedAt
                         WHERE ResponseId = @ResponseId
                         AND QuestionId = @QuestionId;";
-            var result = await connection.ExecuteAsync(sql, new { request });
+            var result = await connection.ExecuteAsync(sql, new {
+                request.AnswerType,
+                request.UpdatedAt,
+                request.ResponseId,
+                request.QuestionId
+            });
 
             return result > 0;
         }
@@ -272,7 +296,13 @@ namespace HRM_API.Infraestructure.Repositories.Form
                         SET AnswerType = @AnswerType, ValueDate = @ValueDate, UpdatedAt = @UpdatedAt
                         WHERE ResponseId = @ResponseId
                         AND QuestionId = @QuestionId;";
-            var result = await connection.ExecuteAsync(sql, new { request });
+            var result = await connection.ExecuteAsync(sql, new {
+                request.AnswerType,
+                request.ValueDate,
+                request.UpdatedAt,
+                request.ResponseId,
+                request.QuestionId
+            });
 
             return result > 0;
         }
@@ -285,7 +315,12 @@ namespace HRM_API.Infraestructure.Repositories.Form
                         SET AnswerType = @AnswerType, UpdatedAt = @UpdatedAt
                         WHERE ResponseId = @ResponseId
                         AND QuestionId = @QuestionId;";
-            var result = await connection.QueryFirstAsync<int>(sql, new { request });
+            var result = await connection.QueryFirstAsync<int>(sql, new {
+                request.AnswerType,
+                request.UpdatedAt,
+                request.ResponseId,
+                request.QuestionId
+            });
 
             return result;
         }
