@@ -45,7 +45,7 @@ namespace HRM_API.Application.Services
 
             await _repository.SetLoginAttemptAsync(newAttempt);
             //Metodo para generar Codigo de recuperacion de 6 digitos para enviar el correo con el codigo de recuperacion
-            //await _mailHelper.SendEmailFromTemplateAsync(request.email ?? string.Empty, "Codigo de validacion de contraseña", "RecoveryCode", 0, user.Name, recoveryCode);
+            await _mailHelper.SendEmailFromTemplateAsync(request.email ?? string.Empty, "Codigo de validacion de contraseña", "RecoveryCode", 0, user.Name, recoveryCode.ToString());
 
             return "Codigo de recuperación generado con exito";
         }
@@ -64,7 +64,7 @@ namespace HRM_API.Application.Services
             var response = await _repository.GenerateNewPasswordAsync(new() { UserId = (int)userId, NewPassword = newPasswordBytes });
 
             //Enviar por correo la nueva contraseña generada (Falta implementar)
-            //await _mailHelper.SendEmailFromTemplateAsync(request.Email ?? string.Empty, "Nueva Contraseña Generada", "RenewPassword", 0, user.Name, plainPassword);
+            await _mailHelper.SendEmailFromTemplateAsync(request.Email ?? string.Empty, "Nueva Contraseña Generada", "RenewPassword", 0, user.Name, plainPassword);
 
             return "Nueva contraseña generada con exito";
         }

@@ -11,7 +11,14 @@ namespace HRM_API.Application.Templates
 
         public string TemplateName => "RecoveryCode.html";
 
-        public async Task<string> BuildBodyAsync(string fullname, string recoverycode)
+        public async Task<string> BuildBodyAsync(int id)
+        {
+            var templatePath = Path.Combine(AppContext.BaseDirectory, "Templates", TemplateName);
+            await File.ReadAllTextAsync(templatePath, Encoding.UTF8);
+            return "";
+        }
+
+        public async Task<string> BuildBodyPasswordAsync(string fullname, string recoverycode)
         {
             var templatePath = Path.Combine(AppContext.BaseDirectory, "Templates", TemplateName);
             var htmlBody = await File.ReadAllTextAsync(templatePath, Encoding.UTF8);

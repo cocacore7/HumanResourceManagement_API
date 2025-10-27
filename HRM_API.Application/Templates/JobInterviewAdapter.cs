@@ -36,5 +36,13 @@ namespace HRM_API.Application.Templates
 
             return htmlBody;
         }
+
+        public async Task<string> BuildBodyPasswordAsync(string fullname, string recoverycode)
+        {
+            var templatePath = Path.Combine(AppContext.BaseDirectory, "Templates", TemplateName);
+            await File.ReadAllTextAsync(templatePath, Encoding.UTF8);
+
+            return "";
+        }
     }
 }

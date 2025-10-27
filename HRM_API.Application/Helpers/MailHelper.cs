@@ -15,14 +15,14 @@ namespace HRM_API.Application.Helpers
             var adapter = _factory.GetAdapter(templateName);
 
             // Genera el cuerpo del mensaje
-            var htmlBody;
+            string htmlBody;
             if(fullname == "" && other == "")
             {
                 htmlBody = await adapter.BuildBodyAsync(id);
             }
             else
             {
-                htmlBody = await adapter.BuildBodyAsync(fullname, other);
+                htmlBody = await adapter.BuildBodyPasswordAsync(fullname, other);
             }
 
             using var smtp = new SmtpClient(_settings.SmtHost, _settings.SmtPort ?? 0)
