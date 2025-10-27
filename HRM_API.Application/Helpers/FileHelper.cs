@@ -1,6 +1,5 @@
 ﻿using HRM_API.Configuration;
 using HRM_API.Core.Dtos.General;
-using HRM_API.Core.Enum.File;
 
 namespace HRM_API.Application.Helpers
 {

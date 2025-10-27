@@ -11,13 +11,13 @@ namespace HRM_API.Application.Services
 
         public async Task<CatalogRequestDto?> GetJobCatalogAsync()
         {
-            //await _mailRepository.SendEmailFromTemplateAsync("cocacore7@gmail.com", "Prueba correo", "Assessment", 1);
-            //await _mailRepository.SendEmailFromTemplateAsync("cocacore7@gmail.com", "Prueba correo", "BossInterview", 1);
-            //await _mailRepository.SendEmailFromTemplateAsync("cocacore7@gmail.com", "Prueba correo", "CandidateRecord", 1);
-            //await _mailRepository.SendEmailFromTemplateAsync("cocacore7@gmail.com", "Prueba correo", "EndProcess", 1);
-            //await _mailRepository.SendEmailFromTemplateAsync("cocacore7@gmail.com", "Prueba correo", "JobInterview", 1);
-            //await _mailRepository.SendEmailFromTemplateAsync("cocacore7@gmail.com", "Prueba correo", "Poligraphy", 1);
             //await _mailRepository.SendEmailFromTemplateAsync("cocacore7@gmail.com", "Prueba correo", "PreScreening", 1);
+            //await _mailRepository.SendEmailFromTemplateAsync("cocacore7@gmail.com", "Prueba correo", "JobInterview", 1);
+            //await _mailRepository.SendEmailFromTemplateAsync("cocacore7@gmail.com", "Prueba correo", "Assessment", 1);
+            //await _mailRepository.SendEmailFromTemplateAsync("cocacore7@gmail.com", "Prueba correo", "EndProcess", 1);
+            //await _mailRepository.SendEmailFromTemplateAsync("cocacore7@gmail.com", "Prueba correo", "BossInterview", 1);
+            //await _mailRepository.SendEmailFromTemplateAsync("cocacore7@gmail.com", "Prueba correo", "Poligraphy", 1);
+            //await _mailRepository.SendEmailFromTemplateAsync("cocacore7@gmail.com", "Prueba correo", "CandidateRecord", 1);
             //await _mailRepository.SendEmailFromTemplateAsync("cocacore7@gmail.com", "Prueba correo", "Record", 1);
 
             var responsedb = await _repository.GetJobCatalogAsync();

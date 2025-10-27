@@ -9,5 +9,7 @@
         string SmtHost { get; set; }
         int? SmtPort { get; set; }
         int? PublicUserId { get; set; }
+        string RecruiterUrl { get; set; }
+        string CandidateUrl { get; set; }
     }
 }

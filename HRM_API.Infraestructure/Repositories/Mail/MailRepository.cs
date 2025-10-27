@@ -77,7 +77,7 @@ namespace HRM_API.Infraestructure.Repositories.Mail
                             INNER JOIN HRM_DB.reclutamiento.Comment cm
                             ON cm.PreApplicationId    = pa.IdPreApplication
                             WHERE pa.IdPreApplication = @id
-                            AND CommentStatus = 'entrevistaJefe'
+                            AND CommentStatus = 'pruebas'
                         ) c
                         WHERE pa.IdPreApplication = @id";
 
@@ -154,7 +154,7 @@ namespace HRM_API.Infraestructure.Repositories.Mail
                             INNER JOIN HRM_DB.reclutamiento.Comment cm
                             ON cm.PreApplicationId    = pa.IdPreApplication
                             WHERE pa.IdPreApplication = @id
-                            AND CommentStatus = 'entrevista'
+                            AND CommentStatus = 'solicitud'
                         ) c
                         WHERE pa.IdPreApplication = @id";
 
@@ -191,7 +191,7 @@ namespace HRM_API.Infraestructure.Repositories.Mail
                             INNER JOIN HRM_DB.reclutamiento.Comment cm
                             ON cm.PreApplicationId    = pa.IdPreApplication
                             WHERE pa.IdPreApplication = @id
-                            AND CommentStatus = 'poligrafo'
+                            AND CommentStatus = 'entrevistaJefe'
                         ) c
                         WHERE pa.IdPreApplication = @id";
 
@@ -228,7 +228,7 @@ namespace HRM_API.Infraestructure.Repositories.Mail
                             INNER JOIN HRM_DB.reclutamiento.Comment cm
                             ON cm.PreApplicationId    = pa.IdPreApplication
                             WHERE pa.IdPreApplication = @id
-                            AND CommentStatus = 'Prefiltro'
+                            AND CommentStatus = 'preFiltro'
                         ) c
                         WHERE pa.IdPreApplication = @id";
 
