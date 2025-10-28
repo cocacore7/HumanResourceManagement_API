@@ -14,7 +14,7 @@ namespace HRM_API.Infraestructure.Repositories.Catalog
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
-            var sql = @"SELECT jv.IdVacancy AS Id, jv.JobPositionName AS Value, jv.JobPositionName AS Label
+            var sql = @"SELECT jv.IdVacancy AS optionId, jv.JobPositionName AS Value, jv.JobPositionName AS Label
                         FROM HRM_DB.reclutamiento.JobVacancy jv";
             var result = await connection.QueryAsync<CatalogDBRequestDto?>(sql, new { });
 
@@ -25,7 +25,7 @@ namespace HRM_API.Infraestructure.Repositories.Catalog
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
-            var sql = @"SELECT t.IdTown AS Id, t.TownName AS Value, t.TownName AS Label
+            var sql = @"SELECT t.IdTown AS optionId, t.TownName AS Value, t.TownName AS Label
                         FROM HRM_DB.reclutamiento.Town t";
             var result = await connection.QueryAsync<CatalogDBRequestDto?>(sql, new { });
 
@@ -36,7 +36,7 @@ namespace HRM_API.Infraestructure.Repositories.Catalog
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
-            var sql = @"SELECT lt.IdTerm AS Id, '' AS Value, lt.Content AS Label
+            var sql = @"SELECT lt.IdTerm AS optionId, '' AS Value, lt.Content AS Label
                         FROM HRM_DB.reclutamiento.LegalTerm lt";
             var result = await connection.QueryAsync<CatalogDBRequestDto?>(sql, new { });
 
@@ -47,7 +47,7 @@ namespace HRM_API.Infraestructure.Repositories.Catalog
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
-            var sql = @"SELECT vr.IdReason AS Id, vr.VacancyReasonName AS Value, vr.VacancyReasonName AS Label
+            var sql = @"SELECT vr.IdReason AS optionId, vr.VacancyReasonName AS Value, vr.VacancyReasonName AS Label
                         FROM HRM_DB.reclutamiento.VacancyReason vr";
             var result = await connection.QueryAsync<CatalogDBRequestDto?>(sql, new { });
 
@@ -58,7 +58,7 @@ namespace HRM_API.Infraestructure.Repositories.Catalog
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
-            var sql = @"SELECT vt.IdVacancyType AS Id, vt.VacancyTypeName AS Value, vt.VacancyTypeName AS Label
+            var sql = @"SELECT vt.IdVacancyType AS optionId, vt.VacancyTypeName AS Value, vt.VacancyTypeName AS Label
                         FROM HRM_DB.reclutamiento.VacancyType vt";
             var result = await connection.QueryAsync<CatalogDBRequestDto?>(sql, new { });
 
@@ -69,7 +69,7 @@ namespace HRM_API.Infraestructure.Repositories.Catalog
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
-            var sql = @"SELECT u.IdUser AS Id, u.Name, r.RoleName AS Role
+            var sql = @"SELECT u.IdUser AS optionId, u.Name, r.RoleName AS Role
                         FROM reclutamiento.Users u
                         INNER JOIN reclutamiento.Role r ON r.IdRole = u.RoleId
                         WHERE r.KeyName = @KeyName";
@@ -82,7 +82,7 @@ namespace HRM_API.Infraestructure.Repositories.Catalog
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
-            var sql = @"SELECT r.IdRole AS Id, r.KeyName AS Value, r.RoleName AS Label
+            var sql = @"SELECT r.IdRole AS optionId, r.KeyName AS Value, r.RoleName AS Label
                         FROM HRM_DB.reclutamiento.Role r";
             var result = await connection.QueryAsync<CatalogDBRequestDto?>(sql, new { });
 
