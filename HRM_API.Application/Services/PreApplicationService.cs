@@ -69,7 +69,7 @@ namespace HRM_API.Application.Services
 
                     case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Town):
                         var towns = await _catalogRepository.GetTownCatalogAsync();
-                        newApplication.TownId = towns.FirstOrDefault(p => p.Value.ToLower().Contains(item.OptionValue?.ToLower() ?? "", StringComparison.OrdinalIgnoreCase)) ?.Id ?? 0;
+                        newApplication.TownId = towns.FirstOrDefault(p => p.Value.ToLower().Contains(item.OptionValue?.ToLower() ?? "", StringComparison.OrdinalIgnoreCase)) ?.optionId ?? 0;
                         break;
 
                     case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Address):
@@ -82,7 +82,7 @@ namespace HRM_API.Application.Services
 
                     case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Vacancy):
                         var jobs = await _catalogRepository.GetJobCatalogAsync();
-                        newApplication.VacancyId = jobs.FirstOrDefault(p => p.Value.ToLower().Contains(item.OptionValue?.ToLower() ?? "", StringComparison.OrdinalIgnoreCase))?.Id ?? 0;
+                        newApplication.VacancyId = jobs.FirstOrDefault(p => p.Value.ToLower().Contains(item.OptionValue?.ToLower() ?? "", StringComparison.OrdinalIgnoreCase))?.optionId ?? 0;
                         break;
 
                     case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Experience):
@@ -186,7 +186,7 @@ namespace HRM_API.Application.Services
 
                     case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Town):
                         var towns = await _catalogRepository.GetTownCatalogAsync();
-                        newApplication.TownId = towns.FirstOrDefault(p => p.Value.ToLower().Contains(item.OptionValue?.ToLower() ?? "", StringComparison.OrdinalIgnoreCase))?.Id ?? 0;
+                        newApplication.TownId = towns.FirstOrDefault(p => p.Value.ToLower().Contains(item.OptionValue?.ToLower() ?? "", StringComparison.OrdinalIgnoreCase))?.optionId ?? 0;
                         break;
 
                     case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Address):
@@ -199,7 +199,7 @@ namespace HRM_API.Application.Services
 
                     case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Vacancy):
                         var jobs = await _catalogRepository.GetJobCatalogAsync();
-                        newApplication.VacancyId = jobs.FirstOrDefault(p => p.Value.ToLower().Contains(item.OptionValue?.ToLower() ?? "", StringComparison.OrdinalIgnoreCase))?.Id ?? 0;
+                        newApplication.VacancyId = jobs.FirstOrDefault(p => p.Value.ToLower().Contains(item.OptionValue?.ToLower() ?? "", StringComparison.OrdinalIgnoreCase))?.optionId ?? 0;
                         break;
 
                     case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Experience):
