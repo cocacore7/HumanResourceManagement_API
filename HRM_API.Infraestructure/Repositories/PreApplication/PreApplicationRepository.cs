@@ -59,10 +59,16 @@ namespace HRM_API.Infraestructure.Repositories.PreApplication
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
-            var sql = @"SELECT f.IdFile
-                        FROM HRM_DB.reclutamiento.PreApplication pa
-                        INNER JOIN HRM_DB.reclutamiento.Files f ON f.IdFile = pa.CVFileId
-                        WHERE pa.IdPreApplication = @id";
+            var sql = @"SELECT paa.QuestionId [QuestionId], fq.Code [Code], paa.AnswerType [Type], fq.Code [FileCode]
+	                        , fq.Code [FileCode], f.FileName [FileName], f.ContentType [ContentType], f.ContentType [FileType]
+	                        , f.SizeBytes [SizeBytes], f.SizeBytes [FileSize]
+                        FROM reclutamiento.PreApplicationFormResponse pafr
+                        INNER JOIN HRM_DB.reclutamiento.PreApplicationAnswer paa ON paa.ResponseId = pafr.IdResponse
+                        INNER JOIN HRM_DB.reclutamiento.FormQuestion fq ON fq.IdQuestion = paa.QuestionId
+                        INNER JOIN HRM_DB.reclutamiento.Files f ON f.IdFile = paa.FileId
+                        WHERE pafr.PreApplicationId = @id
+                        AND paa.AnswerType = 'file'
+                        AND paa.FileId IS NOT NULL;";
             var result = await connection.QueryAsync<GeneralFormRequestAnswerDto?>(sql, new { id });
 
             return [.. result];
@@ -72,9 +78,9 @@ namespace HRM_API.Infraestructure.Repositories.PreApplication
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
-            var sql = @"SELECT f.IdFile
-                        FROM HRM_DB.reclutamiento.PreApplication pa
-                        INNER JOIN HRM_DB.reclutamiento.Files f ON f.IdFile = pa.CVFileId
+            var sql = @"SELECT ''
+                        FROM HRM_DB.reclutamiento.Files f
+                        INNER JOIN reclutamiento.PreApplication pa ON pa.CVFileId = f.IdFile
                         WHERE pa.IdPreApplication = @id";
             var result = await connection.QueryAsync<GeneralFormRequestAnswerDto?>(sql, new { id });
 
