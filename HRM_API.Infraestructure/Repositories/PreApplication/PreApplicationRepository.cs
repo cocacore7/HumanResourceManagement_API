@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using HRM_API.Core.Dtos.General;
 using HRM_API.Core.Dtos.PreApplication;
 using HRM_API.Core.Interfaces.PreApplication;
 using Microsoft.Data.SqlClient;
@@ -52,6 +53,32 @@ namespace HRM_API.Infraestructure.Repositories.PreApplication
             {
                 return [];
             }
+        }
+
+        public async Task<List<GeneralFormRequestAnswerDto>?> GetPreApplicationFormsFilesAsync(int? id)
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
+
+            var sql = @"SELECT f.IdFile
+                        FROM HRM_DB.reclutamiento.PreApplication pa
+                        INNER JOIN HRM_DB.reclutamiento.Files f ON f.IdFile = pa.CVFileId
+                        WHERE pa.IdPreApplication = @id";
+            var result = await connection.QueryAsync<GeneralFormRequestAnswerDto?>(sql, new { id });
+
+            return [.. result];
+        }
+
+        public async Task<List<GeneralFormRequestAnswerDto>?> GetPreApplicationPreApplicationFileAsync(int? id)
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
+
+            var sql = @"SELECT f.IdFile
+                        FROM HRM_DB.reclutamiento.PreApplication pa
+                        INNER JOIN HRM_DB.reclutamiento.Files f ON f.IdFile = pa.CVFileId
+                        WHERE pa.IdPreApplication = @id";
+            var result = await connection.QueryAsync<GeneralFormRequestAnswerDto?>(sql, new { id });
+
+            return [.. result];
         }
 
         public async Task<int?> GetPreApplicationFileIdAsync(int id)
