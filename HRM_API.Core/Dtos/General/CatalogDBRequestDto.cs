@@ -2,7 +2,7 @@
 {
     public class CatalogDBRequestDto
     {
-        public int? Id { get; set; }
+        public int? optionId { get; set; }
         public string Value { get; set; } = string.Empty;
         public string Label { get; set; } = string.Empty;
     }
