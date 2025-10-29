@@ -117,6 +117,19 @@ namespace HRM_API.Infraestructure.Repositories.PreApplication
             return [.. result];
         }
 
+        public async Task<GetCountPreApplicationByStateDBResponseDto?> GetCountPreApplicationByStateAsync(string state)
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
+
+            var sql = @"SELECT pa.Status [State], COUNT(pa.Status) [Count]
+                        FROM HRM_DB.reclutamiento.PreApplication pa
+                        WHERE pa.Status = @state
+                        GROUP BY pa.Status";
+            var result = await connection.QueryFirstAsync<GetCountPreApplicationByStateDBResponseDto>(sql, new { state });
+
+            return (GetCountPreApplicationByStateDBResponseDto?)result;
+        }
+
         public async Task<List<GetFormAnswersDBAnswersResponseDto>?> GetPreApplicationPreApplicationFileAsync(int? id)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));

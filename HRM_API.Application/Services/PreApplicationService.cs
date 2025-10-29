@@ -46,6 +46,18 @@ namespace HRM_API.Application.Services
             return (response);
         }
 
+        public async Task<GetCountPreApplicationByStateResponseDto?> GetCountPreApplicationByStateAsync(List<string> states)
+        {
+            var response = new GetCountPreApplicationByStateResponseDto();
+            foreach (var state in states) 
+            { 
+                var responsedb = await _repository.GetCountPreApplicationByStateAsync(state); 
+                response.Response.Add(responsedb); 
+            }
+
+            return (response);
+        }
+
         public async Task<SetPreApplicationsReponseDto?> SetPreApplicationsAsync(GeneralFormRequestDto request, LoginDBResponseDto user)
         {
             SetPreApplicationsDBRequestDto newApplication = new();

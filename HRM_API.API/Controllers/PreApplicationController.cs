@@ -38,6 +38,18 @@ namespace HRM_API.API.Controllers
             return Ok(ApiResponses.Ok(response, "OK", "PREAPPLICATION_FILES_FOUND"));
         }
 
+        [HttpGet("GetCountPreApplicationByState")]
+        public async Task<IActionResult> GetCountPreApplicationByState([FromQuery] List<string> states)
+        {
+            if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
+                return Unauthorized(ApiResponses.Fail("UNAUTHORIZED", "Token inválido"));
+
+            var response = await _preApplicationService.GetCountPreApplicationByStateAsync(states);
+
+            if (response == null) { return BadRequest(ApiResponses.Fail("GET_COUNT_NOT_FOUND", "No se encontraron contadores por estado")); }
+            return Ok(ApiResponses.Ok(response, "OK", "GET_COUNT_FOUND"));
+        }
+
         [HttpPost("SetPreApplications")]
         public async Task<IActionResult> SetPreApplications([FromBody] GeneralFormRequestDto request)
         {

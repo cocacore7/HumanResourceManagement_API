@@ -20,6 +20,7 @@ namespace HRM_API.Core.Enum.PreApplication
         [Description("entrevistaJefe")] BossInterview,
         [Description("poligrafo")] Poligrahp,
         [Description("cargaExpedienteNoCargado")] ExpNotLoaded,
-        [Description("cargaExpedienteCompletado")] ExpLoaded
+        [Description("cargaExpedienteCompletado")] ExpLoaded,
+        [Description("rechazoDescartado")] RejectDiscard
     }
 }
