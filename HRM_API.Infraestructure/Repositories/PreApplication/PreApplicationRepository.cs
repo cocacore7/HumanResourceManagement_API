@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using HRM_API.Core.Dtos.Form;
 using HRM_API.Core.Dtos.General;
 using HRM_API.Core.Dtos.PreApplication;
 using HRM_API.Core.Interfaces.PreApplication;
@@ -55,34 +56,92 @@ namespace HRM_API.Infraestructure.Repositories.PreApplication
             }
         }
 
-        public async Task<List<GeneralFormRequestAnswerDto>?> GetPreApplicationFormsFilesAsync(int? id)
+        public async Task<List<GetFormAnswersDBAnswersResponseDto>?> GetPreApplicationFormsFilesAsync(int? id)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
-            var sql = @"SELECT paa.QuestionId [QuestionId], fq.Code [Code], paa.AnswerType [Type], fq.Code [FileCode]
-	                        , fq.Code [FileCode], f.FileName [FileName], f.ContentType [ContentType], f.ContentType [FileType]
-	                        , f.SizeBytes [SizeBytes], f.SizeBytes [FileSize]
-                        FROM reclutamiento.PreApplicationFormResponse pafr
-                        INNER JOIN HRM_DB.reclutamiento.PreApplicationAnswer paa ON paa.ResponseId = pafr.IdResponse
-                        INNER JOIN HRM_DB.reclutamiento.FormQuestion fq ON fq.IdQuestion = paa.QuestionId
-                        INNER JOIN HRM_DB.reclutamiento.Files f ON f.IdFile = paa.FileId
-                        WHERE pafr.PreApplicationId = @id
-                        AND paa.AnswerType = 'file'
-                        AND paa.FileId IS NOT NULL;";
-            var result = await connection.QueryAsync<GeneralFormRequestAnswerDto?>(sql, new { id });
+            var sql = @"WITH CTE AS (
+                            SELECT 
+                                paa.IdAnswer,
+                                paa.QuestionId,
+                                fq.Code,
+                                paa.AnswerType,
+                                paa.ValueBool,
+                                paa.ValueText,
+                                paa.ValueNumber,
+                                paa.ValueDate,
+                                f.IdFile,
+                                f.FileName,
+                                f.ContentType,
+                                f.FilePath,
+                                f.SizeBytes,
+                                fqo.IdOption,
+                                fqo.Value,
+                                fqo.Label,
+                                ROW_NUMBER() OVER (PARTITION BY fq.Code ORDER BY paa.IdAnswer DESC) AS rn
+                            FROM HRM_DB.reclutamiento.PreApplicationFormResponse pafr
+                            INNER JOIN HRM_DB.reclutamiento.PreApplicationAnswer paa 
+                                ON paa.ResponseId = pafr.IdResponse
+                            INNER JOIN HRM_DB.reclutamiento.FormQuestion fq 
+                                ON fq.IdQuestion = paa.QuestionId
+                            LEFT JOIN HRM_DB.reclutamiento.PreApplicationAnswerOption paao 
+                                ON paao.AnswerId = paa.IdAnswer
+                            LEFT JOIN HRM_DB.reclutamiento.FormQuestionOption fqo 
+                                ON fqo.IdOption = paao.OptionId
+                            LEFT JOIN HRM_DB.reclutamiento.Files f 
+                                ON f.IdFile = paa.FileId
+                            WHERE paa.AnswerType = 'file'
+                              AND pafr.PreApplicationId = 1
+                        )
+                        SELECT 
+                            IdAnswer,
+                            QuestionId,
+                            Code,
+                            AnswerType,
+                            ValueBool,
+                            ValueText,
+                            ValueNumber,
+                            ValueDate,
+                            IdFile,
+                            FileName,
+                            ContentType,
+                            FilePath,
+                            SizeBytes,
+                            IdOption,
+                            Value,
+                            Label
+                        FROM CTE
+                        WHERE rn = @id;";
+            var result = await connection.QueryAsync<GetFormAnswersDBAnswersResponseDto?>(sql, new { id });
 
             return [.. result];
         }
 
-        public async Task<List<GeneralFormRequestAnswerDto>?> GetPreApplicationPreApplicationFileAsync(int? id)
+        public async Task<List<GetFormAnswersDBAnswersResponseDto>?> GetPreApplicationPreApplicationFileAsync(int? id)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
-            var sql = @"SELECT ''
-                        FROM HRM_DB.reclutamiento.Files f
-                        INNER JOIN reclutamiento.PreApplication pa ON pa.CVFileId = f.IdFile
-                        WHERE pa.IdPreApplication = @id";
-            var result = await connection.QueryAsync<GeneralFormRequestAnswerDto?>(sql, new { id });
+            var sql = @"SELECT 
+                            0 AS IdAnswer,
+                            0 AS QuestionId,
+                            'ADJUNTA_CV' AS Code,
+                            'file' AS AnswerType,
+                            NULL AS ValueBool,
+                            NULL AS ValueText,
+                            NULL AS ValueNumber,
+                            NULL AS ValueDate,
+                            f.IdFile,
+                            f.FileName,
+                            f.ContentType,
+                            f.FilePath,
+                            f.SizeBytes,
+                            0 AS IdOption,
+                            0 AS Value,
+                            0 AS Label
+                        FROM reclutamiento.PreApplication pa
+                        INNER JOIN reclutamiento.Files f ON f.IdFile = pa.CVFileId
+                        WHERE pa.IdPreApplication = @id;";
+            var result = await connection.QueryAsync<GetFormAnswersDBAnswersResponseDto?>(sql, new { id });
 
             return [.. result];
         }

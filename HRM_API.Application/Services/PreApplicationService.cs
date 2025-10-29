@@ -1,6 +1,7 @@
 ﻿using HRM_API.Application.Helpers;
 using HRM_API.Core.Dtos.Authorization;
 using HRM_API.Core.Dtos.File;
+using HRM_API.Core.Dtos.Form;
 using HRM_API.Core.Dtos.General;
 using HRM_API.Core.Dtos.PreApplication;
 using HRM_API.Core.Enum.PreApplication;
@@ -25,13 +26,23 @@ namespace HRM_API.Application.Services
             return (response);
         }
 
-        public async Task<GeneralFormRequestDto?> GetPreApplicationFilesAsync(int? id)
+        public async Task<GetFormAnswersResponseDto?> GetPreApplicationFilesAsync(int? id)
         {
-            var form = await _repository.GetPreApplicationFormsFilesAsync(id);
-            GeneralFormRequestDto response = new() 
-            { 
-                Answers = form ?? []
+            var forms = await _repository.GetPreApplicationFormsFilesAsync(id);
+            var formpre = await _repository.GetPreApplicationPreApplicationFileAsync(id);
+
+            var allForms = forms?.Concat(formpre ?? []).ToList();
+
+            GetFormAnswersDBResponseDto responsedb = new()
+            {
+                Answers = allForms ?? []
             };
+
+            GetFormAnswersResponseDto response = new()
+            {
+                Response = responsedb
+            };
+
             return (response);
         }
 
