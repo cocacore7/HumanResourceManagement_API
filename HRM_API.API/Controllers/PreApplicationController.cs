@@ -2,6 +2,7 @@
 using HRM_API.Configuration;
 using HRM_API.Core.Dtos.Authorization;
 using HRM_API.Core.Dtos.General;
+using HRM_API.Core.Dtos.PreApplication;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -33,7 +34,7 @@ namespace HRM_API.API.Controllers
 
             var response = await _preApplicationService.GetPreApplicationFilesAsync(id);
 
-            if (response == null) { BadRequest(ApiResponses.Fail("PREAPPLICATION_FILES_NOT_FOUND", "Token inválido")); }
+            if (response == null) { return BadRequest(ApiResponses.Fail("PREAPPLICATION_FILES_NOT_FOUND", "Token inválido")); }
             return Ok(ApiResponses.Ok(response, "OK", "PREAPPLICATION_FILES_FOUND"));
         }
 
@@ -86,6 +87,24 @@ namespace HRM_API.API.Controllers
             var response = await _preApplicationService.UpdatePreApplicationsAsync(request, user);
 
             return Ok(ApiResponses.Ok(response, "OK", "PREAPPLICATION_UPDATE"));
+        }
+
+        [HttpPatch("AssignTo")]
+        public async Task<IActionResult> AssignTo([FromBody] AssignToRequestDto? request)
+        {
+            if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
+                return Unauthorized(ApiResponses.Fail("UNAUTHORIZED", "Token inválido"));
+
+            LoginDBResponseDto user = new()
+            {
+                IdUser = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty,
+                Name = User.FindFirst(ClaimTypes.Name)?.Value ?? string.Empty,
+                RoleId = User.FindFirst(ClaimTypes.Role)?.Value ?? string.Empty
+            };
+
+            var response = await _preApplicationService.AssignToAsync(request?.PreapplicationId, user, request?.IsAssign ?? false);
+            if(response == null) { return BadRequest(ApiResponses.Fail("ASSIGNTO_NOT_FOUND", "No se pudo asignar pre aplicación")); }
+            return Ok(ApiResponses.Ok(response, "OK", "ASSIGNTO_UPDATE"));
         }
     }
 }

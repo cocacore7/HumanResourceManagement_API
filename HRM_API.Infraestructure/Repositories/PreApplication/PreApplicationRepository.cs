@@ -302,5 +302,17 @@ namespace HRM_API.Infraestructure.Repositories.PreApplication
 
             return result > 0;
         }
+
+        public async Task<bool?> AssignToAsync(int? PreapplicationId, int? IdUserAssign)
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
+
+            var sql = @"UPDATE HRM_DB.reclutamiento.PreApplication 
+                        SET AssignTo = @IdUserAssign
+                        WHERE  IdPreApplication = @PreapplicationId;";
+            var result = await connection.ExecuteAsync(sql, new { IdUserAssign, PreapplicationId });
+
+            return result > 0;
+        }
     }
 }

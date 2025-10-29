@@ -14,5 +14,6 @@ namespace HRM_API.Core.Interfaces.PreApplication
         Task<bool?> UpdateIsDocumentedAsync(int? PreApplicationId, bool? IsDocumented);
         Task<bool?> UpdateStatusAssignToAsync(int? PreApplicationId, string? Status, int? AssignTo);
         Task<bool?> UpdateStatusFailAsync(int? PreApplicationId, string? Status);
+        Task<bool?> AssignToAsync(int? PreapplicationId, int? IdUserAssign);
     }
 }

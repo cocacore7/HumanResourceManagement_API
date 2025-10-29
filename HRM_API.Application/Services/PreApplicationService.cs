@@ -274,6 +274,22 @@ namespace HRM_API.Application.Services
 
             return (form);
         }
+
+        public async Task<bool?> AssignToAsync(int? PreapplicationId, LoginDBResponseDto user, bool IsAssign)
+        {
+            bool form;
+            if (IsAssign)
+            {
+                form = (bool)await _repository.AssignToAsync(PreapplicationId, int.TryParse(user.IdUser, out int createdBy) ? createdBy : 0);
+            }
+            else
+            {
+                form = (bool)await _repository.AssignToAsync(PreapplicationId, null);
+            }
+
+            return (form);
+        }
+
     }
 }
 
