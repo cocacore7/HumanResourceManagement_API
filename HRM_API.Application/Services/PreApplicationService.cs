@@ -63,7 +63,7 @@ namespace HRM_API.Application.Services
                         break;
 
                     case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Age):
-                        newApplication.Age = int.TryParse(item.ValueText, out int createdByfile) ? createdByfile : 0;
+                        newApplication.Age = int.TryParse((item.ValueNumber).ToString(), out int createdByfile) ? createdByfile : 0;
                         break;
 
                     case var code when code == EnumHelper.GetEnumDescription(SetPreApplicationCodeEnum.Gender):
