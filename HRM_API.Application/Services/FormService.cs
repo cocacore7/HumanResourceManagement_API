@@ -194,7 +194,7 @@ namespace HRM_API.Application.Services
                                 ResponseId = responseId,
                                 QuestionId = question.QuestionId,
                                 AnswerType = question.Type,
-                                ValueDate = item.ValueDate
+                                ValueDate = item.ValueDate ?? ""
                             };
                             var dateQuestionResponse = (bool)await _repository.SetDateAnswerAsync(dateAnswer);
                             if (dateQuestionResponse) { responseList.Add("Respuesta registrada con exito, codigo: " + item.Code); }
@@ -366,7 +366,7 @@ namespace HRM_API.Application.Services
                                 ResponseId = reponseId.IdResponse,
                                 QuestionId = question.QuestionId,
                                 AnswerType = question.Type,
-                                ValueDate = item.ValueDate
+                                ValueDate = item.ValueDate ?? ""
                             };
                             var dateQuestionResponse = (bool)await _repository.UpdateDateAnswerAsync(dateAnswer);
                             if (dateQuestionResponse) { responseList.Add("Respuesta registrada con exito, codigo: " + item.Code); }
@@ -393,7 +393,20 @@ namespace HRM_API.Application.Services
                                 {
                                     if (item.OptionId != null)
                                     {
-                                        var StatusAssignToValid = (bool)await _preApplicationRepository.UpdateStatusAssignToAsync(preApplication.FirstOrDefault()?.Id, request?.Origin.State, item.OptionId);
+                                        bool StatusAssignToValid = false;
+                                        if (request?.Origin.State != EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.PreFilterFail) &&
+                                            request?.Origin.State != EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.RequestFail) &&
+                                            request?.Origin.State != EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.ReviewFail) &&
+                                            request?.Origin.State != EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.InterviewFail) &&
+                                            request?.Origin.State != EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.TestFail) &&
+                                            request?.Origin.State != EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.BossInterviewFail) &&
+                                            request?.Origin.State != EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.PoligraphFail) &&
+                                            request?.Origin.State != EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.ExpLoadFail) &&
+                                            request?.Origin.State != EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.HiringFail) &&
+                                            request?.Origin.State != EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.RejectDiscard))
+                                        {
+                                            StatusAssignToValid = (bool)await _preApplicationRepository.UpdateStatusAssignToAsync(preApplication.FirstOrDefault()?.Id, request?.Origin.State, item.OptionId);
+                                        }
                                         
                                         var emailRecruiter = await _userRepository.GetEmailByUserAsync((int)item.OptionId);
                                         string emailCandidate = preApplication.FirstOrDefault()?.Correo ?? string.Empty;
