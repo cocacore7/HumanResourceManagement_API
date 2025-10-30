@@ -15,7 +15,7 @@ namespace HRM_API.Infraestructure.Repositories.Comment
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
             if (!string.IsNullOrEmpty(estado))
             {
-                var sql = @"SELECT c.IdComment [IdComment], u.Name [Author], r.RoleName [Role], c.CommentText [Text], c.CreatedAt [DateCreated]
+                var sql = @"SELECT c.IdComment [IdComment], u.Name [Author], r.RoleName [Role], c.CommentText [Text], c.CommentStatus [Status], c.CreatedAt [DateCreated]
                         FROM HRM_DB.reclutamiento.Comment c
                         INNER JOIN HRM_DB.reclutamiento.Users u ON u.IdUser = c.AuthorUserId
                         INNER JOIN HRM_DB.reclutamiento.Role r ON r.IdRole = u.RoleId
@@ -26,7 +26,7 @@ namespace HRM_API.Infraestructure.Repositories.Comment
             }
             else
             {
-                var sql = @"SELECT c.IdComment [IdComment], u.Name [Author], r.RoleName [Role], c.CommentText [Text], c.CreatedAt [DateCreated]
+                var sql = @"SELECT c.IdComment [IdComment], u.Name [Author], r.RoleName [Role], c.CommentText [Text], c.CommentStatus [Status], c.CreatedAt [DateCreated]
                         FROM HRM_DB.reclutamiento.Comment c
                         INNER JOIN HRM_DB.reclutamiento.Users u ON u.IdUser = c.AuthorUserId
                         INNER JOIN HRM_DB.reclutamiento.Role r ON r.IdRole = u.RoleId
