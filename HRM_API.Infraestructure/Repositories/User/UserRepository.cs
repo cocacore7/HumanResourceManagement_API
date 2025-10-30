@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using HRM_API.Core.Dtos.Authorization;
 using HRM_API.Core.Dtos.User;
 using HRM_API.Core.Interfaces.User;
 using Microsoft.Data.SqlClient;
@@ -45,6 +46,18 @@ namespace HRM_API.Infraestructure.Repositories.User
                         WHERE u.IdUser = @IdUser
                         AND u.IsActive = 1";
             var result = await connection.QueryFirstOrDefaultAsync<string?>(sql, new { IdUser });
+
+            return result;
+        }
+        public async Task<LoginDBResponseDto?> GetPublicUserAsync()
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
+
+            var sql = @"SELECT u.IdUser, u.Name, u.RoleId
+                        FROM HRM_DB.reclutamiento.Users u
+                        WHERE u.Name = 'Public User'
+                        AND u.IsActive = 1";
+            var result = await connection.QueryFirstOrDefaultAsync<LoginDBResponseDto?>(sql, new { });
 
             return result;
         }

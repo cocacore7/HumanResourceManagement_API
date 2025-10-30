@@ -21,12 +21,28 @@ namespace HRM_API.API.Controllers
             return Ok(ApiResponses.Ok(response, "OK", "JOB_CATALOG_FOUND"));
         }
 
+        [HttpGet("GetJobCatalogPublic")]
+        public async Task<IActionResult> GetJobCatalogPublic()
+        {
+            var response = await _catalogService.GetJobCatalogAsync();
+
+            return Ok(ApiResponses.Ok(response, "OK", "JOB_CATALOG_FOUND"));
+        }
+
         [HttpGet("GetTownCatalog")]
         public async Task<IActionResult> GetTownCatalog()
         {
             if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
                 return Unauthorized(ApiResponses.Fail("UNAUTHORIZED", "Token inválido"));
 
+            var response = await _catalogService.GetTownCatalogAsync();
+
+            return Ok(ApiResponses.Ok(response, "OK", "TOWN_CATALOG_FOUND"));
+        }
+
+        [HttpGet("GetTownCatalogPublic")]
+        public async Task<IActionResult> GetTownCatalogPublic()
+        {
             var response = await _catalogService.GetTownCatalogAsync();
 
             return Ok(ApiResponses.Ok(response, "OK", "TOWN_CATALOG_FOUND"));

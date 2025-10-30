@@ -41,6 +41,21 @@ namespace HRM_API.API.Controllers
             return Ok(ApiResponses.Ok(response, "OK", "FORM_ANSWER_CREATE"));
         }
 
+        [HttpPost("SetFormAnswersPublic")]
+        public async Task<IActionResult> SetFormAnswersPublic([FromBody] GeneralFormRequestDto request)
+        {
+            LoginDBResponseDto user = new()
+            {
+                IdUser = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty,
+                Name = User.FindFirst(ClaimTypes.Name)?.Value ?? string.Empty,
+                RoleId = User.FindFirst(ClaimTypes.Role)?.Value ?? string.Empty
+            };
+
+            var response = await _formService.SetFormAnswersAsync(request, user);
+
+            return Ok(ApiResponses.Ok(response, "OK", "FORM_ANSWER_CREATE"));
+        }
+
         [HttpPut("UpdateFormAnswers")]
         public async Task<IActionResult> UpdateFormAnswers([FromBody] GeneralFormRequestDto request)
         {

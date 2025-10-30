@@ -1,4 +1,5 @@
-﻿using HRM_API.Core.Dtos.User;
+﻿using HRM_API.Core.Dtos.Authorization;
+using HRM_API.Core.Dtos.User;
 
 namespace HRM_API.Core.Interfaces.User
 {
@@ -7,5 +8,6 @@ namespace HRM_API.Core.Interfaces.User
         Task<List<GetUserModulesDBResponseDto>?> GetUserModulesAsync(int userId);
         Task<GetUserByEmailDBResponseDto?> GetUserByEmailAsync(string Email);
         Task<string?> GetEmailByUserAsync(int IdUser);
+        Task<LoginDBResponseDto?> GetPublicUserAsync();
     }
 }

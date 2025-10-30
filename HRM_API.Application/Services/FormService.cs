@@ -47,6 +47,7 @@ namespace HRM_API.Application.Services
 
         public async Task<SetFormAnswersReponseDto?> SetFormAnswersAsync(GeneralFormRequestDto request, LoginDBResponseDto user)
         {
+            if(string.IsNullOrEmpty(user.IdUser)) { user = await _userRepository.GetPublicUserAsync() ?? new(); }
             //Validar que existe el formulario
             var form = await _repository.GetFormAsync(request.Form.FormId);
             if (form == null) { return  new() { Response = ["No existe el form solicitado"] }; }
