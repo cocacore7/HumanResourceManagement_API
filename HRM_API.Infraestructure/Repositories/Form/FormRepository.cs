@@ -30,7 +30,7 @@ namespace HRM_API.Infraestructure.Repositories.Form
                         FROM HRM_DB.reclutamiento.PreApplicationFormResponse pafr
                         WHERE pafr.PreApplicationId = @PreApplicationId
                         AND pafr.FormId = @FormId";
-            var result = await connection.QuerySingleOrDefaultAsync<GetFormAnswersDBHeaderResponseDto?>(sql, new { PreApplicationId, FormId });
+            var result = await connection.QueryFirstAsync<GetFormAnswersDBHeaderResponseDto?>(sql, new { PreApplicationId, FormId });
 
             return result;
         }

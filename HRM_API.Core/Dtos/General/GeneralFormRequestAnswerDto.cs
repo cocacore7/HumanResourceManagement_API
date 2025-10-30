@@ -20,7 +20,7 @@ namespace HRM_API.Core.Dtos.General
         public int? OptionId { get; set; }
         public string? OptionValue { get; set; }
         public bool? ValueBool { get; set; } = null;
-        public string? ValueDate { get; set; } = string.Empty;
+        public string ValueDate { get; set; } = string.Empty;
 
         // Datos de archivo (solo si type = "file")
         public int? IdFile { get; set; }
