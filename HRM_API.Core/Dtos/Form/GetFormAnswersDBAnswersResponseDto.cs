@@ -7,7 +7,7 @@
         public string Code { get; set; } = string.Empty;
         public string AnswerType { get; set; } = string.Empty;
         public bool? ValueBool { get; set; }
-        public string ValueText { get; set; } = string.Empty;
+        public string? ValueText { get; set; } = string.Empty;
         public int? ValueNumber { get; set; }
         public DateTime? ValueDate { get; set; }
         public int? IdFile { get; set; }
