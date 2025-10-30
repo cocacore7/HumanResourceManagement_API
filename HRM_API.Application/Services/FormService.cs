@@ -44,6 +44,29 @@ namespace HRM_API.Application.Services
             return (response);
         }
 
+        public async Task<GetFormAnswersResponseDto?> GetFormAnswersEmptyAsync(int PreApplicationId, int FormId)
+        {
+            //Traer Form
+            var form = await _repository.GetFormAsync(FormId);
+            //Traer cabecera response
+            var header = await _repository.GetFormHeaderEmptyAsync(PreApplicationId, FormId);
+            //Traer Answers Response
+            var answers = await _repository.GetFormAnswersAsync(header?.IdResponse);
+            if (answers == null) { return null; }
+
+            //Asignar resultados a respuesta
+
+            GetFormAnswersDBResponseDto result = new()
+            {
+                Form = form ?? new(),
+                Header = header ?? new(),
+                Answers = answers ?? []
+            };
+            GetFormAnswersResponseDto response = new() { Response = result };
+
+            return (response);
+        }
+
         public async Task<SetFormAnswersReponseDto?> SetFormAnswersAsync(GeneralFormRequestDto request, LoginDBResponseDto user)
         {
             if(string.IsNullOrEmpty(user.IdUser)) { user = await _userRepository.GetPublicUserAsync() ?? new(); }

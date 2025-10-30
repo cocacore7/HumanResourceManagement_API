@@ -35,6 +35,19 @@ namespace HRM_API.Infraestructure.Repositories.Form
             return result;
         }
 
+        public async Task<GetFormAnswersDBHeaderResponseDto?> GetFormHeaderEmptyAsync(int PreApplicationId, int FormId)
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
+
+            var sql = @"SELECT pafr.IdResponse, pafr.CreatedAt, pafr.CreatedAt, pafr.UpdatedAt  
+                        FROM HRM_DB.reclutamiento.PreApplicationFormResponse pafr
+                        WHERE pafr.PreApplicationId = @PreApplicationId
+                        AND pafr.FormId = @FormId";
+            var result = await connection.QueryFirstOrDefaultAsync<GetFormAnswersDBHeaderResponseDto?>(sql, new { PreApplicationId, FormId });
+
+            return result;
+        }
+
         public async Task<List<GetFormAnswersDBAnswersResponseDto>?> GetFormAnswersAsync(int? IdResponse)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));

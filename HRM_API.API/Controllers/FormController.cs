@@ -23,6 +23,17 @@ namespace HRM_API.API.Controllers
             return response is null ? BadRequest(ApiResponses.Fail("FORM_ANSWER_NOTFOUND", "No se encontraron respuestas asociadas")) : Ok(ApiResponses.Ok(response, "OK", "FORM_ANSWER_FOUND"));
         }
 
+        [HttpGet("GetFormAnswersEmpty")]
+        public async Task<IActionResult> GetFormAnswersEmpty([FromQuery] int PreApplicationId, [FromQuery] int FormId)
+        {
+            if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
+                return Unauthorized(ApiResponses.Fail("UNAUTHORIZED", "Token inválido"));
+
+            var response = await _formService.GetFormAnswersEmptyAsync(PreApplicationId, FormId);
+
+            return response is null ? BadRequest(ApiResponses.Fail("FORM_ANSWER_NOTFOUND", "No se encontraron respuestas asociadas")) : Ok(ApiResponses.Ok(response, "OK", "FORM_ANSWER_FOUND"));
+        }
+
         [HttpPost("SetFormAnswers")]
         public async Task<IActionResult> SetFormAnswers([FromBody] GeneralFormRequestDto request)
         {
