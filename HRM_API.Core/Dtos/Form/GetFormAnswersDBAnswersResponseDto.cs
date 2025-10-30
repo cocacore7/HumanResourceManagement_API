@@ -4,8 +4,8 @@
     {
         public int? IdAnswer { get; set; }
         public int? QuestionId { get; set; }
-        public string Code { get; set; } = string.Empty;
-        public string AnswerType { get; set; } = string.Empty;
+        public string? Code { get; set; } = string.Empty;
+        public string? AnswerType { get; set; } = string.Empty;
         public bool? ValueBool { get; set; }
         public string? ValueText { get; set; } = string.Empty;
         public int? ValueNumber { get; set; }
