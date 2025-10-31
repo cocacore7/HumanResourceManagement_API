@@ -14,7 +14,7 @@ namespace HRM_API.Infraestructure.Repositories.File
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
-            if (folderName == "Preapplication")
+            if (folderName == "PreApplication")
             {
                 var sql = @"SELECT f.FilePath
                             FROM HRM_DB.reclutamiento.PreApplication pa
@@ -24,7 +24,7 @@ namespace HRM_API.Infraestructure.Repositories.File
                             INNER JOIN HRM_DB.reclutamiento.FormQuestion fq ON fq.IdQuestion = paa.QuestionId
                             WHERE pa.IdPreApplication = @id
                             AND fq.Code = @code";
-                var result = await connection.QueryFirstAsync<GetFileBase64DBResponseDto>(sql, new { id, code });
+                var result = await connection.QueryFirstOrDefaultAsync<GetFileBase64DBResponseDto>(sql, new { id, code });
 
                 return result;
             }
