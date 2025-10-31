@@ -161,7 +161,7 @@ namespace HRM_API.Application.Services
                             break;
 
                         case var type when type == EnumHelper.GetEnumDescription(SetFormAnswersTypeFileEnum.File):
-                            if (string.IsNullOrEmpty(item.Base64)) 
+                            if (!string.IsNullOrEmpty(item.Base64)) 
                             {
                                 var filepath = _fileHelper.SaveFile(item, request?.Origin ?? new GeneralFormRequestOriginDto());
                                 //Guardar imagen y traer idFile
