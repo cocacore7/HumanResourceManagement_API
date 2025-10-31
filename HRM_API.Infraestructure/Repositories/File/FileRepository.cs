@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using HRM_API.Core.Dtos.File;
+using HRM_API.Core.Dtos.Form;
 using HRM_API.Core.Interfaces.File;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
@@ -16,15 +17,42 @@ namespace HRM_API.Infraestructure.Repositories.File
 
             if (folderName == "PreApplication")
             {
-                var sql = @"SELECT f.FilePath
-                            FROM HRM_DB.reclutamiento.PreApplication pa
-                            INNER JOIN HRM_DB.reclutamiento.PreApplicationFormResponse pf ON pf.PreApplicationId = pa.IdPreApplication
-                            INNER JOIN HRM_DB.reclutamiento.PreApplicationAnswer paa ON paa.ResponseId = pf.IdResponse
-                            INNER JOIN HRM_DB.reclutamiento.Files f ON f.IdFile = paa.FileId
-                            INNER JOIN HRM_DB.reclutamiento.FormQuestion fq ON fq.IdQuestion = paa.QuestionId
-                            WHERE pa.IdPreApplication = @id
-                            AND fq.Code = @code";
-                var result = await connection.QueryFirstOrDefaultAsync<GetFileBase64DBResponseDto>(sql, new { id, code });
+                string sql = "";
+                if (code.Contains("ADJUNTA_CV"))
+                {
+                    sql = @"SELECT 
+                           f.FilePath
+                       FROM reclutamiento.PreApplication pa
+                       INNER JOIN reclutamiento.Files f ON f.IdFile = pa.CVFileId
+                       WHERE pa.IdPreApplication = @id;";
+                }
+                else
+                {
+                    sql = @"
+                            WITH CTE AS (
+                            SELECT f.FilePath,
+                                    pafr.PreApplicationId,
+		                            ROW_NUMBER() OVER (PARTITION BY fq.Code ORDER BY paa.IdAnswer DESC) AS rn
+                            FROM HRM_DB.reclutamiento.PreApplicationFormResponse pafr
+                            INNER JOIN HRM_DB.reclutamiento.PreApplicationAnswer paa 
+                                ON paa.ResponseId = pafr.IdResponse
+                            INNER JOIN HRM_DB.reclutamiento.FormQuestion fq 
+                                ON fq.IdQuestion = paa.QuestionId
+                            LEFT JOIN HRM_DB.reclutamiento.PreApplicationAnswerOption paao 
+                                ON paao.AnswerId = paa.IdAnswer
+                            LEFT JOIN HRM_DB.reclutamiento.FormQuestionOption fqo 
+                                ON fqo.IdOption = paao.OptionId
+                            LEFT JOIN HRM_DB.reclutamiento.Files f 
+                                ON f.IdFile = paa.FileId
+                            WHERE paa.AnswerType = 'file'
+                              AND fq.Code = @code
+                        )
+                        SELECT 
+                            FilePath
+                        FROM CTE
+                        WHERE PreApplicationId = @id; ";
+                }
+                var result = await connection.QueryFirstOrDefaultAsync<GetFileBase64DBResponseDto>(sql, new { code, id });
 
                 return result;
             }
