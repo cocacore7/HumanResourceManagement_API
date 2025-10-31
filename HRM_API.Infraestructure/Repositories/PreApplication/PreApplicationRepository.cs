@@ -181,7 +181,8 @@ namespace HRM_API.Infraestructure.Repositories.PreApplication
                         INNER JOIN HRM_DB.reclutamiento.JobVacancy jv ON jv.IdVacancy = pa.VacancyId
                         WHERE pa.IdPreApplication = @id
                         AND pa.DPI = @dpi
-                        AND jv.Status = 'nuevaVacante'";
+                        AND jv.Status = 'nuevaVacante'
+                        AND pa.Status = 'cargaExpedienteNoCargado'";
             var result = await connection.QueryFirstOrDefaultAsync<int?>(sql, new { id, dpi });
 
             return result > 0;
