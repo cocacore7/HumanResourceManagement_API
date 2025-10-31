@@ -58,6 +58,13 @@ namespace HRM_API.Application.Services
             return (response);
         }
 
+        public async Task<bool?> PreAppValidatePublicAsync(long? dpi, int? id)
+        {
+            var responsedb = await _repository.PreAppValidatePublicAsync(dpi, id);
+
+            return responsedb;
+        }
+
         public async Task<SetPreApplicationsReponseDto?> SetPreApplicationsAsync(GeneralFormRequestDto request, LoginDBResponseDto user)
         {
             SetPreApplicationsDBRequestDto newApplication = new();

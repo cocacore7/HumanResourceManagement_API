@@ -50,6 +50,14 @@ namespace HRM_API.API.Controllers
             return Ok(ApiResponses.Ok(response, "OK", "GET_COUNT_FOUND"));
         }
 
+        [HttpGet("PreAppValidatePublic")]
+        public async Task<IActionResult> PreAppValidatePublic([FromQuery] long? dpi, [FromQuery] int? id)
+        {
+            var response = await _preApplicationService.PreAppValidatePublicAsync(dpi, id);
+            if (response == null) { return BadRequest(ApiResponses.Fail("PREAPP_VALIDATION_NOT_FOUND", "No se pudo validar la pre aplicacion solicitada")); }
+            return Ok(ApiResponses.Ok(response, "OK", "PREAPP_VALIDATION_FOUND"));
+        }
+
         [HttpPost("SetPreApplications")]
         public async Task<IActionResult> SetPreApplications([FromBody] GeneralFormRequestDto request)
         {

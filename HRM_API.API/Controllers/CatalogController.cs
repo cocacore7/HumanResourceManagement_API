@@ -103,5 +103,13 @@ namespace HRM_API.API.Controllers
 
             return Ok(ApiResponses.Ok(response, "OK", "ROLE_CATALOG_FOUND"));
         }
+
+        [HttpGet("GetRoleCataloPublic")]
+        public async Task<IActionResult> GetRoleCataloPublic()
+        {
+            var response = await _catalogService.GetRoleCatalogAsync();
+
+            return Ok(ApiResponses.Ok(response, "OK", "ROLE_CATALOG_FOUND"));
+        }
     }
 }

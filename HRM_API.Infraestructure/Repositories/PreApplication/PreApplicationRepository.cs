@@ -172,6 +172,21 @@ namespace HRM_API.Infraestructure.Repositories.PreApplication
             return result;
         }
 
+        public async Task<bool?> PreAppValidatePublicAsync(long? dpi, int? id)
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
+
+            var sql = @"SELECT pa.IdPreApplication
+                        FROM HRM_DB.reclutamiento.PreApplication pa
+                        INNER JOIN HRM_DB.reclutamiento.JobVacancy jv ON jv.IdVacancy = pa.VacancyId
+                        WHERE pa.IdPreApplication = @id
+                        AND pa.DPI = @dpi
+                        AND jv.Status = 'nuevaVacante'";
+            var result = await connection.QueryFirstOrDefaultAsync<int?>(sql, new { id, dpi });
+
+            return result > 0;
+        }
+
         public async Task<int?> SetPreApplicationsAsync(SetPreApplicationsDBRequestDto request)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
