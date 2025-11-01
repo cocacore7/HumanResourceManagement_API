@@ -1,4 +1,5 @@
-﻿using HRM_API.Core.Dtos.Form;
+﻿using HRM_API.Core.Dtos.Authorization;
+using HRM_API.Core.Dtos.Form;
 using HRM_API.Core.Dtos.PreApplication;
 
 namespace HRM_API.Core.Interfaces.PreApplication
@@ -6,6 +7,7 @@ namespace HRM_API.Core.Interfaces.PreApplication
     public interface IPreApplicationRepository
     {
         Task<List<GetPreApplicationsDBResponseDto>?> GetPreApplicationsAsync(string estado, string id);
+        Task<List<GetPreApplicationsDBResponseDto>?> GetPreApplicationsByUserAsync(string estado, string id, int userId);
         Task<List<GetFormAnswersDBAnswersResponseDto>?> GetPreApplicationFormsFilesAsync(int? id);
         Task<GetCountPreApplicationByStateDBResponseDto?> GetCountPreApplicationByStateAsync(string state);
         Task<List<GetFormAnswersDBAnswersResponseDto>?> GetPreApplicationPreApplicationFileAsync(int? id);

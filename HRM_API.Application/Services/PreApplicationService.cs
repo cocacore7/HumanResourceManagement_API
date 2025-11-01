@@ -26,6 +26,14 @@ namespace HRM_API.Application.Services
             return (response);
         }
 
+        public async Task<GetPreApplicationsResponseDto?> GetPreApplicationsByUserAsync(string estado, string id, LoginDBResponseDto user)
+        {
+            var form = await _repository.GetPreApplicationsByUserAsync(estado, id, int.TryParse(user.IdUser, out int createdBy) ? createdBy : 0);
+            GetPreApplicationsResponseDto response = new() { Response = form ?? [] };
+
+            return (response);
+        }
+
         public async Task<GetFormAnswersResponseDto?> GetPreApplicationFilesAsync(int? id)
         {
             var forms = await _repository.GetPreApplicationFormsFilesAsync(id);
