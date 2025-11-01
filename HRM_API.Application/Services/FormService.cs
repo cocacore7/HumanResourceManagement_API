@@ -113,6 +113,13 @@ namespace HRM_API.Application.Services
                 if (StatusfailValid) { responseList.Add("Estado de rechazo actualizado con exito"); }
             }
 
+            //Validar estados rechazados
+            if (form.KeyName == "UploadDocumentsByCandidate")
+            {
+                var StatusfailValid = (bool)await _preApplicationRepository.UpdateStatusFailAsync(preApplication.FirstOrDefault()?.Id, request?.Origin.State);
+                if (StatusfailValid) { responseList.Add("Estado de actualizacion de documentos de candidato actualizado con exito"); }
+            }
+
             //registrar cada pregunta por su tipo
             foreach (var item in request?.Answers ?? []) 
             {
