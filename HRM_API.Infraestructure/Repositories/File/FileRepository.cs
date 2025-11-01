@@ -20,19 +20,78 @@ namespace HRM_API.Infraestructure.Repositories.File
                 string sql = "";
                 if (code.Contains("ADJUNTA_CV"))
                 {
-                    sql = @"SELECT 
-                           f.FilePath
-                       FROM reclutamiento.PreApplication pa
-                       INNER JOIN reclutamiento.Files f ON f.IdFile = pa.CVFileId
-                       WHERE pa.IdPreApplication = @id;";
+                    sql = @"DECLARE @isCode BIT;
+
+                            ;WITH CTE AS
+                            (
+                                SELECT 
+                                    1 AS isCode,
+                                    pafr.PreApplicationId,
+                                    ROW_NUMBER() OVER (PARTITION BY fq.Code ORDER BY paa.IdAnswer DESC) AS rn
+                                FROM HRM_DB.reclutamiento.PreApplicationFormResponse pafr
+                                INNER JOIN HRM_DB.reclutamiento.PreApplicationAnswer paa 
+                                    ON paa.ResponseId = pafr.IdResponse
+                                INNER JOIN HRM_DB.reclutamiento.FormQuestion fq 
+                                    ON fq.IdQuestion = paa.QuestionId
+                                LEFT JOIN HRM_DB.reclutamiento.PreApplicationAnswerOption paao 
+                                    ON paao.AnswerId = paa.IdAnswer
+                                LEFT JOIN HRM_DB.reclutamiento.FormQuestionOption fqo 
+                                    ON fqo.IdOption = paao.OptionId
+                                LEFT JOIN HRM_DB.reclutamiento.Files f 
+                                    ON f.IdFile = paa.FileId
+                                WHERE paa.AnswerType = 'file'
+                                  AND (f.FileName IS NOT NULL OR f.FileName <> '')
+                                  AND f.IdFile IS NOT NULL
+                                  AND fq.Code = 'ADJUNTA_CV'
+                            )
+                            SELECT TOP 1 @isCode = isCode
+                            FROM CTE
+                            WHERE PreApplicationId = @id;
+
+                            IF (@isCode = 1)
+                            BEGIN
+                                ;WITH CTE AS
+                                (
+                                    SELECT 
+                                        f.FilePath,
+                                        pafr.PreApplicationId,
+                                        ROW_NUMBER() OVER (PARTITION BY fq.Code ORDER BY paa.IdAnswer DESC) AS rn
+                                    FROM HRM_DB.reclutamiento.PreApplicationFormResponse pafr
+                                    INNER JOIN HRM_DB.reclutamiento.PreApplicationAnswer paa 
+                                        ON paa.ResponseId = pafr.IdResponse
+                                    INNER JOIN HRM_DB.reclutamiento.FormQuestion fq 
+                                        ON fq.IdQuestion = paa.QuestionId
+                                    LEFT JOIN HRM_DB.reclutamiento.PreApplicationAnswerOption paao 
+                                        ON paao.AnswerId = paa.IdAnswer
+                                    LEFT JOIN HRM_DB.reclutamiento.FormQuestionOption fqo 
+                                        ON fqo.IdOption = paao.OptionId
+                                    LEFT JOIN HRM_DB.reclutamiento.Files f 
+                                        ON f.IdFile = paa.FileId
+                                    WHERE paa.AnswerType = 'file'
+                                      AND (f.FileName IS NOT NULL OR f.FileName <> '')
+                                      AND f.IdFile IS NOT NULL
+                                )
+                                SELECT FilePath
+                                FROM CTE
+                                WHERE PreApplicationId = @id;
+                            END
+                            ELSE
+                            BEGIN
+                                SELECT 
+                                    f.FilePath
+                                FROM HRM_DB.reclutamiento.PreApplication pa
+                                INNER JOIN HRM_DB.reclutamiento.Files f 
+                                    ON f.IdFile = pa.CVFileId
+                                WHERE pa.IdPreApplication = @id;
+                            END;
+                            ";
                 }
                 else
                 {
-                    sql = @"
-                            WITH CTE AS (
+                    sql = @"WITH CTE AS (
                             SELECT f.FilePath,
-                                    pafr.PreApplicationId,
-		                            ROW_NUMBER() OVER (PARTITION BY fq.Code ORDER BY paa.IdAnswer DESC) AS rn
+								pafr.PreApplicationId,
+                                ROW_NUMBER() OVER (PARTITION BY fq.Code ORDER BY paa.IdAnswer DESC) AS rn
                             FROM HRM_DB.reclutamiento.PreApplicationFormResponse pafr
                             INNER JOIN HRM_DB.reclutamiento.PreApplicationAnswer paa 
                                 ON paa.ResponseId = pafr.IdResponse
@@ -45,12 +104,13 @@ namespace HRM_API.Infraestructure.Repositories.File
                             LEFT JOIN HRM_DB.reclutamiento.Files f 
                                 ON f.IdFile = paa.FileId
                             WHERE paa.AnswerType = 'file'
-                              AND fq.Code = @code
+                            AND (f.FileName <> NULL OR f.FileName <> '')
+                            AND f.IdFile IS NOT NULL
                         )
                         SELECT 
                             FilePath
                         FROM CTE
-                        WHERE PreApplicationId = @id; ";
+                        WHERE PreApplicationId =  @id;";
                 }
                 var result = await connection.QueryFirstOrDefaultAsync<GetFileBase64DBResponseDto>(sql, new { code, id });
 
