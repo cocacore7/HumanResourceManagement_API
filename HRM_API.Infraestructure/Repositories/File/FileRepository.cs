@@ -70,6 +70,7 @@ namespace HRM_API.Infraestructure.Repositories.File
                                     WHERE paa.AnswerType = 'file'
                                       AND (f.FileName IS NOT NULL OR f.FileName <> '')
                                       AND f.IdFile IS NOT NULL
+                                      AND fq.Code = @code
                                 )
                                 SELECT FilePath
                                 FROM CTE
@@ -106,6 +107,7 @@ namespace HRM_API.Infraestructure.Repositories.File
                             WHERE paa.AnswerType = 'file'
                             AND (f.FileName <> NULL OR f.FileName <> '')
                             AND f.IdFile IS NOT NULL
+                            AND fq.Code = @code
                         )
                         SELECT 
                             FilePath
