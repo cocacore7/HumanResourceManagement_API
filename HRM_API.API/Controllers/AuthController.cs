@@ -7,7 +7,7 @@ namespace HRM_API.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class AuthController(AuthorizationService authService) : ControllerBase
+    public class AuthController(AuthorizationService authService, IConfiguration configuration) : ControllerBase
     {
         private readonly AuthorizationService _authService = authService;
 
@@ -19,7 +19,24 @@ namespace HRM_API.API.Controllers
             if (token == null)
                 return Unauthorized(ApiResponses.Fail("UNAUTHORIZED", "Credenciales inválidas"));
 
-            return Ok(ApiResponses.Ok(new LoginResponseDto { Token = token }, "OK", "LOGIN_SUCCES"));
+            return Ok(ApiResponses.Ok(new LoginResponseDto { Token = token, ExpiredDate = DateTime.Now.AddMinutes(int.Parse(configuration["Jwt:ExpireMinutes"] ?? "60")) }, "OK", "LOGIN_SUCCES"));
+        }
+
+        [HttpPost("RefreshToken")]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestDto request)
+        {
+            if (string.IsNullOrWhiteSpace(request?.OldToken))
+                return BadRequest(ApiResponses.Fail("400", "Token no proporcionado"));
+
+            var newToken = await _authService.RefreshTokenAsync(request.OldToken);
+
+            if (newToken == null)
+                // Usa la nueva respuesta semántica TokenExpired()
+                return Unauthorized(ApiResponses.TokenExpired());
+
+            return Ok(ApiResponses.Ok(
+                new { token = newToken, ExpiredDate = DateTime.Now.AddMinutes(int.Parse(configuration["Jwt:ExpireMinutes"] ?? "60")) }, "OK", "REFRESH_SUCCES"
+            ));
         }
 
         [HttpPost("SendRecoveryCode")]

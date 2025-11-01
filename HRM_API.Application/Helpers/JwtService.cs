@@ -32,7 +32,7 @@ namespace HRM_API.Application.Helpers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public ClaimsPrincipal? ValidateToken(string token)
+        public ClaimsPrincipal? ValidateToken(string token, bool ignoreExpiration = false)
         {
             if (string.IsNullOrWhiteSpace(token)) return null;
 
@@ -47,7 +47,8 @@ namespace HRM_API.Application.Helpers
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = false,
                     ValidateAudience = false,
-                    ClockSkew = TimeSpan.Zero
+                    ClockSkew = TimeSpan.Zero,
+                    ValidateLifetime = !ignoreExpiration // si es false, no se lanza excepción al expirar
                 }, out _);
 
                 return principal;
@@ -56,6 +57,25 @@ namespace HRM_API.Application.Helpers
             {
                 return null;
             }
+        }
+
+        public string? RefreshToken(string oldToken)
+        {
+            // Validar el token sin importar si está expirado
+            var principal = ValidateToken(oldToken, ignoreExpiration: true);
+            if (principal == null)
+                return null;
+
+            // Extraer los datos del token anterior
+            var idUser = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var name = principal.FindFirst(ClaimTypes.Name)?.Value;
+            var role = principal.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (idUser == null || name == null || role == null)
+                return null;
+
+            // Generar un nuevo token
+            return GenerateToken(idUser, name, role);
         }
     }
 }

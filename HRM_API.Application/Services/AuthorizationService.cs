@@ -24,6 +24,13 @@ namespace HRM_API.Application.Services
             return _jwtService.GenerateToken(user.IdUser, user.Name, user.RoleId);
         }
 
+        public Task<string?> RefreshTokenAsync(string oldToken)
+        {
+            var newToken = _jwtService.RefreshToken(oldToken);
+
+            return Task.FromResult(newToken);
+        }
+
         public async Task<string?> SendRecoveryCodeAsync(SendRecoveryCodeRequestDto request)
         {
             var user = await _userRepository.GetUserByEmailAsync(request.email);
