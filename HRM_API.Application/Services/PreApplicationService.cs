@@ -59,8 +59,15 @@ namespace HRM_API.Application.Services
             var response = new GetCountPreApplicationByStateResponseDto();
             foreach (var state in states) 
             { 
-                var responsedb = await _repository.GetCountPreApplicationByStateAsync(state); 
-                response.Response.Add(responsedb); 
+                var responsedb = await _repository.GetCountPreApplicationByStateAsync(state);
+                if (responsedb == null)
+                {
+                    response.Response.Add(new() { State = state, Count = 0});
+                }
+                else
+                {
+                    response.Response.Add(responsedb);
+                }
             }
 
             return (response);

@@ -3,6 +3,6 @@
     public class GetCountPreApplicationByStateDBResponseDto
     {
         public string State { get; set; } = string.Empty;
-        public int? Count { get; set; }
+        public int? Count { get; set; } = 0;
     }
 }

@@ -175,7 +175,7 @@ namespace HRM_API.Infraestructure.Repositories.PreApplication
                         FROM HRM_DB.reclutamiento.PreApplication pa
                         WHERE pa.Status = @state
                         GROUP BY pa.Status";
-            var result = await connection.QueryFirstAsync<GetCountPreApplicationByStateDBResponseDto>(sql, new { state });
+            var result = await connection.QueryFirstOrDefaultAsync<GetCountPreApplicationByStateDBResponseDto>(sql, new { state });
 
             return (GetCountPreApplicationByStateDBResponseDto?)result;
         }
