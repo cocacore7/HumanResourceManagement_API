@@ -92,8 +92,7 @@ namespace HRM_API.Infraestructure.Repositories.PreApplication
                             LEFT JOIN HRM_DB.reclutamiento.Files f 
                                 ON f.IdFile = paa.FileId
                             WHERE paa.AnswerType = 'file'
-                            AND f.FileName <> NULL
-                            AND f.FileName <> ''
+                            AND (f.FileName <> NULL OR f.FileName <> '')
                             AND f.IdFile IS NOT NULL
                               
                         )
