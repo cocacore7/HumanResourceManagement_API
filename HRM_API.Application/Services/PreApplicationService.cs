@@ -30,8 +30,8 @@ namespace HRM_API.Application.Services
         {
             var forms = await _repository.GetPreApplicationFormsFilesAsync(id);
             var formpre = await _repository.GetPreApplicationPreApplicationFileAsync(id);
-
-            var allForms = forms?.Concat(formpre ?? []).ToList();
+            bool containCV = forms?.Any(f => f.Code == "ADJUNTA_CV") == true;
+            var allForms = containCV ?  forms?.Concat(formpre ?? []).ToList() : formpre;
 
             GetFormAnswersDBResponseDto responsedb = new()
             {
