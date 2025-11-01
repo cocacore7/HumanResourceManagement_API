@@ -21,6 +21,8 @@ namespace HRM_API.Core.Enum.PreApplication
         [Description("poligrafo")] Poligrahp,
         [Description("cargaExpedienteNoCargado")] ExpNotLoaded,
         [Description("cargaExpedienteCompletado")] ExpLoaded,
-        [Description("rechazoDescartado")] RejectDiscard
+        [Description("rechazoDescartado")] RejectDiscard,
+        [Description("contratacion")] Hiring,
+        [Description("contratado")] Hired
     }
 }

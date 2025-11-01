@@ -107,6 +107,7 @@ namespace HRM_API.Application.Services
                 request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.PoligraphFail) ||
                 request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.ExpLoadFail) ||
                 request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.HiringFail) ||
+                request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.Hired) ||
                 request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.RejectDiscard))
             {
                 var StatusfailValid = (bool)await _preApplicationRepository.UpdateStatusFailAsync(preApplication.FirstOrDefault()?.Id, request?.Origin.State);
@@ -288,6 +289,7 @@ namespace HRM_API.Application.Services
                 request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.Poligrahp) ||
                 request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.ExpNotLoaded) ||
                 request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.ExpLoaded) ||
+                request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.Hiring) ||
                 request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.RejectDiscard))
             {
                 var StatusfailValid = (bool)await _preApplicationRepository.UpdateStatusFailAsync(preApplication.FirstOrDefault()?.Id, request?.Origin.State);
