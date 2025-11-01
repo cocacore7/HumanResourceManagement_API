@@ -78,6 +78,7 @@ namespace HRM_API.Infraestructure.Repositories.PreApplication
                                 fqo.IdOption,
                                 fqo.Value,
                                 fqo.Label,
+								pafr.PreApplicationId,
                                 ROW_NUMBER() OVER (PARTITION BY fq.Code ORDER BY paa.IdAnswer DESC) AS rn
                             FROM HRM_DB.reclutamiento.PreApplicationFormResponse pafr
                             INNER JOIN HRM_DB.reclutamiento.PreApplicationAnswer paa 
@@ -91,7 +92,7 @@ namespace HRM_API.Infraestructure.Repositories.PreApplication
                             LEFT JOIN HRM_DB.reclutamiento.Files f 
                                 ON f.IdFile = paa.FileId
                             WHERE paa.AnswerType = 'file'
-                              AND pafr.PreApplicationId = 1
+                              
                         )
                         SELECT 
                             IdAnswer,
@@ -109,9 +110,10 @@ namespace HRM_API.Infraestructure.Repositories.PreApplication
                             SizeBytes,
                             IdOption,
                             Value,
-                            Label
+                            Label,
+							PreApplicationId
                         FROM CTE
-                        WHERE rn = @id;";
+                        WHERE PreApplicationId =  @id;";
             var result = await connection.QueryAsync<GetFormAnswersDBAnswersResponseDto?>(sql, new { id });
 
             return [.. result];
