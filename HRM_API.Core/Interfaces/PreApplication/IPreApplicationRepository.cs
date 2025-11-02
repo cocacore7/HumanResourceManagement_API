@@ -7,6 +7,8 @@ namespace HRM_API.Core.Interfaces.PreApplication
     public interface IPreApplicationRepository
     {
         Task<List<GetPreApplicationsDBResponseDto>?> GetPreApplicationsAsync(string estado, string id);
+        Task<List<GetPreApplicationsDBResponseDto>?> GetPreApplicationsFailedAsync();
+        Task<List<GetPreApplicationsDBResponseDto>?> GetPreApplicationsProcessAsync();
         Task<List<GetPreApplicationsDBResponseDto>?> GetPreApplicationsByUserAsync(string estado, string id, int userId);
         Task<List<GetFormAnswersDBAnswersResponseDto>?> GetPreApplicationFormsFilesAsync(int? id);
         Task<GetCountPreApplicationByStateDBResponseDto?> GetCountPreApplicationByStateAsync(string state);

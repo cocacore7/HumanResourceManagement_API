@@ -56,6 +56,50 @@ namespace HRM_API.Infraestructure.Repositories.PreApplication
             }
         }
 
+        public async Task<List<GetPreApplicationsDBResponseDto>?> GetPreApplicationsFailedAsync()
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
+
+            var sql = @"SELECT pa.IdPreApplication AS [id], pa.FullName AS [nombre], pa.DPI AS [dpi], pa.Age AS [edad], 
+                        pa.Gender AS [genero], pa.Phone AS [telefono], pa.Email AS [correo],t.TownName AS [departamento], 
+                        pa.Address as [direccion], jv.JobPositionName AS [puesto], pa.Status AS [estado], 
+                        u.Name AS [assignedTo], pa.EducationLevel AS [ultimoGrado], pa.HowHeard AS [fuente], 
+                        pa.AssignHub AS [hub], pa.IsReferred AS [esReferido], pa.RefferedBy AS [referidoPor]
+                        FROM HRM_DB.reclutamiento.PreApplication pa
+                        INNER JOIN HRM_DB.reclutamiento.JobVacancy jv ON jv.IdVacancy = pa.VacancyId
+                        LEFT JOIN HRM_DB.reclutamiento.Town t ON t.IdTown = pa.TownId
+                        LEFT JOIN HRM_DB.reclutamiento.Users u ON u.IdUser = pa.AssignTo
+                        WHERE pa.Status IN ('rechazoPreFiltro','rechazoSolicitud','rechazoRevision','rechazoDescartado','rechazoEntrevista',
+                                            'rechazoPruebas','rechazoEntrevistaJefe','rechazoPoligrafo','rechazoCargaExpediente',
+                                            'rechazoContratacion','rechazoDescartado')
+                        ORDER BY pa.CreatedAt DESC";
+            var result = await connection.QueryAsync<GetPreApplicationsDBResponseDto>(sql, new { });
+
+            return [.. result];
+        }
+
+        public async Task<List<GetPreApplicationsDBResponseDto>?> GetPreApplicationsProcessAsync()
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
+
+            var sql = @"SELECT pa.IdPreApplication AS [id], pa.FullName AS [nombre], pa.DPI AS [dpi], pa.Age AS [edad], 
+                        pa.Gender AS [genero], pa.Phone AS [telefono], pa.Email AS [correo],t.TownName AS [departamento], 
+                        pa.Address as [direccion], jv.JobPositionName AS [puesto], pa.Status AS [estado], 
+                        u.Name AS [assignedTo], pa.EducationLevel AS [ultimoGrado], pa.HowHeard AS [fuente], 
+                        pa.AssignHub AS [hub], pa.IsReferred AS [esReferido], pa.RefferedBy AS [referidoPor]
+                        FROM HRM_DB.reclutamiento.PreApplication pa
+                        INNER JOIN HRM_DB.reclutamiento.JobVacancy jv ON jv.IdVacancy = pa.VacancyId
+                        LEFT JOIN HRM_DB.reclutamiento.Town t ON t.IdTown = pa.TownId
+                        LEFT JOIN HRM_DB.reclutamiento.Users u ON u.IdUser = pa.AssignTo
+                        WHERE pa.Status IN ('preFiltro','solicitud','entrevista','pruebas','entrevistaJefe',
+                                            'poligrafo','cargaExpedienteNoCargado','cargaExpedienteParcial',
+                                            'cargaExpedienteCompletado','contratacion')
+                        ORDER BY pa.CreatedAt DESC";
+            var result = await connection.QueryAsync<GetPreApplicationsDBResponseDto>(sql, new { });
+
+            return [.. result];
+        }
+
         public async Task<List<GetPreApplicationsDBResponseDto>?> GetPreApplicationsByUserAsync(string estado, string id, int userId)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));

@@ -26,6 +26,28 @@ namespace HRM_API.API.Controllers
             return Ok(ApiResponses.Ok(response, "OK", "PREAPPLICATION_FOUND"));
         }
 
+        [HttpGet("GetPreApplicationsFailed")]
+        public async Task<IActionResult> GetPreApplicationsFailed()
+        {
+            if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
+                return Unauthorized(ApiResponses.Fail("UNAUTHORIZED", "Token inválido"));
+
+            var response = await _preApplicationService.GetPreApplicationsFailedAsync();
+
+            return Ok(ApiResponses.Ok(response, "OK", "PREAPPLICATION_FOUND"));
+        }
+
+        [HttpGet("GetPreApplicationsProcess")]
+        public async Task<IActionResult> GetPreApplicationsProcess()
+        {
+            if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
+                return Unauthorized(ApiResponses.Fail("UNAUTHORIZED", "Token inválido"));
+
+            var response = await _preApplicationService.GetPreApplicationsProcessAsync();
+
+            return Ok(ApiResponses.Ok(response, "OK", "PREAPPLICATION_FOUND"));
+        }
+
         [HttpGet("GetPreApplicationsByUser")]
         public async Task<IActionResult> GetPreApplicationsByUser([FromQuery] string estado = "", [FromQuery] string id = "")
         {
