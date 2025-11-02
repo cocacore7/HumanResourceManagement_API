@@ -467,6 +467,42 @@ namespace HRM_API.Infraestructure.Repositories.PreApplication
             return result > 0;
         }
 
+        public async Task<bool?> UpdateVacancyCountAsync(int? PreApplicationId)
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
+
+            var sql = @"DECLARE @idVacante INT,
+                                @nPlazas INT;
+                            SELECT @idVacante = VacancyId
+                            FROM HRM_DB.reclutamiento.PreApplication 
+                            WHERE  IdPreApplication = @PreApplicationId;
+
+                            SELECT @nPlazas = AvailablePositions 
+                              FROM HRM_DB.reclutamiento.JobVacancy
+                              WHERE idVacancy = @idVacante
+
+                             IF(@nPlazas > 1)
+                             BEGIN 
+	                             UPDATE HRM_DB.reclutamiento.JobVacancy
+	                               SET AvailablePositions = (CAST(AvailablePositions AS INT) - 1)
+                                 WHERE idVacancy = @idVacante
+                             END
+                             ELSE IF (@nPlazas = 1)
+                             BEGIN 
+	                             UPDATE HRM_DB.reclutamiento.JobVacancy
+	                               SET AvailablePositions = (CAST(AvailablePositions AS INT) - 1)
+                                 WHERE idVacancy = @idVacante
+	 
+	                             UPDATE HRM_DB.reclutamiento.JobVacancy
+	                               SET [Status] = 'cubiertoNuevaVacante'
+                                 WHERE idVacancy = @idVacante
+                             END";
+            var result = await connection.ExecuteAsync(sql, new { PreApplicationId });
+
+            return result > 0;
+        }
+
+
         public async Task<bool?> AssignToAsync(int? PreapplicationId, int? IdUserAssign)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
