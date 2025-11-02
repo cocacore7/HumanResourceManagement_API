@@ -10,6 +10,9 @@ namespace HRM_API.Core.Interfaces.PreApplication
         Task<List<GetPreApplicationsDBResponseDto>?> GetPreApplicationsByUserAsync(string estado, string id, int userId);
         Task<List<GetFormAnswersDBAnswersResponseDto>?> GetPreApplicationFormsFilesAsync(int? id);
         Task<GetCountPreApplicationByStateDBResponseDto?> GetCountPreApplicationByStateAsync(string state);
+        Task<GetCountPreApplicationByStateDBResponseDto?> GetHiredCountPreApplicationAsync();
+        Task<GetCountPreApplicationByStateDBResponseDto?> GetFailCountPreApplicationAsync();
+        Task<GetCountPreApplicationByStateDBResponseDto?> GetProcessCountPreApplicationAsync();
         Task<List<GetFormAnswersDBAnswersResponseDto>?> GetPreApplicationPreApplicationFileAsync(int? id);
         Task<int?> GetPreApplicationFileIdAsync(int id);
         Task<bool?> PreAppValidatePublicAsync(long? dpi, int? id);

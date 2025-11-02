@@ -180,6 +180,47 @@ namespace HRM_API.Infraestructure.Repositories.PreApplication
             return (GetCountPreApplicationByStateDBResponseDto?)result;
         }
 
+        public async Task<GetCountPreApplicationByStateDBResponseDto?> GetHiredCountPreApplicationAsync()
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
+
+            var sql = @"SELECT pa.Status [State], COUNT(pa.Status) [Count]
+                        FROM HRM_DB.reclutamiento.PreApplication pa
+                        WHERE pa.Status = 'contratado'
+                        GROUP BY pa.Status";
+            var result = await connection.QueryFirstOrDefaultAsync<GetCountPreApplicationByStateDBResponseDto>(sql, new { });
+
+            return (GetCountPreApplicationByStateDBResponseDto?)result;
+        }
+
+        public async Task<GetCountPreApplicationByStateDBResponseDto?> GetFailCountPreApplicationAsync()
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
+
+            var sql = @"SELECT 'failedStatus' [State], COUNT(pa.Status) [Count]
+                        FROM HRM_DB.reclutamiento.PreApplication pa
+                        WHERE pa.Status IN ('rechazoPreFiltro','rechazoSolicitud','rechazoRevision','rechazoDescartado','rechazoEntrevista',
+                                            'rechazoPruebas','rechazoEntrevistaJefe','rechazoPoligrafo','rechazoCargaExpediente',
+                                            'rechazoContratacion','rechazoDescartado')";
+            var result = await connection.QueryFirstOrDefaultAsync<GetCountPreApplicationByStateDBResponseDto>(sql, new {  });
+
+            return (GetCountPreApplicationByStateDBResponseDto?)result;
+        }
+
+        public async Task<GetCountPreApplicationByStateDBResponseDto?> GetProcessCountPreApplicationAsync()
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
+
+            var sql = @"SELECT 'prcessStatus' [State], COUNT(pa.Status) [Count]
+                        FROM HRM_DB.reclutamiento.PreApplication pa
+                        WHERE pa.Status IN ('preFiltro','solicitud','entrevista','pruebas','entrevistaJefe',
+                                            'poligrafo','cargaExpedienteNoCargado','cargaExpedienteParcial',
+                                            'cargaExpedienteCompletado','contratacion')";
+            var result = await connection.QueryFirstOrDefaultAsync<GetCountPreApplicationByStateDBResponseDto>(sql, new {  });
+
+            return (GetCountPreApplicationByStateDBResponseDto?)result;
+        }
+
         public async Task<List<GetFormAnswersDBAnswersResponseDto>?> GetPreApplicationPreApplicationFileAsync(int? id)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));

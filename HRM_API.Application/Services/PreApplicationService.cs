@@ -73,6 +73,20 @@ namespace HRM_API.Application.Services
             return (response);
         }
 
+        public async Task<GetCountPreApplicationByStateResponseDto?> GetCountPreApplicationByProccessAsync()
+        {
+            var response = new GetCountPreApplicationByStateResponseDto();
+
+            var responsedb1 = await _repository.GetHiredCountPreApplicationAsync();
+            if (responsedb1 == null) { response.Response.Add(new() { State = "contratado", Count = 0 }); } else { response.Response.Add(responsedb1); }
+                var responsedb2 = await _repository.GetFailCountPreApplicationAsync();
+            if (responsedb2 == null) { response.Response.Add(new() { State = "failedStatus", Count = 0 }); } else { response.Response.Add(responsedb2); }
+            var responsedb3 = await _repository.GetProcessCountPreApplicationAsync();
+            if (responsedb3 == null) { response.Response.Add(new() { State = "prcessStatus", Count = 0 }); } else { response.Response.Add(responsedb3); }
+
+            return (response);
+        }
+
         public async Task<bool?> PreAppValidatePublicAsync(long? dpi, int? id)
         {
             var responsedb = await _repository.PreAppValidatePublicAsync(dpi, id);
