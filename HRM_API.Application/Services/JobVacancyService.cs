@@ -23,6 +23,19 @@ namespace HRM_API.Application.Services
             return (response);
         }
 
+        public async Task<List<GetJobVacancyCountsResponseDto>?> GetJobVacancyCountsAsync()
+        {
+            List<GetJobVacancyCountsResponseDto> response = [];
+            var newResponse = await _repository.GetJobVacancyCountsAsync("nuevaVacante");
+            if (newResponse == null) { response.Add(new() { Status = "nuevaVacante", Count = 0 }); } else { response.Add(newResponse); }
+            var coverResponse = await _repository.GetJobVacancyCountsAsync("cubiertoNuevaVacante");
+            if (coverResponse == null) { response.Add(new() { Status = "cubiertoNuevaVacante", Count = 0 }); } else { response.Add(coverResponse); }
+            var totalResponse = await _repository.GetJobVacancyCountTotalAsync();
+            if (totalResponse == null) { response.Add(new() { Status = "totalVacancy", Count = 0 }); } else { response.Add(totalResponse); }
+
+            return (response);
+        }
+
         public async Task<bool?> SetJobVacancyAsync(GeneralFormRequestDto request, LoginDBResponseDto user)
         {
             SetJobVacancyDBRequestDto newvacant = new();

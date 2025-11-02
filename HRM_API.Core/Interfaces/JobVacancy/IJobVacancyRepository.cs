@@ -6,6 +6,8 @@ namespace HRM_API.Core.Interfaces.JobVacancy
     {
         Task<List<GetJobVacanciesDBRequestDto>?> GetJobVacanciesAsync(string estado, string id);
         Task<int?> GetJobVacancyFileIdAsync(int id);
+        Task<GetJobVacancyCountsResponseDto?> GetJobVacancyCountsAsync(string state);
+        Task<GetJobVacancyCountsResponseDto?> GetJobVacancyCountTotalAsync();
         Task<int?> SetJobVacancyAsync(SetJobVacancyDBRequestDto dbRequest);
         Task<bool?> UpdateJobVacancyAsync(UpdateJobVacancyDBRequestDto dbRequest);
     }

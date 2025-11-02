@@ -23,6 +23,17 @@ namespace HRM_API.API.Controllers
             return Ok(ApiResponses.Ok(response, "OK", "VACANCY_FOUND"));
         }
 
+        [HttpGet("GetJobVacancyCounts")]
+        public async Task<IActionResult> GetJobVacancyCounts()
+        {
+            if (!HttpContext.User.Identity?.IsAuthenticated ?? false)
+                return Unauthorized(ApiResponses.Fail("UNAUTHORIZED", "Token inválido"));
+
+            var response = await _jobVacancyService.GetJobVacancyCountsAsync();
+
+            return Ok(ApiResponses.Ok(response, "OK", "VACANCY_FOUND"));
+        }
+
         [HttpPost("SetJobVacancy")]
         public async Task<IActionResult> SetJobVacancy([FromBody] GeneralFormRequestDto request)
         {

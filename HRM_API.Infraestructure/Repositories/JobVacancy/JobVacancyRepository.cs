@@ -68,6 +68,30 @@ namespace HRM_API.Infraestructure.Repositories.JobVacancy
             return result;
         }
 
+        public async Task<GetJobVacancyCountsResponseDto?> GetJobVacancyCountsAsync(string status)
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
+
+            var sql = @"SELECT jv.Status [Status], COUNT(jv.Status) [Count]
+                        FROM HRM_DB.reclutamiento.JobVacancy jv
+                        WHERE jv.Status = @status
+                        GROUP BY jv.Status";
+            var result = await connection.QueryFirstOrDefaultAsync<GetJobVacancyCountsResponseDto?>(sql, new { status });
+
+            return result;
+        }
+
+        public async Task<GetJobVacancyCountsResponseDto?> GetJobVacancyCountTotalAsync()
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
+
+            var sql = @"SELECT 'totalVacancy' [Status], COUNT(jv.Status) [Count]
+                        FROM HRM_DB.reclutamiento.JobVacancy jv";
+            var result = await connection.QueryFirstOrDefaultAsync<GetJobVacancyCountsResponseDto?>(sql, new { });
+
+            return result;
+        }
+
         public async Task<int?> SetJobVacancyAsync(SetJobVacancyDBRequestDto dbRequest)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
