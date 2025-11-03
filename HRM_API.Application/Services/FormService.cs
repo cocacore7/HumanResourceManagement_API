@@ -250,6 +250,11 @@ namespace HRM_API.Application.Services
                 }
             }
 
+            if (request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.Hired) )
+            {
+                var StatusfailValid = (bool)await _preApplicationRepository.UpdateVacancyCountAsync(preApplication.FirstOrDefault()?.Id);
+                if (StatusfailValid) { responseList.Add("Estado se actualizo la vacante relacionada con exito"); }
+            }
 
             responseList.Add(responseId > 0 ? "Formulario Registrado Exitosamente" : "Error Al Registrar Formulario");
             SetFormAnswersReponseDto response = new() { Response = responseList };
@@ -290,6 +295,7 @@ namespace HRM_API.Application.Services
                 request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.ExpNotLoaded) ||
                 request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.ExpLoaded) ||
                 request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.Hiring) ||
+                request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.Hired) ||
                 request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.RejectDiscard))
             {
                 var StatusfailValid = (bool)await _preApplicationRepository.UpdateStatusFailAsync(preApplication.FirstOrDefault()?.Id, request?.Origin.State);
@@ -474,6 +480,13 @@ namespace HRM_API.Application.Services
                         }
                 }
             }
+
+            if (request?.Origin.State == EnumHelper.GetEnumDescription(PreApplicationFailStatusEnum.Hired))
+            {
+                var StatusfailValid = (bool)await _preApplicationRepository.UpdateVacancyCountAsync(preApplication.FirstOrDefault()?.Id);
+                if (StatusfailValid) { responseList.Add("Estado se actualizo la vacante relacionada con exito"); }
+            }
+
             responseList.Add(reponseId.IdResponse > 0 ? "Formulario Actualizado Exitosamente" : "Error Al Actualizar Formulario");
             UpdateFormAnswersReponseDto response = new() { Response = responseList };
             return (response);
