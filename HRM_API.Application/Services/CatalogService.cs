@@ -16,6 +16,15 @@ namespace HRM_API.Application.Services
             return response;
         }
 
+        public async Task<CatalogRequestDto?> GetActiveJobCatalogAsync()
+        {
+            var responsedb = await _repository.GetActiveJobCatalogAsync();
+
+            CatalogRequestDto response = new() { Response = responsedb ?? [] };
+
+            return response;
+        }
+
         public async Task<CatalogRequestDto?> GetTownCatalogAsync()
         {
             var responsedb = await _repository.GetTownCatalogAsync();

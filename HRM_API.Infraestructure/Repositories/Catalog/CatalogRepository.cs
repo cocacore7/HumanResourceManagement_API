@@ -21,6 +21,18 @@ namespace HRM_API.Infraestructure.Repositories.Catalog
             return [.. result];
         }
 
+        public async Task<List<CatalogDBRequestDto>> GetActiveJobCatalogAsync()
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
+
+            var sql = @"SELECT jv.IdVacancy AS optionId, jv.JobPositionName AS Value, jv.JobPositionName AS Label
+                        FROM HRM_DB.reclutamiento.JobVacancy jv
+                        WHERE jv.Status = 'nuevaVacante'";
+            var result = await connection.QueryAsync<CatalogDBRequestDto?>(sql, new { });
+
+            return [.. result];
+        }
+
         public async Task<List<CatalogDBRequestDto>> GetTownCatalogAsync()
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
