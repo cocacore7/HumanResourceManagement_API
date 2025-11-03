@@ -32,6 +32,14 @@ namespace HRM_API.API.Controllers
             return Ok(ApiResponses.Ok(response, "OK", "JOB_CATALOG_FOUND"));
         }
 
+        [HttpGet("GetActiveJobCatalogPublic")]
+        public async Task<IActionResult> GetActiveJobCatalogPublic()
+        {
+            var response = await _catalogService.GetActiveJobCatalogAsync();
+
+            return Ok(ApiResponses.Ok(response, "OK", "JOB_CATALOG_FOUND"));
+        }
+
         [HttpGet("GetJobCatalogPublic")]
         public async Task<IActionResult> GetJobCatalogPublic()
         {

@@ -23,6 +23,7 @@ namespace HRM_API.API.Middleware
                  path.Contains("/catalog/getjobcatalogpublic") ||
                  path.Contains("/catalog/gettowncatalogpublic") ||
                  path.Contains("/catalog/getrolecatalopublic") ||
+                 path.Contains("/catalog/getactivejobcatalogpublic") ||
                  path.Contains("/form/setformanswerspublic") ||
                  path.Contains("/preapplication/preappvalidatepublic") ||
                  path.Contains("/preapplication/setpreapplicationspublic")))
