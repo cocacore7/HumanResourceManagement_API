@@ -17,7 +17,7 @@ namespace HRM_API.Infraestructure.Repositories.Authorization
             var sql = @"SELECT u.IdUser, u.Name, u.RoleId 
                         FROM HRM_DB.reclutamiento.Users u
                         INNER JOIN HRM_DB.reclutamiento.Role r ON r.IdRole = u.RoleId
-                        WHERE u.Name = @Name 
+                        WHERE u.Name COLLATE Latin1_General_CS_AS = @Name 
                         AND u.PasswordHash = @Password 
                         AND r.KeyName = @Role
                         AND u.IsActive = 1";
