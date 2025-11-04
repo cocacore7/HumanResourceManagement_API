@@ -5,6 +5,7 @@ using HRM_API.Core.Dtos.PreApplication;
 using HRM_API.Core.Interfaces.PreApplication;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using System.Linq.Expressions;
 
 namespace HRM_API.Infraestructure.Repositories.PreApplication
 {
@@ -228,7 +229,7 @@ namespace HRM_API.Infraestructure.Repositories.PreApplication
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
-            var sql = @"SELECT pa.Status [State], COUNT(pa.Status) [Count]
+            var sql = @"SELECT 'contratadoReport' [State], COUNT(pa.Status) [Count]
                         FROM HRM_DB.reclutamiento.PreApplication pa
                         WHERE pa.Status = 'contratado'
                         GROUP BY pa.Status";
@@ -366,68 +367,77 @@ namespace HRM_API.Infraestructure.Repositories.PreApplication
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
 
-            if (request.Experience == null)
+            try
             {
+                if (request.Experience == null)
+                {
 
-                var sql = @"UPDATE HRM_DB.reclutamiento.PreApplication 
+                    var sql = @"UPDATE HRM_DB.reclutamiento.PreApplication 
                         SET FullName = @FullName, DPI = @DPI, Age = @Age, Gender = @Gender, Phone = @Phone, Email = @Email, 
                         TownId = @TownId, Address = @Address, EducationLevel = @EducationLevel, VacancyId = @VacancyId, 
                         HowHeard = @HowHeard, AssignHub = @AssignHub, IsReferred = @IsReferred, RefferedBy = @RefferedBy
                         WHERE IdPreApplication = @IdPreApplication";
 
-                var rowsAffected = await connection.ExecuteAsync(sql, new {
-                    request.FullName,
-                    request.DPI,
-                    request.Age,
-                    request.Gender,
-                    request.Phone,
-                    request.Email,
-                    request.TownId,
-                    request.Address,
-                    request.EducationLevel,
-                    request.VacancyId,
-                    request.HowHeard,
-                    request.AssignHub,
-                    request.IsReferred,
-                    request.RefferedBy,
-                    request.IdPreApplication
-                });
+                    var rowsAffected = await connection.ExecuteAsync(sql, new
+                    {
+                        request.FullName,
+                        request.DPI,
+                        request.Age,
+                        request.Gender,
+                        request.Phone,
+                        request.Email,
+                        request.TownId,
+                        request.Address,
+                        request.EducationLevel,
+                        request.VacancyId,
+                        request.HowHeard,
+                        request.AssignHub,
+                        request.IsReferred,
+                        request.RefferedBy,
+                        request.IdPreApplication
+                    });
 
-                return rowsAffected > 0;
-            }
-            else
-            {
+                    return rowsAffected > 0;
+                }
+                else
+                {
 
-                var sql = @"UPDATE HRM_DB.reclutamiento.PreApplication 
+                    var sql = @"UPDATE HRM_DB.reclutamiento.PreApplication 
                         SET FullName = @FullName, DPI = @DPI, Age = @Age, Gender = @Gender, Phone = @Phone, Email = @Email, 
                         TownId = @TownId, Address = @Address, EducationLevel = @EducationLevel, VacancyId = @VacancyId, 
                         Experience = @Experience, HowHeard = @HowHeard, AcceptedTerms = @AcceptedTerms, Origin = @Origin, 
                         Status = @Status, IsReferred = @IsReferred, RefferedBy = @RefferedBy
                         WHERE IdPreApplication = @IdPreApplication";
 
-                var rowsAffected = await connection.ExecuteAsync(sql, new
-                {
-                    request.FullName,
-                    request.DPI,
-                    request.Age,
-                    request.Gender,
-                    request.Phone,
-                    request.Email,
-                    request.TownId,
-                    request.Address,
-                    request.EducationLevel,
-                    request.VacancyId,
-                    request.Experience,
-                    request.HowHeard,
-                    request.AcceptedTerms,
-                    request.Origin,
-                    request.Status,
-                    request.IsReferred,
-                    request.RefferedBy,
-                    request.IdPreApplication
-                });
+                    var rowsAffected = await connection.ExecuteAsync(sql, new
+                    {
+                        request.FullName,
+                        request.DPI,
+                        request.Age,
+                        request.Gender,
+                        request.Phone,
+                        request.Email,
+                        request.TownId,
+                        request.Address,
+                        request.EducationLevel,
+                        request.VacancyId,
+                        request.Experience,
+                        request.HowHeard,
+                        request.AcceptedTerms,
+                        request.Origin,
+                        request.Status,
+                        request.IsReferred,
+                        request.RefferedBy,
+                        request.IdPreApplication
+                    });
 
-                return rowsAffected > 0;
+                    return rowsAffected > 0;
+                }
+            }
+            catch (Exception ex) { 
+               Console.WriteLine(ex.ToString());
+                return false;
+
             }
         }
 
