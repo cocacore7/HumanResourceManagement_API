@@ -37,6 +37,20 @@ namespace HRM_API.Infraestructure.Repositories.User
             return result;
         }
 
+        public async Task<string?> GetActualUserEmailAsync(int IdPreApplication)
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
+
+            var sql = @"SELECT u.Email
+                        FROM HRM_DB.reclutamiento.PreApplication pa
+                        INNER JOIN HRM_DB.reclutamiento.Users u ON u.IdUser = pa.AssignTo
+                        WHERE pa.IdPreApplication = @IdPreApplication
+                        AND u.IsActive = 1";
+            var result = await connection.QueryFirstOrDefaultAsync<string?>(sql, new { IdPreApplication });
+
+            return result;
+        }
+
         public async Task<string?> GetEmailByUserAsync(int IdUser)
         {
             using var connection = new SqlConnection(_configuration.GetConnectionString("localDB"));
